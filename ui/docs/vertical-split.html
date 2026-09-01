@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Vertical split – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../vertical-split.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+        <style>
+            .pane {
+                background: #f0f0f0;
+                padding: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="vertical-split"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Vertical split</h1>
+                <p>
+                    A layout wrapper: two panes side by side, separated by a vertical split. Spans the full width and
+                    splits it 50 / 50 by default.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Two children, two equal columns.</p>
+                    <div>
+                        <vertical-split>
+                            <div class="pane">Left</div>
+                            <div class="pane">Right</div>
+                        </vertical-split>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Ratio">
+                    <h2>Ratio</h2>
+                    <p>
+                        Set the <code>--ratio</code> CSS variable to a number between 0 and 1 to change how much of the
+                        width the left pane takes. Defaults to <code>0.5</code>. Everything is plain CSS, so changing
+                        the variable at any time re-lays out the panes.
+                    </p>
+                    <div>
+                        <vertical-split style="--ratio: 0.25">
+                            <div class="pane">Left</div>
+                            <div class="pane">Right</div>
+                        </vertical-split>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Gap">
+                    <h2>Gap</h2>
+                    <p>Set <code>--gap</code> to change the space between the panes. Defaults to <code>1rem</code>.</p>
+                    <div>
+                        <vertical-split style="--gap: 3rem">
+                            <div class="pane">Left</div>
+                            <div class="pane">Right</div>
+                        </vertical-split>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Resizable">
+                    <h2>Resizable</h2>
+                    <p>
+                        Add the <code>resizable</code> attribute to let the midline be dragged. Dragging rewrites
+                        <code>--ratio</code> on the element itself, so the ratio stays readable as
+                        <code>split.ratio</code> and settable the same way. The handle fires <code>input</code> while
+                        dragging and <code>change</code> when the drag ends, both with <code>detail.ratio</code>. It is
+                        focusable too: arrow keys nudge by <code>step</code> (<code>0.01</code> by default), Home / End
+                        jump to the ends. Set <code>min</code> and <code>max</code> to keep either pane from collapsing.
+                    </p>
+                    <div>
+                        <vertical-split resizable min="0.2" max="0.8" style="--gap: 1rem; --divider: 1px solid #767676">
+                            <div class="pane">Left</div>
+                            <div class="pane">Right</div>
+                        </vertical-split>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Divider">
+                    <h2>Divider</h2>
+                    <p>
+                        Set <code>--divider</code> to a <code>border</code> shorthand value to draw a line down the
+                        middle of the gap. Unset by default, so no line is drawn. The grab area around it is
+                        <code>--handle-width</code> wide, <code>0.75rem</code> by default.
+                    </p>
+                    <div>
+                        <vertical-split style="--gap: 3rem; --divider: 1px solid #767676">
+                            <div class="pane">Left</div>
+                            <div class="pane">Right</div>
+                        </vertical-split>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+    </body>
+</html>

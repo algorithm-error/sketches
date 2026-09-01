@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Color swatch group – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../color-swatches.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="color-swatches"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Color swatch group</h1>
+                <p>
+                    A single component owning a set of square color swatches. Unlike composing several standalone
+                    radio-backed elements (each with its own Shadow DOM, so native radio grouping can't cross them),
+                    every swatch here is a plain <code>&lt;input type="radio"&gt;</code> living in one Shadow DOM — the
+                    browser enforces "only one checked" natively.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Each color in the comma-separated <code>colors</code> attribute doubles as its own value; an
+                        optional parallel <code>labels</code> attribute sets accessible names. Dispatches
+                        <code>change</code> with <code>detail.value</code>.
+                    </p>
+                    <div>
+                        <color-swatches
+                            id="demo-group"
+                            value="#000000"
+                            colors="#000000,#ff0000,#00ffff"
+                            labels="Black,Red,Cyan"
+                        ></color-swatches>
+                        <p id="demo-output">Value: #000000</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Small">
+                    <h2>Small</h2>
+                    <div>
+                        <color-swatches
+                            size="small"
+                            value="#ff0000"
+                            colors="#000000,#ff0000,#00ffff"
+                            labels="Black,Red,Cyan"
+                        ></color-swatches>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div>
+                        <color-swatches
+                            value="#000000"
+                            colors="#000000,#ff0000,#00ffff"
+                            labels="Black,Red,Cyan"
+                            disabled
+                        ></color-swatches>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const group = document.getElementById('demo-group');
+            const output = document.getElementById('demo-output');
+            group.addEventListener('change', (event) => {
+                output.textContent = `Value: ${event.detail.value}`;
+            });
+        </script>
+    </body>
+</html>

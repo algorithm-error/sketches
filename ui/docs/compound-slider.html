@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Compound slider – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../compound-slider.js"></script>
+        <script type="module" src="../control-row.js"></script>
+        <script type="module" src="../control-panel.js"></script>
+        <script type="module" src="../control-column.js"></script>
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="compound-slider"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Compound slider</h1>
+                <p>A label, a help line, a slider, and a linked number input, composed into one control.</p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Dragging the slider or typing in the number field keeps both in sync and dispatches a single
+                        <code>change</code> event with the numeric value.
+                    </p>
+                    <div>
+                        <compound-slider
+                            id="demo-compound-slider"
+                            label="Bias"
+                            help="Directional bias for curve flow"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            value="0.44"
+                            decimals="2"
+                        ></compound-slider>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Basic">
+                    <h2>Help overflow</h2>
+                    <div>
+                        <compound-slider
+                            id="demo-compound-slider"
+                            label="Noise increment"
+                            help="Step size between sampled noise points; higher is coarser, lower is softer. Use very low values such as 0.0001"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            value="0.44"
+                            decimals="2"
+                        ></compound-slider>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Basic">
+                    <h2>No help</h2>
+                    <div>
+                        <compound-slider
+                            id="demo-compound-slider"
+                            label="Frame"
+                            min="0"
+                            max="100"
+                            step="1"
+                            value="26"
+                        ></compound-slider>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Vertical">
+                    <h2>Vertical</h2>
+                    <p>
+                        Set <code>direction="vertical"</code> — the number input moves above the track and the label
+                        moves below it. The layout narrows to a column, so two or three fit side by side in a
+                        <code>control-row</code> inside a standard panel, alongside regular horizontal sliders.
+                    </p>
+                    <div>
+                        <control-panel>
+                            <control-column>
+                                <compound-slider label="Master" min="0" max="100" step="1" value="60"></compound-slider>
+
+                                <control-row>
+                                    <compound-slider
+                                        direction="vertical"
+                                        label="R"
+                                        min="0"
+                                        max="255"
+                                        step="1"
+                                        value="220"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        direction="vertical"
+                                        label="G"
+                                        min="0"
+                                        max="255"
+                                        step="1"
+                                        value="80"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        direction="vertical"
+                                        label="B"
+                                        min="0"
+                                        max="255"
+                                        step="1"
+                                        value="140"
+                                    ></compound-slider>
+                                </control-row>
+
+                                <compound-slider
+                                    label="Opacity"
+                                    min="0"
+                                    max="1"
+                                    step="0.01"
+                                    value="0.8"
+                                    decimals="2"
+                                ></compound-slider>
+                            </control-column>
+                        </control-panel>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+    </body>
+</html>

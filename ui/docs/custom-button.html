@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Button – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../custom-button.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="button"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Button</h1>
+                <p>A styled button. Solid by default, or <code>type="reset"</code> for the outline variant.</p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>The default solid button, used for primary actions like submitting or confirming.</p>
+                    <div>
+                        <custom-button id="demo-button">Buy this plot</custom-button>
+                        <p id="demo-button-output">Clicked 0 times</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Basic">
+                    <h2>Small</h2>
+                    <p>Button size small</p>
+                    <div>
+                        <custom-button size="small">Buy this plot</custom-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Variants">
+                    <h2>Variants</h2>
+                    <p>Set via the <code>variant</code> attribute.</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem">
+                        <custom-button variant="secondary">Secondary</custom-button>
+                        <custom-button variant="accent">Accent</custom-button>
+                        <custom-button variant="outline">Outline</custom-button>
+                        <custom-button variant="transparent">Transparent</custom-button>
+                        <custom-button variant="yellow">Yellow</custom-button>
+                        <custom-button variant="red">Red</custom-button>
+                        <custom-button variant="green">Green</custom-button>
+                        <custom-button variant="cyan">Cyan</custom-button>
+                        <custom-button variant="magenta">Magenta</custom-button>
+                        <custom-button variant="noise">Noise</custom-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            let clicks = 0;
+            const button = document.getElementById('demo-button');
+            const output = document.getElementById('demo-button-output');
+            button.addEventListener('click', () => {
+                clicks += 1;
+                output.textContent = `Clicked ${clicks} times`;
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Angle pad – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../angle-pad.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="angle-pad"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Angle pad</h1>
+                <p>
+                    A dial carrying two independent angles, in degrees, on one track. Same geometry and convention as
+                    <code>angle-slider</code> (0° east, increasing clockwise) — reach for that one when you only need a
+                    single angle. The two handles are unrelated values sharing a dial, so either can pass the other;
+                    there is no range to keep ordered. Drag a handle, or click anywhere else in the dial to move
+                    whichever handle is already closest. Arrow keys move a focused handle by <code>step</code>, Home/End
+                    jump to <code>min</code>/<code>max</code>.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Fires <code>input</code> continuously while dragging and <code>change</code> once the drag ends,
+                        both with <code>{angle1, angle2}</code>.
+                    </p>
+                    <div>
+                        <angle-pad id="demo-pad" angle1="40" angle2="330"></angle-pad>
+                        <p id="demo-pad-output">40, 330</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Range and step">
+                    <h2>Range and step</h2>
+                    <p>
+                        Defaults span the full circle (<code>min="0"</code>, <code>max="360"</code>,
+                        <code>step="1"</code>), which wraps. A narrower <code>min</code>/<code>max</code> stops wrapping
+                        and clamps both handles to the arc.
+                    </p>
+                    <div>
+                        <angle-pad id="demo-pad-range" min="0" max="180" step="15" angle1="30" angle2="120"></angle-pad>
+                        <p id="demo-pad-range-output">30, 120</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Size">
+                    <h2>Size</h2>
+                    <p>
+                        The dial is small by default. <code>size="medium"</code> grows it to the same box as a
+                        <a href="vector-pad.html">vector pad</a>, worth it when the two handles sit close together.
+                    </p>
+                    <div>
+                        <angle-pad id="demo-pad-medium" size="medium" angle1="46" angle2="40"></angle-pad>
+                        <p id="demo-pad-medium-output">46, 40</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Colors">
+                    <h2>Colors</h2>
+                    <p>
+                        The first handle uses <code>--fill</code> (defaulting to <code>--primary</code>), the second
+                        <code>--fill-2</code> (defaulting to <code>--red</code>).
+                    </p>
+                    <div>
+                        <angle-pad
+                            id="demo-pad-color"
+                            style="--fill: #00a000; --fill-2: #a000a0; width: 6rem"
+                            angle1="200"
+                            angle2="20"
+                        ></angle-pad>
+                        <p id="demo-pad-color-output">200, 20</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const wire = (id) => {
+                const pad = document.getElementById(id);
+                const output = document.getElementById(`${id}-output`);
+                pad.addEventListener('input', (event) => {
+                    output.textContent = `${event.detail.angle1}, ${event.detail.angle2}`;
+                });
+            };
+            wire('demo-pad');
+            wire('demo-pad-range');
+            wire('demo-pad-medium');
+            wire('demo-pad-color');
+        </script>
+    </body>
+</html>

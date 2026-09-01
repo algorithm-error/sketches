@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Binary toggle – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../binary-toggle.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="binary-toggle"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Binary toggle</h1>
+                <p>
+                    Two <a href="custom-button.html">buttons</a> collapsed into a single control, for a choice between
+                    exactly two options. The active side renders with the <code>accent</code> variant, the inactive side
+                    with <code>outline</code>. Dispatches <code>change</code> with <code>detail.value</code> set to
+                    <code>"a"</code> or <code>"b"</code>. <code>size</code> forwards to both inner buttons (defaults to
+                    <code>"small"</code>).
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Labels are passed through the <code>a</code> and <code>b</code> slots.</p>
+                    <div>
+                        <binary-toggle id="demo-toggle" value="a">
+                            <span slot="a">Grid</span>
+                            <span slot="b">List</span>
+                        </binary-toggle>
+                        <p id="demo-toggle-output">Value: a</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Regular size">
+                    <h2>Regular size</h2>
+                    <p>Forwarded via <code>size</code> &mdash; defaults to <code>"small"</code> if omitted.</p>
+                    <div>
+                        <binary-toggle value="a" size="regular">
+                            <span slot="a">Grid</span>
+                            <span slot="b">List</span>
+                        </binary-toggle>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Stretch">
+                    <h2>Stretch</h2>
+                    <p>The <code>stretch</code> attribute makes both sides share the available width evenly.</p>
+                    <div style="max-width: 16rem">
+                        <binary-toggle value="b" stretch>
+                            <span slot="a">One way</span>
+                            <span slot="b">Both ways</span>
+                        </binary-toggle>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const toggle = document.getElementById('demo-toggle');
+            const output = document.getElementById('demo-toggle-output');
+            toggle.addEventListener('change', (event) => {
+                output.textContent = `Value: ${event.detail.value}`;
+            });
+        </script>
+    </body>
+</html>

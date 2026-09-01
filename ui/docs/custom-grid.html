@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Grid – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../custom-grid.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+        <style>
+            .swatch {
+                width: 4rem;
+                height: 4rem;
+                background: color-mix(in srgb, var(--primary) 20%, var(--background));
+                border: 1px solid var(--primary);
+            }
+        </style>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="custom-grid"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Grid</h1>
+                <p>
+                    A real CSS grid container: <code>display: grid</code>, columns sized to their content (<code
+                        >grid-template-columns: repeat(n, max-content)</code
+                    >), <code>gap: 1.5rem</code>. Set <code>columns</code> to the number of columns &mdash; children
+                    wrap onto a new row after that many. Leave a cell empty by dropping in an empty element.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Five children, three columns &mdash; the fourth and fifth wrap to a second row.</p>
+                    <div>
+                        <custom-grid columns="3">
+                            <div class="swatch"></div>
+                            <div class="swatch"></div>
+                            <div class="swatch"></div>
+                            <div class="swatch"></div>
+                            <div class="swatch"></div>
+                        </custom-grid>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Empty cell">
+                    <h2>Empty cell</h2>
+                    <p>
+                        An empty element reserves its cell without rendering anything &mdash; useful for lining up a
+                        grid of examples that doesn't fill evenly, like the
+                        <a href="/sandbox/hatch-test.html">hatch sandbox</a>.
+                    </p>
+                    <div>
+                        <custom-grid columns="4">
+                            <div class="swatch"></div>
+                            <div class="swatch"></div>
+                            <div class="swatch"></div>
+                            <div></div>
+                        </custom-grid>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+    </body>
+</html>

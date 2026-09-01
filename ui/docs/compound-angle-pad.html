@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Compound angle pad – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../compound-angle-pad.js"></script>
+        <script type="module" src="../control-panel.js"></script>
+        <script type="module" src="../control-column.js"></script>
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="compound-angle-pad"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Compound angle pad</h1>
+                <p>
+                    A label, a help line, an <code>angle-pad</code>, and a number field per handle, composed into one
+                    panel-ready control for a pair of angles in degrees.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Dragging a handle or typing in a field keeps both in sync. Emits <code>input</code> while
+                        dragging and <code>change</code> on release or on a typed value, both with
+                        <code>{angle1, angle2}</code>.
+                    </p>
+                    <div>
+                        <compound-angle-pad
+                            id="demo-angles"
+                            label="Branch deflection"
+                            help="Angles the branches split by, in degrees"
+                            angle1="46"
+                            angle2="315"
+                        ></compound-angle-pad>
+                        <p id="demo-angles-output">46, 315</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Field labels">
+                    <h2>Field labels</h2>
+                    <p>
+                        Fields read <code>∠1</code>/<code>∠2</code> unless <code>label1</code>/<code>label2</code> name
+                        them. <code>min</code>, <code>max</code> and <code>step</code> pass through to the dial and both
+                        fields; <code>decimals</code> formats the displayed numbers.
+                    </p>
+                    <div>
+                        <compound-angle-pad
+                            id="demo-angles-labels"
+                            label="Collatz mesh"
+                            help="Deflection applied to odd and even steps"
+                            label1="Odd"
+                            label2="Even"
+                            min="0"
+                            max="90"
+                            step="0.5"
+                            decimals="1"
+                            angle1="45.9"
+                            angle2="40.5"
+                        ></compound-angle-pad>
+                        <p id="demo-angles-labels-output">45.9, 40.5</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Size">
+                    <h2>Size</h2>
+                    <p>
+                        <code>size</code> passes through to the dial: small by default, <code>medium</code> for a
+                        vector-pad-sized box.
+                    </p>
+                    <div>
+                        <compound-angle-pad
+                            id="demo-angles-medium"
+                            size="medium"
+                            label="Branch deflection"
+                            help="A bigger dial separates handles that sit close together"
+                            label1="Odd"
+                            label2="Even"
+                            decimals="1"
+                            angle1="45.9"
+                            angle2="40.5"
+                        ></compound-angle-pad>
+                        <p id="demo-angles-medium-output">45.9, 40.5</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div>
+                        <compound-angle-pad
+                            label="Locked"
+                            help="Both handles and both fields are inert"
+                            angle1="120"
+                            angle2="240"
+                            disabled
+                        ></compound-angle-pad>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const wire = (id) => {
+                const control = document.getElementById(id);
+                const output = document.getElementById(`${id}-output`);
+                const show = (event) => {
+                    output.textContent = `${event.detail.angle1}, ${event.detail.angle2}`;
+                };
+                control.addEventListener('input', show);
+                control.addEventListener('change', show);
+            };
+            wire('demo-angles');
+            wire('demo-angles-labels');
+            wire('demo-angles-medium');
+        </script>
+    </body>
+</html>

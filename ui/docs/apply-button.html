@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Apply button – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../apply-button.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="apply-button"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Apply button</h1>
+                <p>
+                    Wraps <a href="custom-button.html">button</a> with an <code>in-progress</code> state: while set, the
+                    label swaps to "Applying..." and the inner button is auto-disabled (in addition to a plain
+                    <code>disabled</code> attribute, which works independently). <code>variant</code>,
+                    <code>size</code>, and <code>stretch</code> are forwarded to the inner button as-is.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Click to simulate a 1.5s in-progress period.</p>
+                    <div>
+                        <apply-button id="demo-apply" variant="accent">Apply</apply-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="In progress">
+                    <h2>In progress</h2>
+                    <div>
+                        <apply-button variant="accent" in-progress>Apply</apply-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div>
+                        <apply-button variant="accent" disabled>Apply</apply-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Variants">
+                    <h2>Variants forwarded</h2>
+                    <p><code>variant</code> passes straight through to the inner button.</p>
+                    <div>
+                        <apply-button variant="green">Confirm</apply-button>
+                        <apply-button variant="red">Delete</apply-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const button = document.getElementById('demo-apply');
+            button.addEventListener('click', () => {
+                if (button.inProgress) return;
+                button.inProgress = true;
+                setTimeout(() => {
+                    button.inProgress = false;
+                }, 1500);
+            });
+        </script>
+    </body>
+</html>

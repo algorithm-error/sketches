@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Coordinate input – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../coordinate-input.js"></script>
+        <script type="module" src="../custom-fieldset.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="coordinate-input"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Coordinate input</h1>
+                <p>
+                    Two <a href="numeric-input.html">number inputs</a> for a coordinate pair, showing either cartesian
+                    (x, y) or polar (length, angle) — set with the <code>mode</code> attribute, a plain prop rather than
+                    an in-widget toggle. <code>min</code>/<code>max</code>/<code>step</code>/<code>size</code> apply to
+                    both fields in cartesian mode; in polar mode length is clamped to 0+ and angle to 0–360. Dispatches
+                    <code>change</code> with <code>detail.x</code>, <code>detail.y</code>, and
+                    <code>detail.value</code> (an <code>"x,y"</code> string) regardless of mode.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <div>
+                        <coordinate-input
+                            id="demo-position"
+                            x="394"
+                            y="272"
+                            min="-2000"
+                            max="2000"
+                            step="1"
+                        ></coordinate-input>
+                        <p id="demo-position-output">Value: 394,272</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Polar mode">
+                    <h2>Polar mode</h2>
+                    <p>Set <code>mode="polar"</code> to show length/angle instead of x/y.</p>
+                    <div>
+                        <coordinate-input x="0.6" y="0.6" mode="polar"></coordinate-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Small">
+                    <h2>Small</h2>
+                    <div>
+                        <coordinate-input x="394" y="272" size="small"></coordinate-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="With a fieldset label">
+                    <h2>With a fieldset label</h2>
+                    <div style="max-width: 16rem">
+                        <custom-fieldset label="Position">
+                            <coordinate-input x="394" y="272" stretch></coordinate-input>
+                        </custom-fieldset>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div>
+                        <coordinate-input x="394" y="272" disabled></coordinate-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const el = document.getElementById('demo-position');
+            const output = document.getElementById('demo-position-output');
+            el.addEventListener('change', (event) => {
+                output.textContent = `Value: ${event.detail.value}`;
+            });
+        </script>
+    </body>
+</html>

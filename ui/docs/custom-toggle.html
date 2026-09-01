@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Toggle – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../custom-toggle.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="custom-toggle"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Toggle</h1>
+                <p>
+                    A boolean switch with the same <code>checked</code>/<code>disabled</code> API as a native checkbox,
+                    built on a <a href="custom-slider.html">slider</a>-style track with a sliding thumb instead of a
+                    checkmark.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Dispatches <code>change</code> with <code>detail.checked</code>.</p>
+                    <div>
+                        <custom-toggle id="demo-toggle" checked></custom-toggle>
+                        <p id="demo-toggle-output">Checked: true</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div>
+                        <custom-toggle disabled></custom-toggle>
+                        <custom-toggle checked disabled></custom-toggle>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const toggle = document.getElementById('demo-toggle');
+            const output = document.getElementById('demo-toggle-output');
+            toggle.addEventListener('change', (event) => {
+                output.textContent = `Checked: ${event.detail.checked}`;
+            });
+        </script>
+    </body>
+</html>

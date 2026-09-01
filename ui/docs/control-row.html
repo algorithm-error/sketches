@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Control row – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../control-row.js"></script>
+        <script type="module" src="../custom-button.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="control-row"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Control row</h1>
+                <p>
+                    A layout wrapper. Defaults to 2 equal-width columns. Set the <code>--columns</code> CSS variable to
+                    change the column count, or to <code>none</code> for a plain row with an even gap and no enforced
+                    width.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Children are laid out in 2 equal-width columns by default.</p>
+                    <div>
+                        <control-row>
+                            <custom-button>One</custom-button>
+                            <custom-button>Two</custom-button>
+                        </control-row>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Columns">
+                    <h2>Columns</h2>
+                    <p>
+                        Set <code>--columns</code> to lay children out in that many equal-width columns spanning the
+                        full width.
+                    </p>
+                    <div>
+                        <control-row style="--columns: 3">
+                            <custom-button>One</custom-button>
+                            <custom-button>Two</custom-button>
+                            <custom-button>Three</custom-button>
+                        </control-row>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Row">
+                    <h2>Row</h2>
+                    <p>
+                        Set <code>--columns: none;</code> for a plain row with an even gap between children, width not
+                        enforced.
+                    </p>
+                    <div>
+                        <control-row style="--columns: none">
+                            <custom-button>One</custom-button>
+                            <custom-button>Two</custom-button>
+                            <custom-button>Three</custom-button>
+                        </control-row>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+    </body>
+</html>

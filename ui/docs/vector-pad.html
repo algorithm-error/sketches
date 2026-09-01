@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Vector pad – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../vector-pad.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="vector-pad"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Vector pad</h1>
+                <p>
+                    A 2D pad for picking a point/vector by dragging, square unless <code>--ratio</code> says otherwise.
+                    <code>x</code> and <code>y</code> increase left-to-right and top-to-bottom, matching p5's canvas and
+                    <code>angle-slider</code>'s convention (0° east, increasing clockwise), so <code>length</code>/<code
+                        >angle</code
+                    >
+                    read off the element line up with values from an <code>angle-slider</code>. Drag the knob (or click
+                    the pad) to set it; arrow keys work once it's focused.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Default range is -1 to 1 on both axes. Fires <code>input</code> continuously while dragging and
+                        <code>change</code> once the drag ends.
+                    </p>
+                    <div>
+                        <vector-pad id="demo-pad" x="0.3" y="-0.5"></vector-pad>
+                        <p id="demo-pad-output">0.3, -0.5</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Custom range">
+                    <h2>Custom range</h2>
+                    <p>
+                        Set <code>min</code>/<code>max</code> to change the range shared by both axes, and
+                        <code>step</code> to snap dragged/keyboard values.
+                    </p>
+                    <div>
+                        <vector-pad id="demo-pad-range" min="0" max="100" step="5" x="20" y="70"></vector-pad>
+                        <p id="demo-pad-range-output">20, 70</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Box ratio">
+                    <h2>Box ratio</h2>
+                    <p>
+                        The pad is square by default. Set the <code>--ratio</code> custom property to width over height
+                        to match whatever the pad stands in for — a 16:9 canvas is <code>--ratio: 1.778</code>. Only the
+                        box changes shape: both axes still span <code>min</code> to <code>max</code>, and the knob stays
+                        round.
+                    </p>
+                    <div>
+                        <vector-pad
+                            id="demo-pad-ratio"
+                            style="--ratio: 1.778; width: 12rem"
+                            min="0"
+                            max="1"
+                            x="0.5"
+                            y="0.95"
+                        ></vector-pad>
+                        <p id="demo-pad-ratio-output">0.5, 0.95</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Point mode">
+                    <h2>Point mode</h2>
+                    <p>
+                        By default the knob is drawn as a vector: a line from the middle of the pad out to the value.
+                        Add <code>point</code> when the value is a plain position rather than a vector — an origin on a
+                        canvas, say — and the line and its hub go away, leaving just the knob.
+                    </p>
+                    <div>
+                        <vector-pad id="demo-pad-point" point min="0" max="1" x="0.5" y="0.95"></vector-pad>
+                        <p id="demo-pad-point-output">0.5, 0.95</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Polar mode">
+                    <h2>Polar mode</h2>
+                    <p>
+                        Set <code>mode="polar"</code> to swap the square track for an inscribed circle, signaling a
+                        length/angle reading. It's a visual cue only — the drag area and mapping stay the square
+                        described above, so the knob can still reach the corners.
+                    </p>
+                    <div>
+                        <vector-pad id="demo-pad-polar" mode="polar" x="0.5" y="0.5"></vector-pad>
+                        <p id="demo-pad-polar-output">0.5, 0.5</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const pad = document.getElementById('demo-pad');
+            const output = document.getElementById('demo-pad-output');
+            pad.addEventListener('input', (event) => {
+                output.textContent = `${event.detail.x}, ${event.detail.y}`;
+            });
+
+            const padRange = document.getElementById('demo-pad-range');
+            const outputRange = document.getElementById('demo-pad-range-output');
+            padRange.addEventListener('input', (event) => {
+                outputRange.textContent = `${event.detail.x}, ${event.detail.y}`;
+            });
+
+            const padRatio = document.getElementById('demo-pad-ratio');
+            const outputRatio = document.getElementById('demo-pad-ratio-output');
+            padRatio.addEventListener('input', (event) => {
+                outputRatio.textContent = `${event.detail.x}, ${event.detail.y}`;
+            });
+
+            const padPoint = document.getElementById('demo-pad-point');
+            const outputPoint = document.getElementById('demo-pad-point-output');
+            padPoint.addEventListener('input', (event) => {
+                outputPoint.textContent = `${event.detail.x}, ${event.detail.y}`;
+            });
+
+            const padPolar = document.getElementById('demo-pad-polar');
+            const outputPolar = document.getElementById('demo-pad-polar-output');
+            padPolar.addEventListener('input', (event) => {
+                outputPolar.textContent = `${event.detail.x}, ${event.detail.y}`;
+            });
+        </script>
+    </body>
+</html>

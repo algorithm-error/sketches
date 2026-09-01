@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Theme – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../custom-button.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="theme"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Theme</h1>
+                <p>
+                    Holds the kit's CSS custom properties (<code>--background</code>, <code>--color</code>,
+                    <code>--foreground</code>, <code>--primary</code>, <code>--highlight</code>,
+                    <code>--font-family</code>, <code>--font-size</code>) and applies them to its children. It doesn't
+                    style anything itself — components like <code>custom-button</code> consume the variables directly.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Wrap a control panel in <code>custom-theme</code> to give it the variables wherever it's
+                        dropped.
+                    </p>
+                    <div>
+                        <custom-theme>
+                            <custom-button>Buy this plot</custom-button>
+                        </custom-theme>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+    </body>
+</html>

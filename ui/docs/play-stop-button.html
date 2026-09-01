@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Play/stop button – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../play-stop-button.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="play-stop-button"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Play/stop button</h1>
+                <p>
+                    A two-state toggle with four labels, driven entirely by CSS (no hover tracking in JS): stopped,
+                    stopped + hovered (shows "Play" in <code>--green</code>), playing (shows "Playing" in
+                    <code>--green</code>), playing + hovered (shows "Stop" in <code>--red</code>). Fixed width so the
+                    box doesn't resize as the label changes. Dispatches <code>change</code> with
+                    <code>detail.playing</code>.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Hover to preview the next action; click to toggle.</p>
+                    <div>
+                        <play-stop-button id="demo-play-stop"></play-stop-button>
+                        <p id="demo-play-stop-output">Playing: false</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Small">
+                    <h2>Small</h2>
+                    <div>
+                        <play-stop-button size="small"></play-stop-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div>
+                        <play-stop-button disabled></play-stop-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const button = document.getElementById('demo-play-stop');
+            const output = document.getElementById('demo-play-stop-output');
+            button.addEventListener('change', (event) => {
+                output.textContent = `Playing: ${event.detail.playing}`;
+            });
+        </script>
+    </body>
+</html>

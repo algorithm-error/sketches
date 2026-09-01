@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Labeled radio – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../labeled-radio.js"></script>
+        <script type="module" src="../control-row.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="labeled-radio"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Labeled radio</h1>
+                <p>
+                    A native radio input paired with its label, styled to match the slider thumb size. Radios sharing a
+                    <code>name</code> in separate instances don't auto-exclude each other — each has its own Shadow DOM,
+                    which native radio grouping can't cross.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Dispatches <code>change</code> with <code>detail.checked</code> and <code>detail.value</code>.
+                    </p>
+                    <div>
+                        <control-row>
+                            <labeled-radio name="demo-group" value="a" checked>Option A</labeled-radio>
+                            <labeled-radio name="demo-group" value="b">Option B</labeled-radio>
+                            <labeled-radio name="demo-group" value="c" disabled>Disabled</labeled-radio>
+                        </control-row>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+    </body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Compound angle slider – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../compound-angle-slider.js"></script>
+        <script type="module" src="../control-panel.js"></script>
+        <script type="module" src="../control-column.js"></script>
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="compound-angle-slider"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Compound angle slider</h1>
+                <p>
+                    A label, a help line, an <a href="custom-angle-slider.html">angle slider</a>, and a linked number
+                    field, composed into one panel-ready control for a single angle in degrees — the one-handle
+                    counterpart of the <a href="compound-angle-pad.html">compound angle pad</a>. Use it wherever the
+                    value is a direction: a track has ends, and a direction wraps past them.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Dragging the dial or typing in the field keeps both in sync and dispatches
+                        <code>change</code> with <code>detail.value</code>. 0° points right and angles run clockwise,
+                        matching <code>p5.Vector.fromAngle</code> on a canvas whose y grows downwards.
+                    </p>
+                    <div style="max-width: 22rem">
+                        <compound-angle-slider
+                            id="demo-angle"
+                            label="Mesh angle"
+                            help="Direction the whole mesh grows in, in degrees"
+                            min="0"
+                            max="360"
+                            step="1"
+                            value="180"
+                        ></compound-angle-slider>
+                        <p id="demo-angle-output">180</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Size">
+                    <h2>Size</h2>
+                    <p>
+                        <code>size="medium"</code> gives the dial the same box as the angle pad's, for a panel that
+                        mixes the two.
+                    </p>
+                    <div style="max-width: 22rem">
+                        <compound-angle-slider
+                            size="medium"
+                            label="Heading"
+                            help="A bigger dial for finer aim"
+                            step="0.5"
+                            decimals="1"
+                            value="45.5"
+                        ></compound-angle-slider>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="In a panel">
+                    <h2>In a panel</h2>
+                    <div style="max-width: 22rem">
+                        <control-panel title="Mesh">
+                            <control-column>
+                                <compound-angle-slider
+                                    label="Mesh angle"
+                                    help="Direction the whole mesh grows in"
+                                    value="90"
+                                ></compound-angle-slider>
+                                <compound-angle-slider
+                                    label="Locked"
+                                    help="Dial and field are both inert"
+                                    value="200"
+                                    disabled
+                                ></compound-angle-slider>
+                            </control-column>
+                        </control-panel>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const slider = document.getElementById('demo-angle');
+            const output = document.getElementById('demo-angle-output');
+            slider.addEventListener('change', (event) => {
+                output.textContent = event.detail.value;
+            });
+        </script>
+    </body>
+</html>

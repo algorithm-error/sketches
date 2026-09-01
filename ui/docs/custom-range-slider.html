@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Range slider – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../custom-range-slider.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="custom-range-slider"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Range slider</h1>
+                <p>
+                    Like the <a href="custom-slider.html">slider</a>, but with two handles: a low <code>from</code> and
+                    a high <code>to</code> on one track, with the span between them filled. Handles can meet but never
+                    cross — drag one past the other and it stops at its neighbour. Dragging the filled span itself
+                    slides the whole range, keeping its length, until one handle reaches an end. Built from two stacked
+                    native range inputs, so each handle keeps native keyboard support.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Fires <code>input</code> continuously while dragging and <code>change</code> once the drag ends;
+                        both carry <code>detail.from</code> and <code>detail.to</code>.
+                    </p>
+                    <div style="max-width: 20rem">
+                        <custom-range-slider
+                            id="demo-range"
+                            min="0"
+                            max="100"
+                            step="1"
+                            from="20"
+                            to="70"
+                        ></custom-range-slider>
+                        <p id="demo-range-output">20 – 70</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Stepped">
+                    <h2>Stepped</h2>
+                    <p><code>min</code>, <code>max</code> and <code>step</code> work as on a single slider.</p>
+                    <div style="max-width: 20rem">
+                        <custom-range-slider min="0" max="10" step="2" from="2" to="8"></custom-range-slider>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div style="max-width: 20rem">
+                        <custom-range-slider min="0" max="100" from="30" to="60" disabled></custom-range-slider>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const slider = document.getElementById('demo-range');
+            const output = document.getElementById('demo-range-output');
+            slider.addEventListener('input', (event) => {
+                output.textContent = `${event.detail.from} – ${event.detail.to}`;
+            });
+        </script>
+    </body>
+</html>

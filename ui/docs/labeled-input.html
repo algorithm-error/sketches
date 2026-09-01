@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Labeled input – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../labeled-input.js"></script>
+        <script type="module" src="../custom-select.js"></script>
+        <script type="module" src="../color-swatches.js"></script>
+        <script type="module" src="../custom-toggle.js"></script>
+        <script type="module" src="../control-column.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="labeled-input"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Labeled input</h1>
+                <p>
+                    Like <a href="labeled-select.html">labeled select</a> and
+                    <a href="labeled-numeric-input.html">labeled number input</a>, but generic: it doesn't construct a
+                    control itself, it just labels and lays out whatever's slotted in — a plain
+                    <code>&lt;input&gt;</code>, a <code>&lt;select&gt;</code>, a
+                    <a href="color-swatches.html">color swatch group</a>, anything that reflects a
+                    <code>disabled</code> attribute and fires <code>change</code>. Forwards <code>disabled</code> and
+                    <code>stretch</code> to the slotted control, and relays its <code>change</code> event with
+                    <code>detail.value</code> read off <code>event.target.value</code>. An optional
+                    <code>help</code> attribute adds a line of <a href="#help">help text</a> under the label.
+                </p>
+
+                <section aria-label="Native input">
+                    <h2>Native input</h2>
+                    <div style="max-width: 16rem">
+                        <labeled-input id="demo-native" label="Name">
+                            <input type="text" value="Anna" />
+                        </labeled-input>
+                        <p id="demo-native-output">Value: Anna</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Custom select">
+                    <h2>Custom select</h2>
+                    <div style="max-width: 16rem">
+                        <labeled-input label="Type">
+                            <custom-select value="b">
+                                <option value="a">Attractor</option>
+                                <option value="b">Emitter</option>
+                                <option value="c">Repeller</option>
+                            </custom-select>
+                        </labeled-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Color swatches">
+                    <h2>Color swatches</h2>
+                    <div>
+                        <labeled-input label="Color">
+                            <color-swatches value="#000000" colors="#000000,#ff0000,#00ffff" labels="Black,Red,Cyan">
+                            </color-swatches>
+                        </labeled-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Stack">
+                    <h2>In a column</h2>
+                    <div style="max-width: 16rem">
+                        <control-column>
+                            <labeled-input label="Name">
+                                <input type="text" value="Anna" />
+                            </labeled-input>
+                            <labeled-input label="Type">
+                                <custom-select value="a">
+                                    <option value="a">Attractor</option>
+                                    <option value="b">Emitter</option>
+                                </custom-select>
+                            </labeled-input>
+                        </control-column>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section id="help" aria-label="Help text">
+                    <h2>Help text</h2>
+                    <p>
+                        Set <code>help</code> to explain what the control does, the same way
+                        <a href="compound-slider.html">compound slider</a> does. The control stays on the label's row
+                        and the help line runs full width underneath.
+                    </p>
+                    <div style="max-width: 20rem">
+                        <labeled-input label="Optimized" help="Drop curves that duplicate the start of a longer one">
+                            <custom-toggle checked></custom-toggle>
+                        </labeled-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div style="max-width: 16rem">
+                        <labeled-input label="Name" disabled>
+                            <input type="text" value="Locked" />
+                        </labeled-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const input = document.getElementById('demo-native');
+            const output = document.getElementById('demo-native-output');
+            input.addEventListener('change', (event) => {
+                output.textContent = `Value: ${event.detail.value}`;
+            });
+        </script>
+    </body>
+</html>

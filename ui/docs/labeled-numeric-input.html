@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Labeled number input – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../labeled-numeric-input.js"></script>
+        <script type="module" src="../control-column.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="labeled-numeric-input"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Labeled number input</h1>
+                <p>
+                    Like <a href="labeled-select.html">labeled select</a>, but for a
+                    <a href="numeric-input.html">number input</a>: label first, control last,
+                    <code>justify-content: space-between</code> so the input is pushed to the right. <code>size</code>,
+                    <code>min</code>, <code>max</code>, and <code>step</code> are all forwarded to the inner input.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Dispatches <code>change</code> with <code>detail.value</code>.</p>
+                    <div style="max-width: 16rem">
+                        <labeled-numeric-input
+                            id="demo-labeled-input"
+                            label="Cell size"
+                            value="7.5"
+                            min="0.5"
+                            max="20"
+                            step="0.1"
+                        ></labeled-numeric-input>
+                        <p id="demo-labeled-input-output">Value: 7.5</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Small">
+                    <h2>Small</h2>
+                    <div style="max-width: 16rem">
+                        <labeled-numeric-input label="Frame" value="17" size="small"></labeled-numeric-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Stack">
+                    <h2>In a column</h2>
+                    <div style="max-width: 16rem">
+                        <control-column>
+                            <labeled-numeric-input
+                                label="Width"
+                                value="394"
+                                min="10"
+                                max="2000"
+                            ></labeled-numeric-input>
+                            <labeled-numeric-input
+                                label="Height"
+                                value="272"
+                                min="10"
+                                max="2000"
+                            ></labeled-numeric-input>
+                        </control-column>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div style="max-width: 16rem">
+                        <labeled-numeric-input label="Locked" value="0" disabled></labeled-numeric-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const input = document.getElementById('demo-labeled-input');
+            const output = document.getElementById('demo-labeled-input-output');
+            input.addEventListener('change', (event) => {
+                output.textContent = `Value: ${event.detail.value}`;
+            });
+        </script>
+    </body>
+</html>

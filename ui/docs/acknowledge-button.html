@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Acknowledge button – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../acknowledge-button.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="acknowledge-button"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Acknowledge button</h1>
+                <p>
+                    Wraps <a href="custom-button.html">button</a> with a "confirmed" state: on click, the label swaps to
+                    a confirmation message (put it in a <code>slot="confirm"</code> element), and it swaps back once the
+                    mouse leaves. Useful for actions like "Copy" &rarr; "Copied". <code>variant</code>,
+                    <code>size</code>, and <code>stretch</code> are forwarded to the inner button as-is.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Click to copy, then move the mouse away to reset.</p>
+                    <div>
+                        <acknowledge-button id="demo-copy" variant="accent">
+                            Copy
+                            <span slot="confirm">Copied</span>
+                        </acknowledge-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Confirmed">
+                    <h2>Confirmed state</h2>
+                    <div>
+                        <acknowledge-button variant="accent" confirmed>
+                            Copy
+                            <span slot="confirm">Copied</span>
+                        </acknowledge-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Default confirmation">
+                    <h2>Default confirmation text</h2>
+                    <p>Without a <code>slot="confirm"</code> element, it falls back to "Done".</p>
+                    <div>
+                        <acknowledge-button variant="outline">Acknowledge</acknowledge-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const button = document.getElementById('demo-copy');
+            button.addEventListener('click', () => {
+                navigator.clipboard?.writeText('Copied from the docs demo');
+            });
+        </script>
+    </body>
+</html>

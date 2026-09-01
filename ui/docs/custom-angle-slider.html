@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Angle slider – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../angle-slider.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="angle-slider"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Angle slider</h1>
+                <p>
+                    A round knob for picking an angle. Value is in degrees using p5's convention: 0° points east,
+                    increasing clockwise. Drag the knob (or click the ring) to set it; arrow keys, Home and End work
+                    once it's focused.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Default range is a full 0–360° circle, and the value wraps past either end.</p>
+                    <div>
+                        <angle-slider id="demo-angle" value="0"></angle-slider>
+                        <p id="demo-angle-output">0°</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Restricted arc">
+                    <h2>Restricted arc</h2>
+                    <p>
+                        Setting <code>min</code>/<code>max</code> narrower than 360° clamps the knob to that arc instead
+                        of wrapping.
+                    </p>
+                    <div>
+                        <angle-slider id="demo-angle-arc" min="0" max="180" value="90"></angle-slider>
+                        <p id="demo-angle-arc-output">90°</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const angle = document.getElementById('demo-angle');
+            const output = document.getElementById('demo-angle-output');
+            angle.addEventListener('input', (event) => {
+                output.textContent = `${event.detail.value}°`;
+            });
+
+            const angleArc = document.getElementById('demo-angle-arc');
+            const outputArc = document.getElementById('demo-angle-arc-output');
+            angleArc.addEventListener('input', (event) => {
+                outputArc.textContent = `${event.detail.value}°`;
+            });
+        </script>
+    </body>
+</html>

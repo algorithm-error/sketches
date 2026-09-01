@@ -1,0 +1,40 @@
+/* Stylesheet used by individual component pages */
+body {
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+}
+
+aside,
+main {
+    color: var(--color);
+    font-family: var(--font-family);
+}
+
+aside {
+    width: 14rem;
+    flex: none;
+    box-sizing: border-box;
+    padding: 1.5rem;
+    border-right: 1px solid #ddd;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    box-sizing: border-box;
+    padding: 1.5rem 2rem;
+    max-width: 40rem;
+}
+
+section {
+    margin-top: 2.5rem;
+}
+
+section > div {
+    margin: 0.75rem 0;
+}
+
+canvas {
+    display: block;
+}

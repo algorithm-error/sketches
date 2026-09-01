@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Labeled select – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../labeled-select.js"></script>
+        <script type="module" src="../control-column.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="labeled-select"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Labeled select</h1>
+                <p>
+                    Like <a href="labeled-radio.html">labeled radio</a>, but for a
+                    <a href="custom-select.html">select</a>: label first, control last,
+                    <code>justify-content: space-between</code> so the select is pushed to the right. Options are
+                    authored as plain <code>&lt;option&gt;</code> children. The <code>size</code> attribute is forwarded
+                    to the inner select.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>Dispatches <code>change</code> with <code>detail.value</code>.</p>
+                    <div style="max-width: 16rem">
+                        <labeled-select id="demo-labeled-select" label="Type" value="b">
+                            <option value="a">Attractor</option>
+                            <option value="b">Emitter</option>
+                            <option value="c">Repeller</option>
+                        </labeled-select>
+                        <p id="demo-labeled-select-output">Value: b</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Small">
+                    <h2>Small</h2>
+                    <p>The <code>size</code> attribute forwards to the inner select.</p>
+                    <div style="max-width: 16rem">
+                        <labeled-select label="Color" size="small">
+                            <option value="black">Black</option>
+                            <option value="red">Red</option>
+                            <option value="cyan">Cyan</option>
+                        </labeled-select>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Stack">
+                    <h2>In a column</h2>
+                    <p>A few side by side, each row aligned via <code>space-between</code>.</p>
+                    <div style="max-width: 16rem">
+                        <control-column>
+                            <labeled-select label="Type" value="attractor">
+                                <option value="attractor">Attractor</option>
+                                <option value="emitter">Emitter</option>
+                            </labeled-select>
+                            <labeled-select label="Color" value="black">
+                                <option value="black">Black</option>
+                                <option value="red">Red</option>
+                            </labeled-select>
+                        </control-column>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div style="max-width: 16rem">
+                        <labeled-select label="Type" disabled>
+                            <option value="a">Locked</option>
+                        </labeled-select>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const select = document.getElementById('demo-labeled-select');
+            const output = document.getElementById('demo-labeled-select-output');
+            select.addEventListener('change', (event) => {
+                output.textContent = `Value: ${event.detail.value}`;
+            });
+        </script>
+    </body>
+</html>

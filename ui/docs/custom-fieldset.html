@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Fieldset – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../custom-fieldset.js"></script>
+        <script type="module" src="../control-column.js"></script>
+        <script type="module" src="../control-row.js"></script>
+        <script type="module" src="../labeled-radio.js"></script>
+        <script type="module" src="../custom-button.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="custom-fieldset"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Fieldset</h1>
+                <p>
+                    A bordered box with a label, for grouping related controls. No JS behavior beyond syncing the
+                    <code>label</code> attribute.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Children are dropped in through the default slot &mdash; here, a group of radios like the
+                        particle type picker from the <a href="/particles/particles.html">particles</a> sketch.
+                    </p>
+                    <div>
+                        <custom-fieldset label="Particle type">
+                            <control-column>
+                                <labeled-radio name="particle-type" value="attractor-one-way" checked
+                                    >Attractor one way</labeled-radio
+                                >
+                                <labeled-radio name="particle-type" value="attractor-both-ways"
+                                    >Attractor both ways</labeled-radio
+                                >
+                                <labeled-radio name="particle-type" value="emitter">Emitter</labeled-radio>
+                                <labeled-radio name="particle-type" value="emitter-attractor"
+                                    >Emitter + attractor</labeled-radio
+                                >
+                                <labeled-radio name="particle-type" value="repeller">Repeller</labeled-radio>
+                            </control-column>
+                        </custom-fieldset>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+    </body>
+</html>

@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Panel – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <style>
+            .demo-backdrop {
+                padding: 2rem;
+                background: repeating-linear-gradient(45deg, #ddd, #ddd 10px, #eee 10px, #eee 20px);
+            }
+            .centered-backdrop {
+                position: relative;
+                height: 14rem;
+            }
+            .seed-row,
+            .action-row {
+                display: flex;
+                gap: 0.75rem;
+            }
+            .seed-row random-seed-button,
+            .seed-row numeric-input,
+            .action-row custom-button {
+                flex: 1;
+            }
+        </style>
+        <script type="module" src="../control-panel.js"></script>
+        <script type="module" src="../control-row.js"></script>
+        <script type="module" src="../control-grid.js"></script>
+        <script type="module" src="../control-column.js"></script>
+        <script type="module" src="../custom-button.js"></script>
+        <script type="module" src="../compound-slider.js"></script>
+        <script type="module" src="../random-seed-button.js"></script>
+        <script type="module" src="../numeric-input.js"></script>
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="panel"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Panel</h1>
+                <p>
+                    A simple box with padding and a semi-transparent background, for grouping controls over a sketch
+                    canvas.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        The background is a translucent tint of <code>--background</code>, so whatever sits behind the
+                        panel still shows through — here, a full control panel dropped over a sketch's canvas.
+                    </p>
+                    <div>
+                        <div class="demo-backdrop">
+                            <control-panel>
+                                <control-grid>
+                                    <compound-slider
+                                        label="Bias"
+                                        help="Directional bias for curve flow"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        value="0.44"
+                                        decimals="2"
+                                    ></compound-slider>
+
+                                    <compound-slider
+                                        label="Growth"
+                                        help="Rate of curve expansion or contraction"
+                                        min="0"
+                                        max="2"
+                                        step="0.0001"
+                                        value="1"
+                                        decimals="4"
+                                    ></compound-slider>
+
+                                    <compound-slider
+                                        label="Curve count"
+                                        help="Number of curves to draw"
+                                        min="1"
+                                        max="600"
+                                        step="1"
+                                        value="300"
+                                        decimals="0"
+                                    ></compound-slider>
+
+                                    <control-row>
+                                        <random-seed-button id="demo-seed-button" stretch></random-seed-button>
+                                        <numeric-input
+                                            id="demo-seed-input"
+                                            value="1775743188174"
+                                            stretch
+                                        ></numeric-input>
+                                    </control-row>
+
+                                    <control-row>
+                                        <custom-button stretch>Buy this plot</custom-button>
+                                        <custom-button type="reset" disabled stretch>Reset</custom-button>
+                                    </control-row>
+                                </control-grid>
+                            </control-panel>
+                        </div>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Horizontal">
+                    <h2>Horizontal</h2>
+                    <p>
+                        With <code>horizontal</code> the panel drops its fixed width and lays its children out in a
+                        wrapping row — for a toolbar strip floating across the top or bottom of a sketch instead of a
+                        column down one side.
+                    </p>
+                    <p>
+                        Each child gets <code>17rem</code>, which is exactly what a vertical panel gives its controls
+                        (<code>19rem</code> less the <code>1rem</code> of content padding on each side), so a control
+                        measures the same in either orientation and a sketch can switch between them without re-tuning
+                        anything. Set an inline <code>flex</code> on a child where a group needs more or less. Drag
+                        handle, collapse and emboss work the same as in a vertical panel.
+                    </p>
+                    <p>
+                        The panel is positioned, so its width follows from which offsets you set: give it
+                        <code>left</code> <em>or</em> <code>right</code> and it hugs its content; give it both and it
+                        stretches between them as a full-width strip. Either way the row wraps once it runs out of room.
+                    </p>
+                    <div>
+                        <div class="demo-backdrop">
+                            <control-panel horizontal title="Toolbar">
+                                <control-column>
+                                    <compound-slider
+                                        label="Bias"
+                                        help="Directional bias for curve flow"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        value="0.44"
+                                        decimals="2"
+                                    ></compound-slider>
+                                </control-column>
+
+                                <control-column>
+                                    <control-row>
+                                        <random-seed-button stretch></random-seed-button>
+                                        <numeric-input value="1775743188174" stretch></numeric-input>
+                                    </control-row>
+
+                                    <custom-button stretch>Buy this plot</custom-button>
+                                </control-column>
+                            </control-panel>
+                        </div>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Placement">
+                    <h2>Placement</h2>
+                    <p>
+                        <code>placement="left"</code> or <code>placement="right"</code> pins the panel to a top corner
+                        of the viewport, <code>--offset</code> (default <code>1rem</code>) from both edges, instead of
+                        positioning it from the page. A left-placed panel puts its collapse button on the left, the way
+                        window controls sit on a mac, and collapses back to that same corner.
+                    </p>
+                </section>
+
+                <section aria-label="Fixed">
+                    <h2>Fixed</h2>
+                    <p>
+                        <code>fixed</code> drops the header. With no grip there is nothing to drag the panel by and no
+                        collapse button, so it stays where the page put it — for a sketch embedded in a page, where a
+                        panel that can wander off or be dismissed is a nuisance rather than a convenience.
+                    </p>
+                </section>
+
+                <section aria-label="Centered">
+                    <h2>Centered</h2>
+                    <p>
+                        Add <code>center</code> and the panel takes both offsets itself, sitting in the middle of
+                        whatever it is positioned against — a toolbar strip centred over the canvas rather than pinned
+                        to one corner. Give it a <code>top</code> or <code>bottom</code> as usual; the horizontal
+                        placement is handled for you.
+                    </p>
+                    <p>
+                        Both edges are held <code>--offset</code> (default <code>1rem</code>) from the sides, and the
+                        panel is only as wide as its controls need. Once they no longer fit between those offsets it
+                        stops centring and spans the gap instead, wrapping as it always does — so a narrow window loses
+                        the centring rather than the panel.
+                    </p>
+                    <div>
+                        <div class="demo-backdrop centered-backdrop">
+                            <control-panel horizontal center title="Toolbar" style="top: 1rem">
+                                <control-column>
+                                    <compound-slider
+                                        label="Bias"
+                                        help="Directional bias for curve flow"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        value="0.44"
+                                        decimals="2"
+                                    ></compound-slider>
+                                </control-column>
+
+                                <control-column>
+                                    <control-row>
+                                        <random-seed-button stretch></random-seed-button>
+                                        <numeric-input value="1775743188174" stretch></numeric-input>
+                                    </control-row>
+
+                                    <custom-button stretch>Buy this plot</custom-button>
+                                </control-column>
+                            </control-panel>
+                        </div>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const seedBtn = document.getElementById('demo-seed-button');
+            const seedInput = document.getElementById('demo-seed-input');
+            seedBtn.addEventListener('seed', (event) => {
+                seedInput.value = event.detail.value;
+            });
+        </script>
+    </body>
+</html>

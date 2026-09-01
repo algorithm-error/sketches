@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Size input – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../size-input.js"></script>
+        <script type="module" src="../custom-fieldset.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="size-input"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Size input</h1>
+                <p>
+                    Two <a href="numeric-input.html">number inputs</a> with an &times; separator between them, for a
+                    width&times;height pair. <code>min</code>/<code>max</code>/<code>step</code>/<code>size</code> apply
+                    to both fields. Dispatches <code>change</code> with <code>detail.width</code>,
+                    <code>detail.height</code>, and <code>detail.value</code> (a <code>"WxH"</code> string).
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <div>
+                        <size-input id="demo-size" width="394" height="272" min="10" max="2000" step="1"></size-input>
+                        <p id="demo-size-output">Value: 394x272</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Small">
+                    <h2>Small</h2>
+                    <div>
+                        <size-input width="394" height="272" size="small"></size-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="With a fieldset label">
+                    <h2>With a fieldset label</h2>
+                    <div style="max-width: 16rem">
+                        <custom-fieldset label="Size">
+                            <size-input width="394" height="272" stretch></size-input>
+                        </custom-fieldset>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div>
+                        <size-input width="394" height="272" disabled></size-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const el = document.getElementById('demo-size');
+            const output = document.getElementById('demo-size-output');
+            el.addEventListener('change', (event) => {
+                output.textContent = `Value: ${event.detail.value}`;
+            });
+        </script>
+    </body>
+</html>

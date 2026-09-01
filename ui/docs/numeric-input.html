@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Number input – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../numeric-input.js"></script>
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="numeric-input"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Number input</h1>
+                <p>A plain text field for editing a numeric value.</p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Commits its value on Enter or blur, and dispatches <code>input</code>/<code>change</code> events
+                        with the parsed number. <code>input</code> is debounced 100ms by default; set
+                        <code>debounce</code> (ms) to adjust, or <code>debounce="0"</code> to disable.
+                    </p>
+                    <div>
+                        <numeric-input value="42" style="width: 5rem"></numeric-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Cols">
+                    <h2>Cols</h2>
+                    <p>
+                        <code>cols</code> sizes the field to fit that many digits, like
+                        <code>&lt;textarea cols&gt;</code>, with extra room reserved for the native spinner so the
+                        digits themselves don't get squeezed.
+                    </p>
+                    <div>
+                        <numeric-input value="1" cols="2"></numeric-input>
+                        <numeric-input value="1234" cols="4"></numeric-input>
+                        <numeric-input value="123456" cols="6"></numeric-input>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+    </body>
+</html>

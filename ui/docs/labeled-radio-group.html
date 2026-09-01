@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Labeled radio group – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../labeled-radio-group.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="labeled-radio-group"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Labeled radio group</h1>
+                <p>
+                    A single component owning a set of labeled radio options. Unlike composing several standalone
+                    <code>&lt;labeled-radio&gt;</code> elements (each with its own Shadow DOM, so native radio grouping
+                    can't cross them, and exclusivity has to be re-implemented in JS — which turned out to be unreliable
+                    in practice), every option here is a plain <code>&lt;input type="radio"&gt;</code> living in one
+                    Shadow DOM — the browser enforces "only one checked" natively.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Options are declared as light-DOM <code>&lt;option&gt;</code> children. Dispatches
+                        <code>change</code> with <code>detail.value</code>.
+                    </p>
+                    <div>
+                        <labeled-radio-group id="demo-group" value="b">
+                            <option value="a">Option A</option>
+                            <option value="b">Option B</option>
+                            <option value="c">Option C</option>
+                        </labeled-radio-group>
+                        <p id="demo-output">Value: b</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Horizontal">
+                    <h2>Horizontal</h2>
+                    <p>
+                        Layout is a CSS variable: <code>--direction: row</code> lays the options out in a row, the
+                        default <code>column</code> stacks them.
+                    </p>
+                    <div>
+                        <labeled-radio-group value="a" style="--direction: row">
+                            <option value="a">Option A</option>
+                            <option value="b">Option B</option>
+                            <option value="c">Option C</option>
+                        </labeled-radio-group>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Disabled">
+                    <h2>Disabled</h2>
+                    <div>
+                        <labeled-radio-group value="a" disabled>
+                            <option value="a">Option A</option>
+                            <option value="b">Option B</option>
+                        </labeled-radio-group>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const group = document.getElementById('demo-group');
+            const output = document.getElementById('demo-output');
+            group.addEventListener('change', (event) => {
+                output.textContent = `Value: ${event.detail.value}`;
+            });
+        </script>
+    </body>
+</html>

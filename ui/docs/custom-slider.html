@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Slider – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="../custom-slider.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="slider"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Slider</h1>
+                <p>
+                    A styled range input. Unlike a plain button, a filled track needs JS to compute the percentage, so
+                    this stays its own component instead of a styled native element.
+                </p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Fires <code>input</code> continuously while dragging and <code>change</code> once the drag ends.
+                    </p>
+                    <div>
+                        <custom-slider id="demo-slider" min="0" max="100" step="1" value="50"></custom-slider>
+                        <p id="demo-slider-output">50</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Vertical">
+                    <h2>Vertical</h2>
+                    <p>
+                        Set <code>direction="vertical"</code>. Track height comes from the
+                        <code>--slider-length</code> CSS custom property (defaults to <code>8rem</code>).
+                    </p>
+                    <div>
+                        <custom-slider direction="vertical" min="0" max="100" step="1" value="50"></custom-slider>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const slider = document.getElementById('demo-slider');
+            const output = document.getElementById('demo-slider-output');
+            slider.addEventListener('input', (event) => {
+                output.textContent = event.detail.value;
+            });
+        </script>
+    </body>
+</html>

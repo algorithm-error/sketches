@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Random seed button – UI Kit</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script type="module" src="../random-seed-button.js"></script>
+        <script type="module" src="../custom-theme.js"></script>
+        <script type="module" src="./code-snippet.js"></script>
+        <script type="module" src="./docs-sidebar.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <aside>
+                <docs-sidebar current="random-seed-button"></docs-sidebar>
+            </aside>
+            <main>
+                <h1>Random seed button</h1>
+                <p>Generates a new random seed on click.</p>
+
+                <section aria-label="Basic">
+                    <h2>Basic</h2>
+                    <p>
+                        Click to dispatch a <code>seed</code> event carrying a fresh <code>Date.now()</code> timestamp —
+                        wire it up to update a paired number input.
+                    </p>
+                    <div>
+                        <random-seed-button id="demo-seed-button"></random-seed-button>
+                        <p id="demo-seed-output">—</p>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Noise">
+                    <h2>Noise</h2>
+                    <p>
+                        Set <code>variant="noise"</code> for a CMYK + white pixel-noise background, repainted on every
+                        click.
+                    </p>
+                    <div>
+                        <random-seed-button variant="noise"></random-seed-button>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            const button = document.getElementById('demo-seed-button');
+            const output = document.getElementById('demo-seed-output');
+            button.addEventListener('seed', (event) => {
+                output.textContent = `seed: ${event.detail.value}`;
+            });
+        </script>
+    </body>
+</html>
