@@ -96,3 +96,14 @@ hr {
 footer {
     padding: 1rem 0;
 }
+
+@media (max-width: 48rem) {
+    body {
+        --body-horizontal-padding: 1.25rem;
+    }
+
+    figure img {
+        width: 100%;
+        min-width: 0;
+    }
+}
