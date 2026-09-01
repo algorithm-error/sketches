@@ -1,0 +1,6 @@
+.DS_Store
+.idea
+.vercel
+node_modules
+dist
+.env*

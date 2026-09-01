@@ -1,0 +1,125 @@
+@import url('./base.css');
+
+html {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    --body-horizontal-padding: 4.75rem;
+    --max-body-width: 54rem;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: var(--page-top-padding) var(--body-horizontal-padding) 1.5rem;
+    margin: 0 auto;
+    max-width: var(--max-body-width);
+    background: var(--background);
+    min-height: 100%;
+}
+
+iframe,
+sketch-frame,
+frame-split {
+    height: 95svh;
+}
+
+sketch-frame {
+    display: block;
+}
+
+iframe {
+    border: none;
+    width: 100%;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+article {
+    line-height: 1.25;
+}
+
+time {
+    display: block;
+    text-align: end;
+    font-size: var(--small-font-size);
+}
+
+section {
+    padding: 0;
+    margin: 0;
+}
+
+section + section {
+    margin-top: 1.5rem;
+}
+
+figure {
+    position: relative;
+    width: 100vw;
+    max-width: 75rem;
+    margin: 1.5rem 0;
+    margin-inline: calc(50% - 50vw);
+    background: var(--background);
+    text-align: center;
+}
+
+figure img {
+    width: 40%;
+    height: auto;
+    min-width: 29rem;
+    max-width: 100%;
+}
+
+figcaption {
+    padding: 0.6rem var(--body-horizontal-padding);
+    font-size: var(--small-font-size);
+    text-align: center;
+    max-width: 38rem;
+    margin: auto;
+}
+
+figure > control-theme > * {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+}
+
+figure > control-theme > random-seed-button {
+    right: auto;
+    left: 0.75rem;
+}
+
+@media (hover: hover) {
+    figure > control-theme > * {
+        display: none;
+    }
+
+    figure:hover > control-theme > * {
+        display: block;
+    }
+}
+
+hr {
+    /* for cases when parent is display: flex, which makes hr width 1px */
+    width: 100%;
+    margin: 1.1rem 0;
+}
+
+footer {
+    padding: 0.8rem 0;
+    font-size: var(--small-font-size);
+}
+
+@media (max-width: 48rem) {
+    body {
+        --body-horizontal-padding: 1rem;
+    }
+
+    figure img {
+        width: 100%;
+        min-width: 0;
+    }
+}

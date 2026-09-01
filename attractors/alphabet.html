@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Attractor alphabet</title>
+        <link rel="stylesheet" href="../text.css" />
+        <script>
+            if (window.self !== window.top) document.documentElement.classList.add('framed');
+        </script>
+        <script src="../node_modules/p5/lib/p5.js"></script>
+        <script type="module">
+            import '../ui/control-theme.js';
+            import './custom-grid.js';
+        </script>
+        <style>
+            body {
+                box-sizing: border-box;
+                min-height: 100svh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                /* Keeps a grid taller than the viewport from overflowing past the top. */
+                justify-content: safe center;
+            }
+            custom-grid {
+                justify-content: center;
+            }
+            html.framed body {
+                padding: 0;
+            }
+            custom-grid > div {
+                line-height: 0;
+            }
+            custom-grid > div > span {
+                display: block;
+                padding-top: 0.375rem;
+                line-height: 1;
+                text-align: center;
+                font-size: var(--small-font-size);
+                color: color-mix(in srgb, var(--color) 60%, transparent);
+            }
+        </style>
+        <script type="module">
+            import { Curve } from '../common/curve.js';
+            import { SketchDriver } from '../common/sketch-driver.js';
+            import {
+                alphabet as blue,
+                transliterate as transliterateBlue,
+            } from './attractor-alphabet/blue-alphabet.js';
+            import { alphabet as red, transliterate as transliterateRed } from './attractor-alphabet/red-alphabet.js';
+
+            window.P5 = p5;
+
+            const alphabets = {
+                blue: { letters: blue, transliterate: transliterateBlue, stroke: '#0000ff' },
+                red: { letters: red, transliterate: transliterateRed, stroke: '#ff0000' },
+            };
+
+            const keys = 'A B V G D E YO ZH Z I II K L M N O P R S T U F H TS CH SH SCH HARD Y SOFT AE YU YA'.split(
+                ' ',
+            );
+            const characters = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'];
+            const cyrillicByKey = new Map([
+                ...keys.map((key, index) => [key, characters[index]]),
+                ...keys.map((key, index) => [key.toLowerCase(), characters[index].toLowerCase()]),
+            ]);
+
+            const cyrillic = (key = '') => cyrillicByKey.get(key) ?? key;
+
+            const getLetter = (name, letter = '') => {
+                const { letters, transliterate } = alphabets[name] ?? alphabets.blue;
+                return letters[letter] ?? letters[transliterate(letter)] ?? [];
+            };
+
+            const getBounds = (vertices) =>
+                vertices.reduce(
+                    (bounds, { x, y }) => ({
+                        left: Math.min(bounds.left, x),
+                        right: Math.max(bounds.right, x),
+                        top: Math.min(bounds.top, y),
+                        bottom: Math.max(bounds.bottom, y),
+                    }),
+                    { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity },
+                );
+
+            const defaults = { alphabet: 'blue', size: 100, weight: 1, columns: 11 };
+
+            const driver = new SketchDriver(defaults, {}, (values) => sketch.rerender(values));
+
+            const sketch = (function initialize(P5, root, defaults = {}) {
+                const api = { remove: () => {}, rerender: () => {} };
+                let instances = [];
+
+                const letterSketch = (container, values) =>
+                    new P5((p5) => {
+                        p5.setup = () => {
+                            p5.createCanvas(values.size, values.size);
+                            p5.noLoop();
+                        };
+
+                        p5.draw = (next = values) => {
+                            const { letter, alphabet, size, weight, padding, background } = next;
+                            const vertices = getLetter(alphabet, letter);
+                            p5.background(background);
+                            if (vertices.length < 2) return;
+
+                            const bounds = getBounds(vertices);
+                            const width = bounds.right - bounds.left;
+                            const height = bounds.bottom - bounds.top;
+                            const box = size * (1 - padding * 2);
+                            const scale = Math.min(box / (width || 1), box / (height || 1));
+
+                            p5.translate(size / 2, size / 2);
+                            p5.scale(scale);
+                            p5.translate(-(bounds.left + width / 2), -(bounds.top + height / 2));
+
+                            p5.noFill();
+                            p5.stroke((alphabets[alphabet] ?? alphabets.blue).stroke);
+                            p5.strokeWeight(weight / scale);
+                            new Curve(p5, vertices).render();
+                        };
+                    }, container);
+
+                // A letter is a canvas of its own, so a new size or alphabet is a new set
+                // of them rather than a redraw.
+                api.rerender = (values) => {
+                    instances.forEach((instance) => instance.remove());
+                    instances = [];
+                    root.replaceChildren();
+                    const gap = parseFloat(getComputedStyle(root).columnGap) || 0;
+                    const fit = Math.floor((root.parentElement.clientWidth + gap) / (values.size + gap));
+                    root.setAttribute('columns', Math.max(1, Math.min(values.columns, fit)));
+                    const { letters } = alphabets[values.alphabet] ?? alphabets.blue;
+                    const drawn = Object.keys(letters).filter((letter) => letters[letter].length > 1);
+                    drawn.forEach((letter) => {
+                        const cell = document.createElement('div');
+                        const plate = document.createElement('div');
+                        const name = document.createElement('span');
+                        cell.append(plate, name);
+                        root.appendChild(cell);
+                        instances.push(
+                            letterSketch(plate, { ...values, letter, padding: 0.12, background: '#ffffff' }),
+                        );
+                    });
+                };
+
+                api.remove = () => {
+                    instances.forEach((instance) => instance.remove());
+                    instances = [];
+                    root.replaceChildren();
+                };
+
+                api.rerender(defaults);
+                return api;
+            })(p5, document.querySelector('custom-grid'), driver.values);
+        </script>
+    </head>
+    <body>
+        <control-theme>
+            <main>
+                <custom-grid></custom-grid>
+            </main>
+        </control-theme>
+    </body>
+</html>

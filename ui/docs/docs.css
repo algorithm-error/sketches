@@ -1,0 +1,49 @@
+/* Stylesheet used by individual component pages */
+
+/* Same root size as base.css, which these pages do not load. */
+html {
+    font-size: 20px;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+}
+
+aside,
+main {
+    color: var(--color);
+    font-family: var(--font-family);
+}
+
+aside {
+    width: 14rem;
+    background: var(--background);
+    flex: none;
+    box-sizing: border-box;
+    padding: 1.5rem;
+    border-right: 1px solid #ddd;
+    min-height: 100svh;
+}
+
+main {
+    flex: 1;
+    background: var(--background);
+    min-height: 100svh;
+    box-sizing: border-box;
+    padding: 1.5rem 2rem;
+    max-width: 40rem;
+}
+
+section {
+    margin-top: 2.5rem;
+}
+
+section > div {
+    margin: 0.75rem 0;
+}
+
+canvas {
+    display: block;
+}
