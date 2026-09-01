@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="">
+    <head>
+        <title></title>
+        <script src="../node_modules/p5/lib/p5.js"></script>
+        <script src="../node_modules/p5.js-svg/dist/p5.svg.js"></script>
+        <script type="module">
+            import {
+                alphabet as blueAlphabet,
+                transliterate as transliterateBlue,
+            } from './attractor-alphabet/blue-alphabet.js';
+            import { Curve } from '../common/curve.js';
+            import { Attractor } from './attractor.js';
+            import { movePolygon } from '../common/geometry.js';
+            import blue1 from './texts/blue1.js';
+
+            window.P5 = p5;
+
+            const alphabet = blueAlphabet;
+            const transliterate = transliterateBlue;
+            const text = blue1
+                .split(/[.?]{1}\s/)
+                .reduce((text, line) => {
+                    const words = line.split(/[\s.?,—:"-]/g);
+                    const threshold = 15;
+                    if (words.length > threshold) {
+                        while (words.length > 0) {
+                            const phrase = words.splice(0, threshold);
+                            text.push(phrase.join(' '));
+                        }
+                    } else {
+                        text.push(line);
+                    }
+                    return text;
+                }, [])
+                .map((line) => line.replace(/[.?,—:"-]/g, ''));
+
+            new p5((p5) => {
+                const canvasSize = { width: 3000, height: 3000 };
+                window.save = (name) => p5.save(name);
+
+                function getAttractorCurves(preset) {
+                    const attractors = [0, 1].map((element, index) => {
+                        const { angle1, angle2, radius, steps, velocity1, velocity2 } = preset;
+                        const first = index === 0;
+                        const angle = first ? angle1 : angle2;
+                        const velocity = first ? velocity1 : velocity2;
+                        return new Attractor(
+                            p5,
+                            P5.Vector.fromAngle(angle, radius),
+                            p5.createVector(velocity.x, velocity.y),
+                            10,
+                        );
+                    });
+
+                    const curves = [[], []];
+                    Array(preset.steps)
+                        .fill()
+                        .forEach(() => {
+                            for (const attractor of attractors) {
+                                for (const other of attractors) {
+                                    if (attractor !== other) {
+                                        attractor.attract(other);
+                                    }
+                                }
+                            }
+
+                            attractors.forEach((attractor, index) => {
+                                attractor.update();
+                                curves[index].push({ x: attractor.position.x, y: attractor.position.y });
+                            });
+                        });
+                    return curves;
+                }
+
+                p5.setup = () => {
+                    p5.createCanvas(canvasSize.width, canvasSize.height, p5.SVG);
+                    p5.background(255);
+                    p5.noFill();
+                };
+
+                p5.draw = () => {
+                    p5.translate(20, 50);
+                    p5.stroke('#0000ff');
+                    text.forEach((line, lineIndex) => {
+                        p5.translate(0, 45);
+                        const tokens = line
+                            .split('')
+                            .map((character) => (character !== ' ' ? transliterate(character) : ' '));
+                        const vertices = tokens.reduce((vertices, key, index, tokens) => {
+                            if (key === ' ') {
+                                return vertices;
+                            }
+                            if (!(key in alphabet)) {
+                                throw `Unknown letter "${key}"`;
+                            }
+                            const previous = vertices[vertices.length - 1];
+                            const origin = previous ? previous : { x: 0, y: 0 };
+                            const letter = alphabet[key];
+                            const normalized = movePolygon(letter, { x: -letter[0].x, y: 0 });
+                            const previousToken = tokens[index - 1];
+                            const space = index === 0 ? 0 : previousToken === ' ' ? 50 : 5;
+                            const absolute = movePolygon(normalized, { x: origin.x + space, y: 0 });
+                            vertices = vertices.concat(absolute);
+                            if (index === tokens.length - 1) {
+                                const preset = {
+                                    velocity1: p5.createVector(0.5, -0.5),
+                                    velocity2: p5.createVector(0.5, 0.5),
+                                    angle1: p5.random(0, p5.TWO_PI),
+                                    angle2: p5.random(0, p5.TWO_PI),
+                                    radius: p5.random(5, 20),
+                                    steps: 1000,
+                                };
+                                const traces = getAttractorCurves({ ...preset, steps: 1000 });
+                                const trace = traces[0];
+                                const normalizedTrace = movePolygon(traces[0], { x: -trace[0].x, y: 0 });
+                                const previous = vertices[vertices.length - 1];
+                                const absoluteTrace = movePolygon(normalizedTrace, { x: previous.x, y: 0 });
+                                vertices = vertices.concat(absoluteTrace);
+                            }
+                            return vertices;
+                        }, []);
+
+                        const curve = new Curve(p5, vertices);
+                        curve.render();
+                    });
+
+                    p5.noLoop();
+                };
+            }, document.querySelector('main'));
+        </script>
+    </head>
+    <body style="margin: 0; padding: 0">
+        <main></main>
+    </body>
+</html>

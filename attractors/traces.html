@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Attractor curve sandbox</title>
+        <style>
+            main {
+                line-height: 0;
+            }
+            html.framed {
+                overflow-x: hidden;
+            }
+        </style>
+        <script>
+            if (window.self !== window.top) document.documentElement.classList.add('framed');
+        </script>
+        <script src="../node_modules/p5/lib/p5.js"></script>
+        <script src="../node_modules/p5.collide2d/p5.collide2d.js"></script>
+        <script src="../node_modules/p5.js-svg/dist/p5.svg.js"></script>
+        <script type="module" src="../ui/index.js"></script>
+        <script type="module">
+            import { Attractor } from './attractor.js';
+            import { Curve } from '../common/curve.js';
+            import { getAverageDirection, rotatePolygon, scalePolygon } from '../common/geometry.js';
+            import { FlowField } from '../common/flow-field.js';
+            import { getMesh } from '../common/collatz.js';
+            import { SketchDriver } from '../common/sketch-driver.js';
+
+            window.P5 = p5;
+
+            const parseHexColor = (value) => {
+                const hex = String(value).trim().replace(/^#/, '').toLowerCase();
+                return /^[0-9a-f]+$/.test(hex) && [3, 4, 6, 8].includes(hex.length) ? hex : undefined;
+            };
+
+            const defaults = {
+                originSource: 'mesh',
+                overshoot: { from: 0.2, to: 0.5 },
+                steps: { from: 20, to: 20 },
+                seed: Date.now(),
+                panel: 'true',
+                background: 'ffffff',
+                trace1: 'ff0000ff',
+                trace2: '00ff0066',
+                width: 0,
+                height: 0,
+            };
+            const dials = { originSource: defaults.originSource, overshoot: defaults.overshoot, steps: defaults.steps };
+
+            const controls = {
+                originSource: document.querySelector('#param-originSource'),
+                overshoot: document.querySelector('#param-overshoot'),
+                steps: document.querySelector('#param-steps'),
+                seed: document.querySelector('#param-seed'),
+                saveButton: document.querySelector('#save-button'),
+                resetButton: document.querySelector('#reset-button'),
+            };
+
+            const driver = new SketchDriver(defaults, controls, (values) => sketch.rerender(values));
+
+            const getGridLayout = ({ width, height, margin = 50, cellSize = 80 }) => {
+                const columnCount = Math.floor((width - margin * 2) / cellSize);
+                const rowCount = Math.floor((height - margin * 2) / cellSize);
+                const left = (width - columnCount * cellSize) / 2;
+                const top = (height - rowCount * cellSize) / 2;
+                return {
+                    left,
+                    top,
+                    width: columnCount * cellSize,
+                    height: rowCount * cellSize,
+                    rows: Array.from({ length: rowCount }, (value, row) => top + (row + 0.5) * cellSize),
+                    columns: Array.from({ length: columnCount }, (value, column) => left + (column + 0.5) * cellSize),
+                };
+            };
+
+            const getGrowthOrigins = (p5, growth) => {
+                const origins = [];
+                let remaining = growth;
+                for (;;) {
+                    const next = getNextOriginInGrowth(p5, remaining);
+                    if (!next.origin) {
+                        return origins;
+                    }
+                    origins.push(next.origin);
+                    remaining = next.growth;
+                }
+            };
+
+            const getNextOriginInGrowth = (p5, growth) => {
+                const remaining = growth.filter((curve) => curve.length > 0);
+                if (remaining.length === 0) {
+                    return { origin: undefined, growth: remaining };
+                }
+                const [curve, ...rest] = remaining;
+                const origin = curve[curve.length - 1];
+                const previous = curve[curve.length - 2];
+                const direction = previous
+                    ? p5.createVector(origin.x - previous.x, origin.y - previous.y).heading()
+                    : 0;
+                return {
+                    origin: { ...origin, direction },
+                    growth: [curve.slice(0, -1), ...rest],
+                };
+            };
+
+            const sketch = (function initialize(p5, root, defaults) {
+                const api = { remove: () => {}, rerender: () => {}, save: () => {} };
+                const width = defaults.width || window.innerWidth;
+                const height = defaults.height || window.innerHeight;
+
+                new p5((p5) => {
+                    const count = 2;
+                    const traceSpacing = 20;
+                    const minimumAdvance = 30;
+                    const lineHeight = 0.7;
+                    const cellSize = 80;
+                    const gridLayout = getGridLayout({ width, height, margin: 50, cellSize });
+
+                    const growth = getMesh(p5, {
+                        from: 133,
+                        to: 102,
+                        origin: { x: width * 0.05, y: height * 0.48 },
+                        initialAngle: p5.radians(360 + 180),
+                        oddAngle: p5.radians(40),
+                        evenAngle: p5.radians(40),
+                        step: 68,
+                        optimized: true,
+                    })
+                        .map((vertices) => vertices.slice(1, 13))
+                        .reverse();
+                    const meshOrigins = getGrowthOrigins(p5, growth);
+
+                    let flowField;
+                    let flowFieldSeed;
+                    const syncFlowField = (seed) => {
+                        if (flowFieldSeed === seed) {
+                            return;
+                        }
+                        p5.noiseSeed(seed);
+                        flowField = new FlowField(p5, {
+                            width,
+                            height,
+                            cellSize: 1,
+                            initialize: (p5, column, row) => p5.noise(column, row),
+                        });
+                        flowFieldSeed = seed;
+                    };
+
+                    const getAttractors = (radius, origin) =>
+                        new Array(count).fill({ x: 0, y: 0 }).map(() => {
+                            const vector = P5.Vector.fromAngle(p5.random(0, p5.TWO_PI), radius);
+                            const position = { x: origin.x + vector.x, y: origin.y + vector.y };
+                            const velocity = P5.Vector.fromAngle(p5.random(0, p5.TWO_PI));
+                            return new Attractor(p5, p5.createVector(position.x, position.y), velocity, 10);
+                        });
+
+                    const getTrace = (origin, direction, overshoot, stepsRange) => {
+                        const fitted = p5.random(1 - overshoot.to, 1 - overshoot.from);
+                        const noise = flowField.getValueAtPoint(origin);
+                        const radius = Math.min(Math.round(noise * 50) || 0, 30);
+                        if (!radius) {
+                            return undefined;
+                        }
+                        const attractors = getAttractors(radius, origin);
+                        const curves = new Array(count).fill(undefined).map(() => []);
+                        const stepsFactor =
+                            stepsRange.from === stepsRange.to
+                                ? stepsRange.from
+                                : p5.random(stepsRange.from, stepsRange.to);
+                        const steps = Math.round(radius * stepsFactor);
+
+                        Array(steps)
+                            .fill()
+                            .forEach(() => {
+                                for (const attractor of attractors) {
+                                    for (const other of attractors) {
+                                        if (attractor !== other) {
+                                            attractor.attract(other);
+                                        }
+                                    }
+                                }
+
+                                attractors.forEach((attractor, index) => {
+                                    attractor.update();
+                                    curves[index].push({ x: attractor.position.x, y: attractor.position.y });
+                                });
+                            });
+
+                        if (curves[0].length < 2) {
+                            return undefined;
+                        }
+                        const turn = direction - getAverageDirection(p5, curves[0]);
+                        const rotated = curves.map((vertices) => rotatePolygon(vertices, origin, turn));
+                        const axis = P5.Vector.fromAngle(direction);
+                        const normal = axis.copy().rotate(p5.HALF_PI);
+                        const across = rotated
+                            .flat()
+                            .map(({ x, y }) => Math.abs((x - origin.x) * normal.x + (y - origin.y) * normal.y))
+                            .sort((first, second) => first - second);
+                        const bodyWidth = 2 * across[Math.floor((across.length - 1) * fitted)];
+                        const scaled =
+                            bodyWidth > 0
+                                ? rotated.map((vertices) =>
+                                      scalePolygon(vertices, (cellSize * lineHeight) / bodyWidth, origin),
+                                  )
+                                : rotated;
+                        const end = scaled[0][scaled[0].length - 1];
+                        const reach = p5.createVector(end.x - origin.x, end.y - origin.y).dot(axis);
+                        return { curves: scaled, reach };
+                    };
+
+                    const writeLine = (start, direction, length, overshoot, stepsRange, collect) => {
+                        const axis = P5.Vector.fromAngle(direction);
+                        let travelled = 0;
+                        while (travelled < length) {
+                            const origin = {
+                                x: start.x + axis.x * travelled,
+                                y: start.y + axis.y * travelled,
+                            };
+                            const trace = getTrace(origin, direction, overshoot, stepsRange);
+                            travelled += Math.max(trace ? trace.reach : 0, minimumAdvance) + traceSpacing;
+                            if (trace) {
+                                collect(trace.curves);
+                            }
+                        }
+                    };
+
+                    const simulate = ({ seed, originSource, overshoot, steps }) => {
+                        p5.randomSeed(seed);
+                        syncFlowField(seed);
+                        const firstTrace = [];
+                        const secondTrace = [];
+                        const collect = (curves) => {
+                            firstTrace.push(curves[0]);
+                            secondTrace.push(curves[1]);
+                        };
+
+                        if (originSource === 'grid') {
+                            gridLayout.rows.forEach((y) => {
+                                writeLine({ x: gridLayout.left, y }, 0, gridLayout.width, overshoot, steps, collect);
+                            });
+                            gridLayout.columns.forEach((x) => {
+                                writeLine(
+                                    { x, y: gridLayout.top },
+                                    p5.HALF_PI,
+                                    gridLayout.height,
+                                    overshoot,
+                                    steps,
+                                    collect,
+                                );
+                            });
+                        } else {
+                            meshOrigins.forEach((origin) => {
+                                const trace = getTrace(origin, origin.direction, overshoot, steps);
+                                if (trace) {
+                                    collect(trace.curves);
+                                }
+                            });
+                        }
+                        return { firstTrace, secondTrace };
+                    };
+
+                    api.remove = () => p5.remove();
+                    api.rerender = (next) => p5.draw(next);
+                    api.save = (name, params) => {
+                        const buffer = p5.createGraphics(width, height, p5.SVG);
+                        p5.draw(params, buffer);
+                        p5.save(buffer, name);
+                        buffer.remove();
+                    };
+
+                    p5.setup = () => {
+                        p5.createCanvas(width, height);
+                        p5.background(`#${defaults.background}`);
+                        p5.frameRate(2);
+                        p5.noFill();
+                        p5.noLoop();
+                    };
+
+                    const p5Instance = p5;
+                    p5.draw = (params = defaults, p5 = p5Instance) => {
+                        const { firstTrace, secondTrace } = simulate(params);
+                        p5.background(`#${params.background}`);
+                        p5.noFill();
+                        [firstTrace, secondTrace].forEach((traces, index) => {
+                            p5.strokeWeight(1);
+                            p5.stroke(`#${index === 0 ? params.trace1 : params.trace2}`);
+                            traces.forEach((vertices) => new Curve(p5, vertices).render());
+                        });
+                    };
+                }, root);
+
+                return api;
+            })(p5, document.querySelector('main'), driver.values);
+
+            controls.saveButton.addEventListener('click', () => {
+                sketch.save(`attractor-writing-${driver.values.seed}.svg`, { ...driver.values });
+            });
+            controls.resetButton.addEventListener('click', () => Object.assign(driver.values, dials));
+
+            const paintBody = (background) => (document.body.style.background = `#${background}`);
+            paintBody(driver.values.background);
+            driver.subscribe('background', paintBody);
+            if (!['true', 'false', 'fixed'].includes(driver.values.panel)) {
+                driver.values.panel = defaults.panel;
+            }
+            // The panel is display:none in the markup so it cannot flash before this runs;
+            // '' rather than a value, so it falls back to the component's own flex display.
+            const panel = document.querySelector('control-panel');
+            panel.style.display = driver.values.panel === 'false' ? 'none' : '';
+            panel.toggleAttribute('fixed', driver.values.panel === 'fixed');
+
+            if (!['grid', 'mesh'].includes(driver.values.originSource)) {
+                driver.values.originSource = defaults.originSource;
+            }
+            ['background', 'trace1', 'trace2'].forEach((key) => {
+                driver.values[key] = parseHexColor(driver.values[key]) ?? defaults[key];
+            });
+
+            window.sketch = sketch;
+            window.driver = driver;
+        </script>
+    </head>
+
+    <body style="margin: 0; padding: 0">
+        <main></main>
+        <custom-theme>
+            <control-panel placement="left" title="Attractor traces" style="display: none">
+                <control-column>
+                    <labeled-input label="Origins" help="Align to grid or to Collatz mesh">
+                        <labeled-radio-group id="param-originSource" style="--direction: row">
+                            <option value="grid">Grid</option>
+                            <option value="mesh">Mesh</option>
+                        </labeled-radio-group>
+                    </labeled-input>
+
+                    <compound-range-slider
+                        id="param-overshoot"
+                        label="Overshoot"
+                        help="Larger values give more chaos"
+                        min="0"
+                        max="0.7"
+                        step="0.05"
+                        decimals="2"
+                    ></compound-range-slider>
+
+                    <compound-range-slider
+                        id="param-steps"
+                        label="Steps"
+                        help="Stroke length relative to its radius"
+                        min="5"
+                        max="60"
+                        step="1"
+                    ></compound-range-slider>
+
+                    <compound-seed id="param-seed"></compound-seed>
+
+                    <control-row>
+                        <custom-button id="save-button" stretch variant="accent">Save SVG</custom-button>
+                        <custom-button id="reset-button" stretch variant="outline">Reset</custom-button>
+                    </control-row>
+                </control-column>
+            </control-panel>
+        </custom-theme>
+    </body>
+</html>

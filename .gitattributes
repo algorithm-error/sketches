@@ -1,0 +1,5 @@
+# Third-party, each under its own licence.
+libraries/** linguist-vendored
+
+# A docs page per component, generated.
+ui/docs/** linguist-generated

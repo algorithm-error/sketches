@@ -1,0 +1,14 @@
+- collatz growth wire panel
+- fix growdth usage in letters from attractors and try to use direction
+- letters from attractors (letters-from-attractors sketch)
+- attractor sandbox
+- inconvergent and vera molnar
+- http://localhost:8080/writing/attractor-writing.html?seed=1786353777526&g=6&distanceSq=100
+- attractor alphabet, normal and barb
+- asemic writing
+
+
+
+Letters from attractors
+
+Attractors are two particles with initial velocity which affect each other

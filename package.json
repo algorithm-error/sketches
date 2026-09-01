@@ -1,0 +1,32 @@
+{
+    "name": "sketches",
+    "version": "1.0.0",
+    "description": "Generative sketches built with [p5.js](https://p5js.org/), the UI kit that drives them, and the utilities they share. Companion to the prints at [algorithmerror.tech/art](https://algorithmerror.tech/art).",
+    "license": "ISC",
+    "author": "",
+    "type": "commonjs",
+    "main": "index.js",
+    "scripts": {
+        "build": "bash scripts/build.sh",
+        "serve": "live-server --no-browser",
+        "format": "prettier --write .",
+        "deploy:preview": "npx vercel deploy",
+        "deploy:production": "npx vercel deploy --prod",
+        "prepare": "husky"
+    },
+    "dependencies": {
+        "p5": "1.4.0",
+        "p5.collide2d": "0.7.3",
+        "p5.js-svg": "1.6.0"
+    },
+    "devDependencies": {
+        "husky": "^9.1.7",
+        "lint-staged": "^17.3.0",
+        "live-server": "^1.2.2",
+        "prettier": "^3.9.6"
+    },
+    "lint-staged": {
+        "*.{js,html,css,json,md}": "prettier --write"
+    },
+    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="">
+    <head>
+        <title></title>
+        <style>
+            main {
+                line-height: 0;
+            }
+        </style>
+        <script src="../node_modules/p5/lib/p5.js"></script>
+        <script src="../node_modules/p5.js-svg/dist/p5.svg.js"></script>
+        <script type="module" src="../ui/index.js"></script>
+        <script type="module">
+            import { Attractor } from './attractor.js';
+            import { FlowField } from '../common/flow-field.js';
+            import { Grid } from '../common/grid.js';
+            import { SketchDriver } from '../common/sketch-driver.js';
+
+            window.P5 = p5;
+
+            const count = 2;
+            const cellSize = 50;
+            const colors = ['#ff0000ff', '#00ff0066', '#0000ff', '#000000', '#ff00ff', '#ffff00', '#00ffff'];
+
+            const defaults = { seed: Date.now(), g: 25, distanceSq: 370, panel: 'true' };
+
+            const controls = {
+                seed: document.querySelector('#param-seed'),
+                g: document.querySelector('#param-g'),
+                distanceSq: document.querySelector('#param-distanceSq'),
+                saveButton: document.querySelector('#save-button'),
+            };
+
+            const driver = new SketchDriver(defaults, controls, (values) => sketch.rerender(values));
+
+            const sketch = (function initialize(p5, root, defaults = {}) {
+                const api = {
+                    remove: () => {},
+                    rerender: () => {},
+                    stop: () => {},
+                    play: () => {},
+                    save: () => {},
+                };
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+
+                new p5((p5) => {
+                    let first = [];
+                    let second = [];
+                    let settings = defaults;
+
+                    const grid = new Grid(
+                        p5,
+                        Math.round(width / cellSize),
+                        Math.round(height / cellSize),
+                        (p5, column, row) => ({
+                            x: column * cellSize + cellSize / 2,
+                            y: row * cellSize + cellSize / 2,
+                        }),
+                    );
+                    const flat = grid.flat();
+
+                    const renderCurves = (target, first, second) => {
+                        [first, second].forEach((curves) => {
+                            curves.forEach((vertices) => {
+                                target.strokeWeight(1);
+                                target.stroke(colors[0]);
+                                target.beginShape();
+                                vertices.forEach(({ x, y }) => {
+                                    target.curveVertex(x, y);
+                                });
+                                target.endShape();
+                            });
+                        });
+                    };
+
+                    const getAttractors = (radius, origin, { g, distanceSq }) =>
+                        new Array(count).fill({ x: 0, y: 0 }).map(() => {
+                            const vector = P5.Vector.fromAngle(p5.random(0, p5.TWO_PI), radius);
+                            const position = { x: origin.x + vector.x, y: origin.y + vector.y };
+                            const velocity = p5.createVector(0.1, 0.1);
+                            return new Attractor(p5, p5.createVector(position.x, position.y), velocity, 10, {
+                                g,
+                                minDistanceSq: distanceSq,
+                            });
+                        });
+
+                    api.remove = () => p5.remove();
+                    api.rerender = (next) => {
+                        p5.clear();
+                        p5.draw(next);
+                    };
+                    api.save = (name) => {
+                        const buffer = p5.createGraphics(width, height, p5.SVG);
+                        buffer.background(255);
+                        buffer.noFill();
+                        renderCurves(buffer, first, second);
+                        p5.save(buffer, name);
+                        buffer.remove();
+                    };
+
+                    p5.setup = () => {
+                        p5.createCanvas(width, height);
+                        p5.background(255);
+                        p5.frameRate(2);
+                        p5.noFill();
+                        p5.noLoop();
+                    };
+
+                    p5.draw = (next = defaults) => {
+                        settings = next;
+                        const { seed, g, distanceSq } = settings;
+                        p5.randomSeed(seed);
+                        p5.noiseSeed(seed);
+                        p5.background(255);
+                        p5.noFill();
+                        p5.stroke(0);
+                        p5.strokeWeight(2);
+                        first = [];
+                        second = [];
+
+                        const flowField = new FlowField(p5, {
+                            width,
+                            height,
+                            cellSize: 1,
+                            initialize: (p5, column, row) => p5.noise(column, row),
+                        });
+
+                        flat.forEach((origin) => {
+                            const curves = new Array(count).fill(undefined).map(() => []);
+
+                            const noise = flowField.getValueAtPoint(origin);
+                            let radius = Math.round(noise * 50);
+                            if (!radius) {
+                                return;
+                            }
+                            radius = Math.min(radius, 30);
+                            const attractors = getAttractors(radius, origin, { g, distanceSq });
+                            const steps = radius * 20;
+
+                            Array(steps)
+                                .fill()
+                                .forEach(() => {
+                                    for (const attractor of attractors) {
+                                        for (const other of attractors) {
+                                            if (attractor !== other) {
+                                                attractor.attract(other);
+                                            }
+                                        }
+                                    }
+
+                                    attractors.forEach((attractor, index) => {
+                                        attractor.update();
+                                        curves[index].push({ x: attractor.position.x, y: attractor.position.y });
+                                    });
+                                });
+
+                            if (curves[0].length >= 2) {
+                                first.push(curves[0]);
+                                second.push(curves[1]);
+                            }
+                        });
+
+                        renderCurves(p5, first, second);
+                    };
+                }, root);
+
+                return api;
+            })(p5, document.querySelector('main'), driver.values);
+
+            controls.saveButton.addEventListener('click', () => {
+                sketch.save(`splinters-${driver.values.seed}.svg`);
+            });
+
+            if (!['true', 'false', 'fixed'].includes(driver.values.panel)) {
+                driver.values.panel = defaults.panel;
+            }
+            // The panel is display:none in the markup so it cannot flash before this runs;
+            // '' rather than a value, so it falls back to the component's own flex display.
+            const panel = document.querySelector('control-panel');
+            panel.style.display = driver.values.panel === 'false' ? 'none' : '';
+            panel.toggleAttribute('fixed', driver.values.panel === 'fixed');
+
+            window.sketch = sketch;
+            window.driver = driver;
+        </script>
+    </head>
+    <body style="margin: 0; padding: 0">
+        <main></main>
+        <custom-theme>
+            <control-panel placement="left" title="Attractor splinters" style="display: none">
+                <control-column>
+                    <compound-seed id="param-seed"></compound-seed>
+                    <compound-slider
+                        id="param-g"
+                        label="Pull / gravity"
+                        help="Gravitational strength; higher pulls harder"
+                        min="1"
+                        max="100"
+                        step="1"
+                        decimals="0"
+                    ></compound-slider>
+                    <compound-slider
+                        id="param-distanceSq"
+                        label="Distance squared"
+                        help="Minimum squared distance; raise to soften spikes"
+                        min="10"
+                        max="500"
+                        step="10"
+                        decimals="0"
+                    ></compound-slider>
+                    <custom-button id="save-button" stretch variant="accent">Save SVG</custom-button>
+                </control-column>
+            </control-panel>
+        </custom-theme>
+    </body>
+</html>

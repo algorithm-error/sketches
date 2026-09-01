@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Attractor alphabet</title>
+        <link rel="stylesheet" href="./assets/style.css" />
+        <script>
+            if (window.self !== window.top) document.documentElement.classList.add('framed');
+        </script>
+        <script src="../node_modules/p5/lib/p5.js"></script>
+        <script type="module" src="../ui/index.js"></script>
+        <style>
+            body {
+                box-sizing: border-box;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                /* Keeps a grid taller than the viewport from overflowing past the top. */
+                justify-content: safe center;
+            }
+            custom-grid {
+                justify-content: center;
+            }
+            html.framed body {
+                padding: 0;
+            }
+            custom-grid > div {
+                line-height: 0;
+            }
+            custom-grid > div > span {
+                display: block;
+                padding-top: 0.375rem;
+                line-height: 1;
+                text-align: center;
+                font-size: var(--small-font-size);
+                color: color-mix(in srgb, var(--color) 60%, transparent);
+            }
+        </style>
+        <script type="module">
+            import { Curve } from '../common/curve.js';
+            import {
+                alphabet as blue,
+                transliterate as transliterateBlue,
+            } from './attractor-alphabet/blue-alphabet.js';
+            import { alphabet as red, transliterate as transliterateRed } from './attractor-alphabet/red-alphabet.js';
+
+            window.P5 = p5;
+
+            const alphabets = {
+                blue: { letters: blue, transliterate: transliterateBlue, stroke: '#0000ff' },
+                red: { letters: red, transliterate: transliterateRed, stroke: '#ff0000' },
+            };
+
+            const keys = 'A B V G D E YO ZH Z I II K L M N O P R S T U F H TS CH SH SCH HARD Y SOFT AE YU YA'.split(
+                ' ',
+            );
+            const characters = [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'];
+            const cyrillicByKey = new Map([
+                ...keys.map((key, index) => [key, characters[index]]),
+                ...keys.map((key, index) => [key.toLowerCase(), characters[index].toLowerCase()]),
+            ]);
+
+            const cyrillic = (key = '') => cyrillicByKey.get(key) ?? key;
+
+            const getLetter = (name, letter = '') => {
+                const { letters, transliterate } = alphabets[name] ?? alphabets.blue;
+                return letters[letter] ?? letters[transliterate(letter)] ?? [];
+            };
+
+            const getBounds = (vertices) =>
+                vertices.reduce(
+                    (bounds, { x, y }) => ({
+                        left: Math.min(bounds.left, x),
+                        right: Math.max(bounds.right, x),
+                        top: Math.min(bounds.top, y),
+                        bottom: Math.max(bounds.bottom, y),
+                    }),
+                    { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity },
+                );
+
+            function letterSketch(
+                container,
+                {
+                    letter = '',
+                    alphabet = 'blue',
+                    size = 120,
+                    padding = 0.12,
+                    weight = 1,
+                    background = '#ffffff',
+                    stroke,
+                } = {},
+            ) {
+                const vertices = getLetter(alphabet, letter);
+                const color = stroke ?? (alphabets[alphabet] ?? alphabets.blue).stroke;
+
+                return new p5((p5) => {
+                    p5.setup = () => {
+                        p5.createCanvas(size, size);
+                        p5.noLoop();
+                    };
+
+                    p5.draw = () => {
+                        p5.background(background);
+                        if (vertices.length < 2) return;
+
+                        const bounds = getBounds(vertices);
+                        const width = bounds.right - bounds.left;
+                        const height = bounds.bottom - bounds.top;
+                        const box = size * (1 - padding * 2);
+                        const scale = Math.min(box / (width || 1), box / (height || 1));
+
+                        p5.translate(size / 2, size / 2);
+                        p5.scale(scale);
+                        p5.translate(-(bounds.left + width / 2), -(bounds.top + height / 2));
+
+                        p5.noFill();
+                        p5.stroke(color);
+                        p5.strokeWeight(weight / scale);
+                        new Curve(p5, vertices).render();
+                    };
+                }, container);
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const alphabet = params.get('alphabet') ?? 'blue';
+            const size = Number(params.get('size') ?? 100);
+            const weight = Number(params.get('weight') ?? 1);
+
+            const grid = document.querySelector('custom-grid');
+            grid.setAttribute('columns', params.get('columns') ?? 11);
+
+            for (const letter of Object.keys(alphabets[alphabet].letters)) {
+                const cell = document.createElement('div');
+                const plate = document.createElement('div');
+                const name = document.createElement('span');
+                cell.append(plate, name);
+                grid.appendChild(cell);
+                letterSketch(plate, { letter, alphabet, size, weight });
+            }
+        </script>
+    </head>
+    <body>
+        <custom-theme>
+            <main>
+                <custom-grid></custom-grid>
+            </main>
+        </custom-theme>
+    </body>
+</html>

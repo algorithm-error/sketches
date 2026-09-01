@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Letters from attractors</title>
+        <link rel="stylesheet" href="./assets/style.css" />
+        <script type="module" src="../ui/index.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <header>
+                <nav>
+                    <a href="../">Home</a>
+                </nav>
+            </header>
+
+            <main>
+                <article>
+                    <header>
+                        <h1>Letters from&nbsp;attractors</h1>
+                        <time datetime="2026-08-31">August 31, 2026</time>
+                    </header>
+                    <section>
+                        <p>
+                            One of&nbsp;the&nbsp;first things I plotted when I got a&nbsp;plotter was a&nbsp;pair
+                            of&nbsp;attractor traces. The&nbsp;first trace on&nbsp;the&nbsp;first plot, and
+                            the&nbsp;second trace on&nbsp;the&nbsp;second plot.
+                        </p>
+
+                        <p>
+                            An&nbsp;attractor is a&nbsp;poetic term for&nbsp;a&nbsp;point with&nbsp;gravity which pulls
+                            other points. Two of&nbsp;such points, given some velocity and dropped
+                            on&nbsp;a&nbsp;canvas, dance around each other. In&nbsp;rare cases, they settle
+                            to&nbsp;an&nbsp;orbit, but most of&nbsp;the&nbsp;time they travel offscreen and leave traces
+                            which look like&nbsp;wild sine waves. Some look vaguely like&nbsp;writing. Hello
+                            from&nbsp;the&nbsp;elementary world!
+                        </p>
+                        <figure>
+                            <vertical-split
+                                resizable
+                                min="0.1"
+                                max="0.9"
+                                style="height: 95vh"
+                                id="black-and-white-letters"
+                            >
+                                <iframe
+                                    loading="lazy"
+                                    title="Trace from attractor 1, white on black"
+                                    src="./traces.html?originSource=mesh&overshoot.from=0.05&overshoot.to=0.55&background=000&trace1=ffffff&trace2=ffffff00&seed=1787659770693&panel=false&width="
+                                ></iframe>
+                                <iframe
+                                    loading="lazy"
+                                    title="Trace from attractor 2, black on white"
+                                    src="./traces.html?originSource=mesh&overshoot.from=0.05&overshoot.to=0.55&background=fff&trace1=00000000&trace2=000000&seed=1787659770693&panel=false&width="
+                                ></iframe>
+                                <script>
+                                    {
+                                        const seed = new Date().getTime();
+                                        const width = window.innerWidth;
+                                        for (const iframe of document.querySelectorAll(
+                                            '#black-and-white-letters iframe',
+                                        )) {
+                                            iframe.src = iframe.src
+                                                .replace(/seed=\d*/, `seed=${seed}`)
+                                                .replace(/width=\d*/, `width=${width}`);
+                                        }
+                                    }
+                                </script>
+                            </vertical-split>
+                            <figcaption>
+                                This naive "diptych" was one of&nbsp;the&nbsp;first things I printed. It's the&nbsp;same
+                                algorithm pass but two complementary traces. They look identical, but instead they are
+                                symmetrical to&nbsp;each other in&nbsp;a&nbsp;complex way.
+                            </figcaption>
+                        </figure>
+                        <p>
+                            In&nbsp;the&nbsp;next sketch, I aligned the&nbsp;traces horizontally and then vertically,
+                            like&nbsp;in&nbsp;a&nbsp;sketchbook I saw in&nbsp;an&nbsp;exhibition in&nbsp;2017. (My
+                            heuristic is if you saw one thing that you remembered, the&nbsp;exhibition visit was
+                            a&nbsp;success).
+                        </p>
+
+                        <p>
+                            Although a&nbsp;portion of&nbsp;the&nbsp;attractor trace does look like&nbsp;a&nbsp;letter
+                            or a&nbsp;combination of&nbsp;letters, the&nbsp;entire trace is repetitive, and isn't quite
+                            like&nbsp;writing.
+                        </p>
+
+                        <figure>
+                            <iframe
+                                loading="lazy"
+                                title="Attractor traces placed horizontally, then across"
+                                src="./traces.html?originSource=grid&overshoot.from=0&overshoot.to=0.15&steps.from=19&steps.to=44&panel=fixed&background=fcfbf9&trace1=000000ff&trace2=00000000&seed=1787735299281"
+                                id="attractor-traces-on-grid"
+                            ></iframe>
+                            <script>
+                                {
+                                    const seed = new Date().getTime();
+                                    for (const iframe of document.querySelectorAll('#attractor-traces-on-grid')) {
+                                        iframe.src = iframe.src.replace(/seed=\d*/, `seed=${seed}`);
+                                    }
+                                }
+                            </script>
+                            <figcaption>Attractor traces placed horizontally, then across</figcaption>
+                        </figure>
+                        <figure style="text-align: center">
+                            <img
+                                loading="lazy"
+                                width="1600"
+                                height="1374"
+                                alt="Horizontal and vertical writing in Ross Lovegrove's sketchbook"
+                                src="./reference/ross-lovegrove-sketchbook-1200.jpg"
+                                srcset="
+                                    ./reference/ross-lovegrove-sketchbook-600.jpg   600w,
+                                    ./reference/ross-lovegrove-sketchbook-900.jpg   900w,
+                                    ./reference/ross-lovegrove-sketchbook-1200.jpg 1200w,
+                                    ./reference/ross-lovegrove-sketchbook-1600.jpg 1600w
+                                "
+                                sizes="(min-width: 1512px) 605px, (min-width: 1440px) 40vw, (min-width: 576px) 576px, 100vw"
+                            />
+                            <figcaption>
+                                <a href="https://en.wikipedia.org/wiki/Ross_Lovegrove" target="_blank">Ross Lovegrove</a
+                                >'s sketchbook from&nbsp;his exhibition in&nbsp;Paris, May 2017
+                            </figcaption>
+                        </figure>
+
+                        <p>
+                            A&nbsp;bit of&nbsp;digging in&nbsp;the&nbsp;attractor sandbox shows that traces fall
+                            into&nbsp;categories: writing, springs and barbs. Also rosettes, which give you infinite
+                            React.js logos.
+                        </p>
+
+                        <figure>
+                            <iframe
+                                loading="lazy"
+                                title="Interactive attractor sandbox"
+                                src="sandbox.html?panel=fixed&preset=script&position1.x=-16.906652351960336&position1.y=4.879469062790303&position2.x=-8.81640622159549&position2.y=1.4345614621189353"
+                            ></iframe>
+                            <figcaption>In&nbsp;the&nbsp;cockpit of&nbsp;the&nbsp;attractor sandbox</figcaption>
+                        </figure>
+
+                        <p>
+                            The&nbsp;trace waves are almost symmetrical in&nbsp;every phase. They are mirrored relative
+                            to&nbsp;the&nbsp;median path, but this symmetry is carried away by&nbsp;the&nbsp;current.
+                            Additionally, the&nbsp;traces often go wild after a&nbsp;few phases. "This system falls
+                            apart!" my control theory professor would declare.
+                        </p>
+                    </section>
+
+                    <section>
+                        <p>
+                            I returned to&nbsp;attractors after reading the&nbsp;<a
+                                href="https://inconvergent.net/2017/spline-script/"
+                                target="_blank"
+                                >Spline script</a
+                            >
+                            article by&nbsp;<a href="https://inconvergent.net" target="_blank">Anders Hoff</a>.
+                            The&nbsp;article describes generating a&nbsp;pseudo-alphabet. We all did that at&nbsp;school
+                            for&nbsp;exchanging secret notes and called it "cypher". This time, I made mine
+                            from&nbsp;attractor traces. I picked them manually instead of&nbsp;generating on&nbsp;every
+                            pass like&nbsp;Anders Hoff does. Some letters, like&nbsp;A, are recognizable.
+                        </p>
+
+                        <figure>
+                            <iframe
+                                loading="lazy"
+                                title="Every letter of the Cyrillic alphabet drawn as an attractor path"
+                                src="./alphabet.html?alphabet=blue&size=90&columns=11"
+                            ></iframe>
+                            <figcaption>Cyrillic pseudo-alphabet with&nbsp;uppercase and lowercase letters</figcaption>
+                        </figure>
+
+                        <p>
+                            That article also references a&nbsp;striking piece "Letters from&nbsp;my mother"
+                            by&nbsp;Vera Molnár. In&nbsp;it, the&nbsp;handwriting goes out of&nbsp;control
+                            by&nbsp;the&nbsp;end of&nbsp;the&nbsp;line. Before I learned the&nbsp;official
+                            interpretation, Vera's mother's writing seemed angry to&nbsp;me, and it still does. It's
+                            uncannily similar to&nbsp;the&nbsp;attractor's resonance.
+                        </p>
+                        <figure style="text-align: center">
+                            <img
+                                loading="lazy"
+                                width="800"
+                                height="611"
+                                alt="Lettres de ma m&#232;re by Vera Moln&#225;r"
+                                src="./reference/vera-molnar-lettres-de-ma-mere-600.jpg"
+                                srcset="
+                                    ./reference/vera-molnar-lettres-de-ma-mere-600.jpg 600w,
+                                    ./reference/vera-molnar-lettres-de-ma-mere-800.jpg 800w
+                                "
+                                sizes="(min-width: 1512px) 605px, (min-width: 1440px) 40vw, (min-width: 576px) 576px, 100vw"
+                            />
+                            <figcaption>
+                                <a
+                                    href="https://dam.org/museum/artists_ui/artists/molnar-vera/lettres-a-ma-mere/"
+                                    target="_blank"
+                                    >Lettres de ma m&#232;re</a
+                                >
+                                by&nbsp;<a href="https://en.wikipedia.org/wiki/Vera_Moln%C3%A1r" target="_blank"
+                                    >Vera Moln&#225;r</a
+                                >
+                            </figcaption>
+                        </figure>
+                        <p>
+                            My final artwork on&nbsp;attractor writing is personal, like&nbsp;Vera Molnár's. It combines
+                            two alphabets, the&nbsp;soft blue one and the&nbsp;spiky red one, and allows the&nbsp;last
+                            letters in&nbsp;a&nbsp;line to&nbsp;come undone.
+                        </p>
+                        <figure style="text-align: center">
+                            <img
+                                loading="lazy"
+                                width="2686"
+                                height="3811"
+                                alt="Blue and red letters: the artwork"
+                                src="./assets/blue-and-red-letters-1200.jpg"
+                                srcset="
+                                    ./assets/blue-and-red-letters-600.jpg   600w,
+                                    ./assets/blue-and-red-letters-900.jpg   900w,
+                                    ./assets/blue-and-red-letters-1200.jpg 1200w,
+                                    ./assets/blue-and-red-letters-1800.jpg 1800w
+                                "
+                                sizes="(min-width: 1512px) 605px, (min-width: 1440px) 40vw, (min-width: 576px) 576px, 100vw"
+                            />
+                            <figcaption>
+                                <cite>Blue and red letters</cite>
+                            </figcaption>
+                        </figure>
+                        <p>
+                            As&nbsp;always, there is an&nbsp;error and a&nbsp;byproduct of&nbsp;it. This time
+                            the&nbsp;gravity was set too high and yielded a&nbsp;rain of&nbsp;splinters.
+                        </p>
+                        <figure>
+                            <iframe
+                                loading="lazy"
+                                title="Spiky attractor traces which look like a rain of sharp splinters"
+                                src="./splinters.html?panel=fixed&seed=1787742865064&g=72&distanceSq=370"
+                                id="splinters"
+                            ></iframe>
+                            <script>
+                                {
+                                    const seed = new Date().getTime();
+                                    for (const iframe of document.querySelectorAll('#splinters')) {
+                                        iframe.src = iframe.src.replace(/seed=\d*/, `seed=${seed}`);
+                                    }
+                                }
+                            </script>
+                            <figcaption>
+                                Sharp splinters in&nbsp;which the&nbsp;attractors are hardly recognizable
+                            </figcaption>
+                        </figure>
+                    </section>
+
+                    <script>
+                        for (const figure of document.querySelectorAll('figure')) {
+                            // Two sketches side by side have no single page to open.
+                            const frames = figure.querySelectorAll('iframe');
+                            if (frames.length !== 1) {
+                                continue;
+                            }
+                            const { src } = frames[0];
+                            const button = document.createElement('custom-button');
+                            button.setAttribute('variant', 'white');
+                            button.setAttribute('size', 'small');
+                            button.textContent = 'Open in new tab';
+                            button.addEventListener('click', () => window.open(src, '_blank', 'noopener'));
+                            frames[0].after(button);
+                        }
+                    </script>
+                </article>
+            </main>
+            <hr />
+
+            <footer>
+                <script>
+                    document.currentScript.parentElement.append(
+                        `© ${new Date().getFullYear()} ${window.location.host.split('.').slice(-2).join('.')}`,
+                    );
+                </script>
+            </footer>
+        </custom-theme>
+    </body>
+</html>

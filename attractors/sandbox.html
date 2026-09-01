@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="">
+    <head>
+        <title></title>
+        <style>
+            main canvas {
+                cursor: pointer;
+                display: block;
+            }
+        </style>
+        <script src="../node_modules/p5/lib/p5.js"></script>
+        <script src="../node_modules/p5.js-svg/dist/p5.svg.js"></script>
+        <script type="module" src="../ui/index.js"></script>
+        <script type="module">
+            import { Attractor } from './attractor.js';
+            import { Curve } from '../common/curve.js';
+            import { Arrow } from '../common/arrow.js';
+            import { SketchDriver } from '../common/sketch-driver.js';
+
+            window.P5 = p5;
+
+            const random = (min = 0, max = 1) => min + Math.random() * (max - min);
+            const positionFromAngle = (angle, radius) => ({
+                x: Math.cos(angle) * radius,
+                y: Math.sin(angle) * radius,
+            });
+
+            const presetCallbacks = {
+                default: () => ({
+                    velocity1: positionFromAngle(random(0, 2 * Math.PI), random(0, 2)),
+                    velocity2: positionFromAngle(random(0, 2 * Math.PI), random(0, 2)),
+                    position1: positionFromAngle(random(0, 2 * Math.PI), random(5, 80)),
+                    position2: positionFromAngle(random(0, 2 * Math.PI), random(5, 80)),
+                    steps: 1000,
+                    g: 25,
+                    mass1: 10,
+                    mass2: 10,
+                }),
+                script: () => {
+                    // Placed facing each other across a known gap, rather than dropped at two
+                    // independent angles: that let them start almost touching, and a pair that
+                    // starts inside the minimum distance leaves on a slingshot.
+                    const positionAngle = random(0, 2 * Math.PI);
+                    const separation = random(26, 34);
+                    // Both drift the same way along the baseline and shear against each other
+                    // across it, so the pair travels like a pen rather than orbiting in place.
+                    // Drift is raised alongside g below: momentum along the baseline is what
+                    // keeps a livelier pull from capturing the pair into a runaway.
+                    const drift = random(0.65, 0.85);
+                    const shear = random(0.2, 0.5);
+                    return {
+                        velocity1: { x: drift, y: -shear },
+                        velocity2: { x: drift, y: shear },
+                        position1: positionFromAngle(positionAngle, separation / 2),
+                        position2: positionFromAngle(positionAngle + Math.PI, separation / 2),
+                        steps: 1000,
+                        // Gentler than the other presets keep it: at 25 the two whip past each
+                        // other and the stroke leaves on a slingshot instead of staying on the line.
+                        g: 14,
+                        mass1: 10,
+                        mass2: 10,
+                    };
+                },
+                barb: () => {
+                    const velocity1 = positionFromAngle(random(0, 2 * Math.PI), random(0.15, 0.35));
+                    const positionAngle = random(0, 2 * Math.PI);
+                    const separation = random(24, 34);
+                    return {
+                        velocity1,
+                        velocity2: { x: -velocity1.x, y: -velocity1.y },
+                        position1: positionFromAngle(positionAngle, separation / 2),
+                        position2: positionFromAngle(positionAngle + Math.PI, separation / 2),
+                        steps: 1000,
+                        g: 25,
+                        mass1: 10,
+                        mass2: 10,
+                    };
+                },
+                spring: () => {
+                    const positionAngle = random(0, 2 * Math.PI);
+                    const separation = random(24, 34);
+                    const tangentAngle = positionAngle + (Math.PI / 2) * (random() < 0.5 ? 1 : -1);
+                    const velocityAngle = tangentAngle + random(-Math.PI / 8, Math.PI / 8);
+                    const speed = random(1.7, 2);
+                    const asymmetry = random(-Math.PI / 12, Math.PI / 12);
+                    return {
+                        velocity1: positionFromAngle(velocityAngle, speed),
+                        velocity2: positionFromAngle(velocityAngle + Math.PI + asymmetry, speed),
+                        position1: positionFromAngle(positionAngle, separation / 2),
+                        position2: positionFromAngle(positionAngle + Math.PI, separation / 2),
+                        steps: 1000,
+                        g: 25,
+                        mass1: 10,
+                        mass2: 10,
+                    };
+                },
+                rosette: () => {
+                    const positionAngle = random(0, 2 * Math.PI);
+                    const separation = random(60, 160);
+                    const tangentAngle = positionAngle + (Math.PI / 2) * (random() < 0.5 ? 1 : -1);
+                    const velocityAngle = tangentAngle + random(-Math.PI / 16, Math.PI / 16);
+                    const velocity1 = positionFromAngle(velocityAngle, random(0.45, 0.75));
+                    return {
+                        velocity1,
+                        velocity2: { x: -velocity1.x, y: -velocity1.y },
+                        position1: positionFromAngle(positionAngle, separation / 2),
+                        position2: positionFromAngle(positionAngle + Math.PI, separation / 2),
+                        steps: 1000,
+                        g: 25,
+                        mass1: 10,
+                        mass2: 10,
+                    };
+                },
+            };
+
+            const presets = Object.fromEntries(
+                Object.entries(presetCallbacks).map(([name, callback]) => [name, callback()]),
+            );
+
+            const named = new URLSearchParams(window.location.search).get('preset');
+            const defaults = { preset: 'barb', panel: 'true', ...(presets[named] ?? presets.barb) };
+
+            const controls = {
+                preset: document.querySelector('#param-preset'),
+                velocity1: document.querySelector('#param-velocity1'),
+                velocity2: document.querySelector('#param-velocity2'),
+                position1: document.querySelector('#param-position1'),
+                position2: document.querySelector('#param-position2'),
+                steps: document.querySelector('#param-steps'),
+                g: document.querySelector('#param-g'),
+                mass1: document.querySelector('#param-mass1'),
+                mass2: document.querySelector('#param-mass2'),
+                scrambleButton: document.querySelector('#randomize-button'),
+                copyButton: document.querySelector('#copy-svg-button'),
+            };
+
+            const driver = new SketchDriver(defaults, controls, (values) => sketch.rerender(values));
+
+            const sketch = (function initialize(p5, root, defaults, onDragStop = () => {}) {
+                const api = {
+                    remove: () => {},
+                    rerender: () => {},
+                    save: () => {},
+                    copySVG: () => {},
+                };
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                const count = 2;
+
+                new p5((p5) => {
+                    let settings = defaults;
+                    let dragging = null;
+
+                    const origin = { x: width * 0.1, y: height * 0.25 };
+                    const toScreen = (position) => ({ x: origin.x + position.x, y: origin.y + position.y });
+                    const toRelative = (screen) => ({ x: screen.x - origin.x, y: screen.y - origin.y });
+                    const pointRadius = 6;
+                    const positionOf = (settings, key) => (dragging?.key === key ? dragging : settings[key]);
+
+                    const simulate = (settings) => {
+                        const curves = new Array(count).fill(undefined).map(() => []);
+                        const velocity1 = p5.createVector(settings.velocity1.x, settings.velocity1.y);
+                        const velocity2 = p5.createVector(settings.velocity2.x, settings.velocity2.y);
+
+                        const attractors = new Array(count).fill().map((element, index) => {
+                            const first = index === 0;
+                            const position = positionOf(settings, first ? 'position1' : 'position2');
+                            const velocity = first ? velocity1 : velocity2;
+                            const mass = first ? settings.mass1 : settings.mass2;
+                            return new Attractor(p5, p5.createVector(position.x, position.y), velocity.copy(), mass, {
+                                g: settings.g,
+                            });
+                        });
+
+                        Array(settings.steps)
+                            .fill()
+                            .forEach(() => {
+                                for (const attractor of attractors) {
+                                    for (const other of attractors) {
+                                        if (attractor !== other) {
+                                            attractor.attract(other);
+                                        }
+                                    }
+                                }
+
+                                attractors.forEach((attractor, index) => {
+                                    attractor.update();
+                                    curves[index].push({ x: attractor.position.x, y: attractor.position.y });
+                                });
+                            });
+
+                        return { curves, velocity1, velocity2 };
+                    };
+
+                    const renderScene = (target, settings, { curves, velocity1, velocity2 }) => {
+                        target.background(255);
+                        target.push();
+                        target.translate(origin.x, origin.y);
+
+                        const position1 = positionOf(settings, 'position1');
+                        const position2 = positionOf(settings, 'position2');
+                        const center = { x: 0, y: 0 };
+                        const scale = 50;
+                        new Arrow(
+                            target,
+                            position1,
+                            { x: position1.x + velocity1.x * scale, y: position1.y + velocity1.y * scale },
+                            '#ff0000',
+                        ).render();
+                        new Arrow(
+                            target,
+                            position2,
+                            { x: position2.x + velocity2.x * scale, y: position2.y + velocity2.y * scale },
+                            '#0000ff',
+                        ).render();
+                        target.stroke('#000');
+                        target.line(center.x, center.y, center.x + width * 0.8, center.y);
+
+                        target.noStroke();
+                        target.fill('#000');
+                        target.text('0,0', center.x - 8, center.y - 8);
+
+                        target.fill('#ff0000');
+                        target.circle(position1.x, position1.y, pointRadius * 2);
+                        target.fill('#0000ff');
+                        target.circle(position2.x, position2.y, pointRadius * 2);
+                        target.noFill();
+
+                        target.strokeWeight(1);
+                        target.stroke('#ff0000');
+
+                        const curve1 = new Curve(target, curves[0]);
+                        curve1.render();
+
+                        target.stroke('#0000ff30');
+                        const curve2 = new Curve(target, curves[1]);
+                        curve2.render();
+
+                        window.curve1 = curve1.vertices.map(({ x, y }) => ({
+                            x: Number(x.toFixed(2)),
+                            y: Number(y.toFixed(2)),
+                        }));
+                        window.curve2 = curve2.vertices.map(({ x, y }) => ({
+                            x: Number(x.toFixed(2)),
+                            y: Number(y.toFixed(2)),
+                        }));
+
+                        target.pop();
+                    };
+
+                    const renderToSVGBuffer = () => {
+                        const buffer = p5.createGraphics(width, height, p5.SVG);
+                        renderScene(buffer, settings, simulate(settings));
+                        return buffer;
+                    };
+
+                    api.remove = () => p5.remove();
+                    api.rerender = (next) => p5.draw(next);
+                    api.save = (name) => {
+                        const buffer = renderToSVGBuffer();
+                        p5.save(buffer, name);
+                        buffer.remove();
+                    };
+                    api.copySVG = () => {
+                        const buffer = renderToSVGBuffer();
+                        const markup = new XMLSerializer().serializeToString(buffer._renderer.svg);
+                        buffer.remove();
+                        return navigator.clipboard.writeText(markup);
+                    };
+
+                    p5.setup = () => {
+                        p5.createCanvas(width, height);
+                        p5.background(255);
+                        p5.frameRate(2);
+                        p5.noFill();
+                        p5.noLoop();
+                    };
+
+                    p5.mousePressed = () => {
+                        const screen1 = toScreen(settings.position1);
+                        const screen2 = toScreen(settings.position2);
+                        if (p5.dist(p5.mouseX, p5.mouseY, screen1.x, screen1.y) <= pointRadius * 2)
+                            dragging = { key: 'position1', ...settings.position1 };
+                        else if (p5.dist(p5.mouseX, p5.mouseY, screen2.x, screen2.y) <= pointRadius * 2)
+                            dragging = { key: 'position2', ...settings.position2 };
+                    };
+
+                    p5.mouseDragged = () => {
+                        if (!dragging) return;
+                        const relative = toRelative({ x: p5.mouseX, y: p5.mouseY });
+                        dragging = { ...dragging, ...relative };
+                        p5.draw(settings);
+                    };
+
+                    p5.mouseReleased = () => {
+                        if (!dragging) return;
+                        const { key, x, y } = dragging;
+                        dragging = null;
+                        onDragStop(key, { x, y });
+                    };
+
+                    p5.draw = (next = defaults) => {
+                        settings = next;
+                        renderScene(p5, settings, simulate(settings));
+                    };
+                }, root);
+
+                return api;
+            })(p5, document.querySelector('main'), driver.values, (key, position) => (driver.values[key] = position));
+
+            driver.subscribe('preset', (name) => driver.setDefaults(presets[name]));
+
+            controls.scrambleButton.addEventListener('click', () => {
+                Object.assign(driver.values, presetCallbacks[driver.values.preset]());
+            });
+
+            controls.copyButton.addEventListener('click', (event) => {
+                sketch.copySVG().then(() => {
+                    event.target.textContent = 'Copied!';
+                    setTimeout(() => {
+                        event.target.textContent = 'Copy SVG';
+                    }, 1200);
+                });
+            });
+
+            if (!['true', 'false', 'fixed'].includes(driver.values.panel)) {
+                driver.values.panel = defaults.panel;
+            }
+            // The panel is display:none in the markup so it cannot flash before this runs;
+            // '' rather than a value, so it falls back to the component's own flex display.
+            const panel = document.querySelector('control-panel');
+            panel.style.display = driver.values.panel === 'false' ? 'none' : '';
+            panel.toggleAttribute('fixed', driver.values.panel === 'fixed');
+
+            window.sketch = sketch;
+        </script>
+    </head>
+    <body style="margin: 0; padding: 0">
+        <main></main>
+        <custom-theme>
+            <control-panel
+                horizontal
+                center
+                title="Attractor sandbox"
+                style="position: fixed; bottom: 1rem; --emboss: true; display: none"
+            >
+                <control-column>
+                    <control-row style="--columns: none">
+                        <labeled-select id="param-preset" label="Style" stretch>
+                            <option value="default">None</option>
+                            <option value="script">Script</option>
+                            <option value="barb">Barb</option>
+                            <option value="spring">Spring</option>
+                            <option value="rosette">Rosette</option>
+                        </labeled-select>
+                        <custom-button id="randomize-button">Random</custom-button>
+                    </control-row>
+
+                    <compound-slider
+                        id="param-steps"
+                        label="Steps"
+                        min="10"
+                        max="2000"
+                        step="1"
+                        decimals="0"
+                    ></compound-slider>
+
+                    <compound-slider
+                        id="param-g"
+                        label="Pull / gravity"
+                        help="Gravity between attractors"
+                        min="1"
+                        max="100"
+                        step="1"
+                        decimals="0"
+                    ></compound-slider>
+
+                    <custom-button id="copy-svg-button" stretch variant="accent">Copy SVG</custom-button>
+
+                    <apply-button id="apply-button" stretch disabled variant="transparent"
+                        >Changes applied live</apply-button
+                    >
+                </control-column>
+
+                <custom-fieldset label="Attractor 1">
+                    <control-column>
+                        <vector-slider
+                            id="param-velocity1"
+                            label="Velocity"
+                            help="Velocity vectors on canvas are scaled ×50 for visibility"
+                            mode="polar"
+                            min="-2"
+                            max="2"
+                            step="0.01"
+                            decimals="2"
+                            style="--fill: var(--red)"
+                        ></vector-slider>
+                        <labeled-input label="Position">
+                            <coordinate-input
+                                id="param-position1"
+                                size="small"
+                                min="-2000"
+                                max="2000"
+                                step="1"
+                                decimals="1"
+                                stretch
+                            ></coordinate-input>
+                        </labeled-input>
+                        <compound-slider
+                            id="param-mass1"
+                            label="Mass"
+                            help="Pulls harder and moves less"
+                            min="1"
+                            max="50"
+                            step="1"
+                            decimals="0"
+                        ></compound-slider>
+                    </control-column>
+                </custom-fieldset>
+
+                <custom-fieldset label="Attractor 2">
+                    <control-column>
+                        <vector-slider
+                            id="param-velocity2"
+                            label="Velocity"
+                            help="Velocity vectors on canvas are scaled ×50 for visibility"
+                            mode="polar"
+                            min="-2"
+                            max="2"
+                            step="0.01"
+                            decimals="2"
+                            style="--fill: var(--blue)"
+                        ></vector-slider>
+                        <labeled-input label="Position">
+                            <coordinate-input
+                                id="param-position2"
+                                size="small"
+                                min="-2000"
+                                max="2000"
+                                step="1"
+                                decimals="1"
+                                stretch
+                            ></coordinate-input>
+                        </labeled-input>
+                        <compound-slider
+                            id="param-mass2"
+                            label="Mass"
+                            help="Pulls harder and moves less"
+                            min="1"
+                            max="50"
+                            step="1"
+                            decimals="0"
+                        ></compound-slider>
+                    </control-column>
+                </custom-fieldset>
+            </control-panel>
+        </custom-theme>
+    </body>
+</html>
