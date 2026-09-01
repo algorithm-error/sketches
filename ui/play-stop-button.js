@@ -108,7 +108,7 @@ export class PlayStopButton extends HTMLElement {
                 }),
             );
         });
-        this.addEventListener('mouseleave', () => {
+        this.addEventListener('pointerleave', () => {
             this.removeAttribute('suppress-hover');
         });
     }

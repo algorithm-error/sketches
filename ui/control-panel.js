@@ -37,15 +37,20 @@ template.innerHTML = `
         :host([narrow]) {
             width: 16rem;
         }
-        :host([horizontal]) {
-            width: auto;
-        }
-        :host([horizontal]) .content {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            align-items: flex-start;
-            gap: 1.5rem;
+        /* A row of controls needs width a phone does not have, so the layout below is
+           the wide one. The attribute stays either way; only the rendering answers to
+           the medium. */
+        @media (hover: hover) {
+            :host([horizontal]) {
+                width: auto;
+            }
+            :host([horizontal]) .content {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
         }
         /* A vertical panel gives its controls exactly 17rem (19rem, less the 1rem
            of content padding on each side), so a horizontal column defaults to the
@@ -84,14 +89,36 @@ template.innerHTML = `
         /* Pinned to a top corner, --offset from the edges — the same offset [center]
            holds itself away from them. */
         :host([placement]) {
+            box-sizing: border-box;
             position: fixed;
             top: var(--offset, 1rem);
+            max-height: calc(100dvh - var(--offset, 1rem) * 2);
         }
         :host([placement="left"]) {
             left: var(--offset, 1rem);
         }
         :host([placement="right"]) {
             right: var(--offset, 1rem);
+        }
+        /* After the [placement] rule above, so it wins the top it sets. */
+        :host([placement="bottom"]) {
+            top: auto;
+            bottom: var(--offset, 1rem);
+        }
+        /* On a phone the panel starts halfway down the sketch and runs as long as it
+           needs. Absolute, not fixed, so the page scrolls to the rest of it instead of
+           the panel scrolling inside itself. */
+        @media (hover: none) {
+            :host([placement]) {
+                position: absolute;
+                top: 50vh;
+                bottom: auto;
+                left: var(--offset, 1rem);
+                right: var(--offset, 1rem);
+                margin-inline: auto;
+                max-width: calc(100% - var(--offset, 1rem) * 2);
+                max-height: none;
+            }
         }
         .header {
             position: relative;
@@ -162,9 +189,13 @@ template.innerHTML = `
             top: 0.5rem;
             right: 0.5rem;
         }
-        /* No header: nothing to grab, so the panel cannot be dragged or collapsed. */
-        :host([fixed]) .header {
-            display: none;
+        /* No header: nothing to grab, so the panel cannot be dragged or collapsed.
+           Only where there is a pointer to grab with — on touch the header stays, or
+           there would be no way to fold the panel away. */
+        @media (hover: hover) {
+            :host([fixed]) .header {
+                display: none;
+            }
         }
         :host([collapsed]) {
             width: auto;
@@ -175,9 +206,13 @@ template.innerHTML = `
         :host([collapsed]) .content {
             display: none;
         }
+        /* Collapsed, the panel is only this button, so the margins put it where the
+           collapse button it replaces was: the same inset from the panel's anchored
+           edge, and centred on the 2rem header it stands in for. */
         :host([collapsed]) custom-button.toggle {
             display: inline-block;
             position: static;
+            margin: 0.25rem calc(0.2rem + 2px);
         }
         .collapse {
             position: absolute;
@@ -203,7 +238,7 @@ template.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 -960 960 960" fill="currentColor"><path d="M200-440v-80h560v80H200Z"/></svg>
         </custom-button>
     </div>
-    <custom-button class="toggle" variant="accent" icon title="Show control panel">&hellip;</custom-button>
+    <custom-button class="toggle" size="small" variant="accent" icon title="Show control panel">&hellip;</custom-button>
     <div class="content">
         <slot></slot>
     </div>

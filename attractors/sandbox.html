@@ -1,7 +1,11 @@
 <!doctype html>
 <html lang="">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title></title>
+        <script>
+            if (window.self !== window.top) document.documentElement.classList.add('framed');
+        </script>
         <style>
             main canvas {
                 cursor: pointer;
@@ -135,6 +139,10 @@
             };
 
             const driver = new SketchDriver(defaults, controls, (values) => sketch.rerender(values));
+
+            const panel = document.querySelector('control-panel');
+            panel.style.display = driver.values.panel === 'false' ? 'none' : '';
+            panel.toggleAttribute('fixed', driver.values.panel === 'fixed');
 
             const sketch = (function initialize(p5, root, defaults, onDragStop = () => {}) {
                 const api = {
@@ -328,9 +336,6 @@
             }
             // The panel is display:none in the markup so it cannot flash before this runs;
             // '' rather than a value, so it falls back to the component's own flex display.
-            const panel = document.querySelector('control-panel');
-            panel.style.display = driver.values.panel === 'false' ? 'none' : '';
-            panel.toggleAttribute('fixed', driver.values.panel === 'fixed');
 
             window.sketch = sketch;
         </script>
@@ -341,8 +346,9 @@
             <control-panel
                 horizontal
                 center
+                placement="bottom"
                 title="Attractor sandbox"
-                style="position: fixed; bottom: 1rem; --emboss: true; display: none"
+                style="--emboss: true; display: none"
             >
                 <control-column>
                     <control-row style="--columns: none">

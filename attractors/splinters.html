@@ -1,7 +1,11 @@
 <!doctype html>
 <html lang="">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title></title>
+        <script>
+            if (window.self !== window.top) document.documentElement.classList.add('framed');
+        </script>
         <style>
             main {
                 line-height: 0;
@@ -32,6 +36,24 @@
             };
 
             const driver = new SketchDriver(defaults, controls, (values) => sketch.rerender(values));
+
+            const hover = matchMedia('(hover: hover)').matches;
+
+            if (!['true', 'false', 'fixed'].includes(driver.values.panel)) {
+                driver.values.panel = defaults.panel;
+            }
+            // The panel is display:none in the markup so it cannot flash before this runs;
+            // '' rather than a value, so it falls back to the component's own flex display.
+            const panel = document.querySelector('control-panel');
+            panel.style.display = driver.values.panel === 'false' ? 'none' : '';
+            panel.toggleAttribute('fixed', driver.values.panel === 'fixed');
+
+            // Saving is desktop-only until the TODO in api.save is done. Relabelled before
+            // the panel is measured, since the wider label is what the panel has to hold.
+            if (!hover) {
+                controls.saveButton.setAttribute('disabled', '');
+                controls.saveButton.textContent = 'Open on desktop to save SVG';
+            }
 
             const sketch = (function initialize(p5, root, defaults = {}) {
                 const api = {
@@ -90,6 +112,9 @@
                         p5.clear();
                         p5.draw(next);
                     };
+                    // TODO Stop using p5.save. It serializes to a data: url, which iOS ignores
+                    // for downloads, and p5 alerts desktop Safari instructions on the way out.
+                    // Serialize the svg here and hand it to navigator.share, or a blob url.
                     api.save = (name) => {
                         const buffer = p5.createGraphics(width, height, p5.SVG);
                         buffer.background(255);
@@ -172,15 +197,6 @@
                 sketch.save(`splinters-${driver.values.seed}.svg`);
             });
 
-            if (!['true', 'false', 'fixed'].includes(driver.values.panel)) {
-                driver.values.panel = defaults.panel;
-            }
-            // The panel is display:none in the markup so it cannot flash before this runs;
-            // '' rather than a value, so it falls back to the component's own flex display.
-            const panel = document.querySelector('control-panel');
-            panel.style.display = driver.values.panel === 'false' ? 'none' : '';
-            panel.toggleAttribute('fixed', driver.values.panel === 'fixed');
-
             window.sketch = sketch;
             window.driver = driver;
         </script>
@@ -210,6 +226,10 @@
                         decimals="0"
                     ></compound-slider>
                     <custom-button id="save-button" stretch variant="accent">Save SVG</custom-button>
+
+                    <apply-button id="apply-button" stretch disabled variant="transparent"
+                        >Changes applied live</apply-button
+                    >
                 </control-column>
             </control-panel>
         </custom-theme>

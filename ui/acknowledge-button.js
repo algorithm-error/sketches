@@ -21,6 +21,8 @@ export class AcknowledgeButton extends HTMLElement {
     }
 
     button;
+    // One signal for the document listener below, dropped when the button goes away.
+    listeners = new AbortController();
 
     constructor() {
         super();
@@ -33,10 +35,22 @@ export class AcknowledgeButton extends HTMLElement {
         this.addEventListener('mouseleave', () => {
             this.confirmed = false;
         });
+        // Touch never leaves, so the way out of a pending confirm is a tap elsewhere.
+        document.addEventListener(
+            'pointerdown',
+            (event) => {
+                if (this.confirmed && !event.composedPath().includes(this)) this.confirmed = false;
+            },
+            { signal: this.listeners.signal },
+        );
     }
 
     connectedCallback() {
         this.sync();
+    }
+
+    disconnectedCallback() {
+        this.listeners.abort();
     }
 
     attributeChangedCallback() {

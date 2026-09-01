@@ -51,6 +51,8 @@ export class UINumberInput extends HTMLElement {
         });
         this.input.addEventListener('change', (event) => {
             event.stopPropagation();
+            const clamped = this.clamp(Number(this.input.value));
+            if (this.input.value !== '' && String(clamped) !== this.input.value) this.input.value = clamped;
             if (this.pressing) {
                 this.pendingChange = true;
             } else {
@@ -76,10 +78,13 @@ export class UINumberInput extends HTMLElement {
         this.input.addEventListener('keyup', (event) => {
             if (event.key === 'ArrowUp' || event.key === 'ArrowDown') this.releasePress();
         });
-        this.input.addEventListener('mousedown', () => {
+        this.input.addEventListener('pointerdown', () => {
             this.pressing = true;
         });
-        window.addEventListener('mouseup', () => {
+        window.addEventListener('pointerup', () => {
+            if (this.pressing) this.releasePress();
+        });
+        window.addEventListener('pointercancel', () => {
             if (this.pressing) this.releasePress();
         });
     }
@@ -120,7 +125,17 @@ export class UINumberInput extends HTMLElement {
     }
 
     get value() {
-        return Number(this.input.value);
+        return this.clamp(Number(this.input.value));
+    }
+
+    // The native input holds min and max against its spinner and form validation
+    // only — a typed number is whatever was typed. A wrapping field normalises in
+    // wrapStep instead, so it is left alone here.
+    clamp(number) {
+        if (this.hasAttribute('wrap') || !Number.isFinite(number)) return number;
+        const min = this.hasAttribute('min') ? Number(this.getAttribute('min')) : -Infinity;
+        const max = this.hasAttribute('max') ? Number(this.getAttribute('max')) : Infinity;
+        return Math.min(Math.max(number, min), max);
     }
 
     set value(v) {

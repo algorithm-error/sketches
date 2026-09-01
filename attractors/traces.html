@@ -104,6 +104,10 @@
                 };
             };
 
+            const panel = document.querySelector('control-panel');
+            panel.style.display = driver.values.panel === 'false' ? 'none' : '';
+            panel.toggleAttribute('fixed', driver.values.panel === 'fixed');
+
             const sketch = (function initialize(p5, root, defaults) {
                 const api = { remove: () => {}, rerender: () => {}, save: () => {} };
                 const width = defaults.width || window.innerWidth;
@@ -307,9 +311,6 @@
             }
             // The panel is display:none in the markup so it cannot flash before this runs;
             // '' rather than a value, so it falls back to the component's own flex display.
-            const panel = document.querySelector('control-panel');
-            panel.style.display = driver.values.panel === 'false' ? 'none' : '';
-            panel.toggleAttribute('fixed', driver.values.panel === 'fixed');
 
             if (!['grid', 'mesh'].includes(driver.values.originSource)) {
                 driver.values.originSource = defaults.originSource;

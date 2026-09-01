@@ -77,14 +77,19 @@ figcaption {
 }
 
 figure iframe + custom-button {
-    display: none;
     position: absolute;
     top: 1rem;
     right: 1rem;
 }
 
-figure:hover > iframe + custom-button {
-    display: block;
+@media (hover: hover) {
+    figure iframe + custom-button {
+        display: none;
+    }
+
+    figure:hover > iframe + custom-button {
+        display: block;
+    }
 }
 
 hr {

@@ -252,19 +252,23 @@
                     </section>
 
                     <script>
-                        for (const figure of document.querySelectorAll('figure')) {
-                            // Two sketches side by side have no single page to open.
-                            const frames = figure.querySelectorAll('iframe');
-                            if (frames.length !== 1) {
-                                continue;
+                        // No room for a panel beside a figure on a small screen, so the figure
+                        // asks for none and the button offers the sketch's own page instead.
+                        const small = matchMedia('(max-width: 48rem)').matches;
+                        const framesWithPanel = document.querySelectorAll(
+                            'iframe[src*="panel=true"], iframe[src*="panel=fixed"]',
+                        );
+                        for (const iframe of framesWithPanel) {
+                            const src = iframe.src.replace(/panel=\w+/, 'panel=true');
+                            if (small) {
+                                iframe.src = iframe.src.replace(/panel=\w+/, 'panel=false');
                             }
-                            const { src } = frames[0];
                             const button = document.createElement('custom-button');
                             button.setAttribute('variant', 'white');
                             button.setAttribute('size', 'small');
-                            button.textContent = 'Open in new tab';
+                            button.textContent = small ? 'Open in new tab to edit' : 'Open in new tab';
                             button.addEventListener('click', () => window.open(src, '_blank', 'noopener'));
-                            frames[0].after(button);
+                            iframe.after(button);
                         }
                     </script>
                 </article>
