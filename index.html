@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Sketches</title>
-        <link rel="stylesheet" href="./attractors/assets/style.css" />
+        <link rel="stylesheet" href="./text.css" />
         <script type="module" src="./ui/index.js"></script>
         <style>
             ul {
@@ -15,35 +15,33 @@
         </style>
     </head>
     <body>
-        <custom-theme>
-            <main>
-                <article>
-                    <header>
-                        <h1>Articles, P5 sketches and UI kit</h1>
-                    </header>
-                    <section>
-                        <ul>
-                            <li>
-                                <a href="./attractors/letters-from-attractors.html">Letters from attractors</a> — an
-                                article about two-body attractor traces including P5 sketches
-                            </li>
-                            <li>
-                                <a href="./ui/docs/index.html">UI kit</a> — web components for controlling P5 sketches:
-                                buttons, sliders and other
-                            </li>
-                        </ul>
-                    </section>
-                </article>
-            </main>
-            <hr />
+        <main>
+            <article>
+                <header>
+                    <h1>Articles, P5 sketches and UI kit</h1>
+                </header>
+                <section>
+                    <ul>
+                        <li>
+                            <a href="./attractors/letters-from-attractors.html">Letters from attractors</a> — an article
+                            about two-body attractor traces including P5 sketches
+                        </li>
+                        <li>
+                            <a href="./ui/docs/index.html">UI kit</a> — web components for controlling P5 sketches:
+                            buttons, sliders and other
+                        </li>
+                    </ul>
+                </section>
+            </article>
+        </main>
+        <hr />
 
-            <footer>
-                <script>
-                    document.currentScript.parentElement.append(
-                        `© ${new Date().getFullYear()} ${window.location.host.split('.').slice(-2).join('.')}`,
-                    );
-                </script>
-            </footer>
-        </custom-theme>
+        <footer>
+            <script>
+                document.currentScript.parentElement.append(
+                    `© ${new Date().getFullYear()} ${window.location.host.split('.').slice(-2).join('.')}`,
+                );
+            </script>
+        </footer>
     </body>
 </html>

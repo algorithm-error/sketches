@@ -1,17 +1,17 @@
 html {
     height: 100%;
     margin: 0;
+    font-size: 20px;
 }
 
 body {
-    --body-horizontal-padding: 6rem;
-    --max-body-width: 68rem;
-    --primary-font-size: 1.25rem;
-    --secondary-font-size: 1rem;
+    --body-horizontal-padding: 4.75rem;
+    --max-body-width: 54rem;
+    --small-font-size: 0.85rem;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    padding: 2rem var(--body-horizontal-padding);
+    padding: 1.5rem var(--body-horizontal-padding);
     margin: 0 auto;
     max-width: var(--max-body-width);
     background: var(--background);
@@ -24,23 +24,18 @@ iframe {
     height: 95vh;
 }
 
-nav {
-    font-size: var(--primary-font-size);
-}
-
 main {
     flex: 1 0 auto;
 }
 
 article {
-    font-size: var(--primary-font-size);
     line-height: 1.25;
 }
 
 time {
     display: block;
     text-align: end;
-    font-size: var(--secondary-font-size);
+    font-size: var(--small-font-size);
 }
 
 section {
@@ -49,14 +44,14 @@ section {
 }
 
 section + section {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
 }
 
 figure {
     position: relative;
     width: 100vw;
-    max-width: 94.5rem;
-    margin: 2rem 0;
+    max-width: 75rem;
+    margin: 1.5rem 0;
     margin-inline: calc(50% - 50vw);
     background: var(--background);
 }
@@ -64,22 +59,22 @@ figure {
 figure img {
     width: 40%;
     height: auto;
-    min-width: 36rem;
+    min-width: 29rem;
     max-width: 100%;
 }
 
 figcaption {
-    padding: 0.75rem var(--body-horizontal-padding);
-    font-size: var(--secondary-font-size);
+    padding: 0.6rem var(--body-horizontal-padding);
+    font-size: var(--small-font-size);
     text-align: center;
-    max-width: 48rem;
+    max-width: 38rem;
     margin: auto;
 }
 
 figure iframe + custom-button {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 0.75rem;
+    right: 0.75rem;
 }
 
 @media (hover: hover) {
@@ -95,16 +90,17 @@ figure iframe + custom-button {
 hr {
     /* for cases when parent is display: flex, which makes hr width 1px */
     width: 100%;
-    margin: 1.5rem 0;
+    margin: 1.1rem 0;
 }
 
 footer {
-    padding: 1rem 0;
+    padding: 0.8rem 0;
+    font-size: var(--small-font-size);
 }
 
 @media (max-width: 48rem) {
     body {
-        --body-horizontal-padding: 1.25rem;
+        --body-horizontal-padding: 1rem;
     }
 
     figure img {
