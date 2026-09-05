@@ -5,16 +5,16 @@ import './help-text.js';
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: block; }
+        :host { display: block; font-size: var(--font-size); }
         :host([variant="secondary"]) {
             box-sizing: border-box;
             border: 1px solid var(--foreground);
             background: #f2f2f2;
-            border-radius: 0.25rem;
-            padding: 1rem;
+            border-radius: 0.25em;
+            padding: 1em;
         }
         .head {
-            margin-bottom: 0.625rem;
+            margin-bottom: 0.625em;
             width: 100%;
         }
         .label {
@@ -28,13 +28,13 @@ template.innerHTML = `
         .row {
             display: flex;
             flex-direction: row;
-            gap: 1rem;
+            gap: 1em;
             align-items: center;
             width: 100%;
             justify-content: space-between;
         }
         numeric-input {
-            width: 5rem;
+            width: 5em;
             flex-shrink: 0;
         }
         :host([direction="vertical"]) {
@@ -43,7 +43,7 @@ template.innerHTML = `
             align-items: center;
             width: 100%;
             box-sizing: border-box;
-            gap: 0.5rem;
+            gap: 0.5em;
         }
         :host([direction="vertical"]) .head {
             margin-bottom: 0;
@@ -51,7 +51,7 @@ template.innerHTML = `
         }
         :host([direction="vertical"]) .row {
             flex-direction: column-reverse;
-            gap: 0.5rem;
+            gap: 0.5em;
         }
         :host([direction="vertical"]) .label,
         :host([direction="vertical"]) help-text {

@@ -18,6 +18,7 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             position: relative;
             display: flex;
             width: 100%;
@@ -44,7 +45,7 @@ template.innerHTML = `
             top: 0;
             bottom: 0;
             left: calc(var(--ratio, ${DEFAULT_RATIO}) * (100% - var(--gap, 0px)) + var(--gap, 0px) / 2);
-            width: var(--handle-width, 0.75rem);
+            width: var(--handle-width, 0.75em);
             transform: translateX(-50%);
             pointer-events: none;
         }
@@ -65,7 +66,7 @@ template.innerHTML = `
             outline: none;
         }
         .divider:focus-visible {
-            outline: 0.125rem solid var(--highlight);
+            outline: 2px solid var(--highlight);
         }
         /* A drag that crosses an iframe or a canvas would otherwise be eaten by
            it, so the panes stop taking pointer events until the drag ends. */

@@ -2,37 +2,38 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: inline-flex;
         }
         input[type="radio"] {
             appearance: none;
             box-sizing: border-box;
             margin: 0;
-            width: 1.5rem;
-            height: 1.5rem;
-            border-radius: 0.25rem;
+            width: 1.5em;
+            height: 1.5em;
+            border-radius: 0.25em;
             border: 1px solid color-mix(in srgb, var(--foreground) 50%, transparent);
             background: var(--swatch-color, var(--background));
             cursor: pointer;
         }
         :host([size="small"]) input[type="radio"] {
-            width: 1.125rem;
-            height: 1.125rem;
+            width: 1.125em;
+            height: 1.125em;
         }
         input[type="radio"]:checked {
-            box-shadow: 0 0 0 0.125rem var(--background), 0 0 0 0.25rem var(--primary);
+            box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
         }
         input[type="radio"]:disabled {
             cursor: not-allowed;
             opacity: 0.4;
         }
         input[type="radio"]:focus-visible {
-            outline: 0.125rem solid var(--highlight);
-            outline-offset: 0.1875rem;
+            outline: 2px solid var(--highlight);
+            outline-offset: 3px;
         }
         .swatches {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.5em;
         }
     </style>
     <div class="swatches" part="swatches"></div>

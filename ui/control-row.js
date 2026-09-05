@@ -2,9 +2,10 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: flex;
             flex-direction: row;
-            gap: 1rem;
+            gap: 1em;
         }
         :host(.columns) {
             display: grid;

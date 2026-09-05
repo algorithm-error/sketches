@@ -5,9 +5,9 @@ import './help-text.js';
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: block; }
+        :host { display: block; font-size: var(--font-size); }
         .head {
-            margin-bottom: 0.625rem;
+            margin-bottom: 0.625em;
             width: 100%;
         }
         .label {
@@ -21,7 +21,7 @@ template.innerHTML = `
         .row {
             display: flex;
             flex-direction: row;
-            gap: 0.75rem;
+            gap: 0.75em;
             align-items: center;
             width: 100%;
             justify-content: space-between;
@@ -29,11 +29,11 @@ template.innerHTML = `
         .values {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
+            gap: 0.25em;
             flex-shrink: 0;
         }
         numeric-input {
-            width: 4rem;
+            width: 4em;
         }
         .dash {
             color: #767676;

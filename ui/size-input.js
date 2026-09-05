@@ -4,9 +4,10 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.5em;
         }
         :host([stretch]) {
             display: flex;

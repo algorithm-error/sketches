@@ -2,58 +2,58 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: inline-block;
-            height: 2rem;
+            height: 2em;
             --button-bg: var(--fill, var(--foreground));
             --button-border: var(--foreground);
             --button-color: var(--fill-color, var(--background));
             --button-hover-bg: color-mix(in srgb, var(--fill, var(--foreground)) 85%, white);
         }
         :host([size="small"]) {
-            height: 1.5rem;
+            height: 1.5em;
         }
         :host([icon]) {
-            width: 2rem;
-            height: 2rem;
+            width: 2em;
+            height: 2em;
         }
         :host([icon][size="small"]) {
-            width: 1.5rem;
-            height: 1.5rem;
+            width: 1.5em;
+            height: 1.5em;
         }
         :host([stretch]) { display: block; width: 100%; }
         :host([stretch]) button { width: 100%; }
         button {
             box-sizing: border-box;
-            height: 2rem;
+            height: 100%;
             font-family: var(--monospace);
             font-size: var(--small-font-size);
             line-height: var(--line-height);
             text-transform: uppercase;
-            padding: 0 1.25rem;
+            padding: 0 1.4286em;
             border-radius: 1px;
             border: var(--button-border);
             background: var(--button-bg);
             color: var(--button-color);
             cursor: pointer;
             white-space: nowrap;
-            box-shadow: 2px 2px 0 color-mix(in srgb, var(--foreground) 25%, transparent);
+            box-shadow: 2px 2px 0 color-mix(in srgb, var(--foreground) 66%, transparent);
         }
         :host([size="small"]) button {
-            height: 1.5rem;
             font-size: var(--xsmall-font-size);
-            padding: 0.25rem 0.75rem;
+            padding: 0.3333em 1em;
         }
         :host([icon]) button {
-            width: 2rem;
-            padding: 0.5rem 0;
+            width: 100%;
+            padding: 0.5714em 0;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         :host([icon][size="small"]) button {
-            width: 1.5rem;
-            padding: 0.25rem 0;
+            padding: 0.3333em 0;
         }
+        /* FIXME do :host([variant="secondary"]) button instead of css vars, they make it difficult to override other props */
         :host([variant="secondary"]) {
             --button-bg: color-mix(in srgb, var(--foreground) 20%, white);
             --button-border: none;
@@ -72,11 +72,17 @@ template.innerHTML = `
             --button-color: var(--color);
             --button-hover-bg: color-mix(in srgb, var(--foreground) 10%, transparent);
         }
+        :host([variant="outline"]) button {
+            box-shadow: 2px 2px 0 color-mix(in srgb, var(--foreground) 40%, transparent);
+        }
         :host([variant="white"]) {
             --button-bg: #fff;
             --button-border: none;
             --button-color: var(--color);
             --button-hover-bg: color-mix(in srgb, #fff 90%, black);
+        }
+        :host([variant="white"]) button {
+            box-shadow: 2px 2px 0 color-mix(in srgb, var(--foreground) 50%, transparent);
         }
         :host([variant="yellow"]) {
             --button-bg: #ffff00;
@@ -148,8 +154,8 @@ template.innerHTML = `
             cursor: not-allowed;
         }
         button:focus-visible {
-            outline: 0.125rem solid var(--highlight);
-            outline-offset: 0.125rem;
+            outline: 2px solid var(--highlight);
+            outline-offset: 2px;
         }
         button:active {
             transform: translateY(2px);

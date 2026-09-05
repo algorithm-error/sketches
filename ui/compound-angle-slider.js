@@ -5,21 +5,21 @@ import './help-text.js';
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: block; }
+        :host { display: block; font-size: var(--font-size); }
         .label {
             color: var(--color);
             display: block;
-            margin-bottom: 0.625rem;
+            margin-bottom: 0.625em;
         }
         .body {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.75em;
             align-items: flex-start;
         }
         .side {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.5em;
             align-items: flex-end;
             flex: 1;
         }
@@ -28,13 +28,13 @@ template.innerHTML = `
             --line-clamp: 3;
         }
         numeric-input {
-            width: 5rem;
+            width: 5em;
             flex-shrink: 0;
         }
         angle-slider {
             flex-shrink: 0;
         }
-        :host([size="medium"]) angle-slider { width: 8rem; }
+        :host([size="medium"]) angle-slider { width: 8em; }
     </style>
     <label class="label" part="label"></label>
     <div class="body">

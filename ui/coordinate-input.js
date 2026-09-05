@@ -4,8 +4,9 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: inline-flex;
-            gap: 0.5rem;
+            gap: 0.5em;
             flex-direction: var(--direction, row);
         }
         :host([stretch]) {
@@ -22,12 +23,12 @@ template.innerHTML = `
         .pair {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.5em;
             flex-shrink: 0;
         }
         numeric-input {
             flex-shrink: 0;
-            min-width: 5rem;
+            min-width: 5em;
         }
         .label {
             color: var(--color);

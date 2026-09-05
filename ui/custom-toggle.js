@@ -1,7 +1,7 @@
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: inline-flex; }
+        :host { display: inline-flex; font-size: var(--font-size); }
         label {
             position: relative;
             display: inline-flex;
@@ -22,18 +22,18 @@ template.innerHTML = `
             cursor: not-allowed;
         }
         .track {
-            width: 2.25rem;
-            height: 1.125rem;
-            border-radius: 0.5625rem;
+            width: 2.25em;
+            height: 1.125em;
+            border-radius: 0.5625em;
             background: #dcdcdc;
             transition: background 0.15s;
         }
         .thumb {
             position: absolute;
-            top: 0.125rem;
-            left: 0.125rem;
-            width: 0.875rem;
-            height: 0.875rem;
+            top: 0.125em;
+            left: 0.125em;
+            width: 0.875em;
+            height: 0.875em;
             border-radius: 50%;
             background: var(--background);
             transition: transform 0.15s;
@@ -42,11 +42,11 @@ template.innerHTML = `
             background: var(--primary);
         }
         input[type="checkbox"]:checked ~ .thumb {
-            transform: translateX(1.125rem);
+            transform: translateX(1.125em);
         }
         input[type="checkbox"]:focus-visible ~ .track {
-            outline: 0.125rem solid var(--highlight);
-            outline-offset: 0.125rem;
+            outline: 2px solid var(--highlight);
+            outline-offset: 2px;
         }
     </style>
     <label>

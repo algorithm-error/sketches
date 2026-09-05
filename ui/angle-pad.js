@@ -6,12 +6,13 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: inline-block;
             /* Small by default; medium matches vector-pad's box. */
-            width: 4rem;
+            width: 4em;
             aspect-ratio: 1;
         }
-        :host([size="medium"]) { width: 8rem; }
+        :host([size="medium"]) { width: 8em; }
         :host([disabled]) svg { opacity: 0.4; pointer-events: none; }
         svg {
             display: block;
@@ -46,8 +47,8 @@ template.innerHTML = `
             outline: none;
         }
         .knob:focus-visible {
-            outline: 0.125rem solid var(--highlight);
-            outline-offset: 0.0625rem;
+            outline: 2px solid var(--highlight);
+            outline-offset: 1px;
         }
         /* A knob focused by pointerdown (so arrow keys work right after a drag)
            should not wear the keyboard focus ring. */

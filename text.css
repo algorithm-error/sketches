@@ -71,18 +71,18 @@ figcaption {
     margin: auto;
 }
 
-figure iframe + custom-button {
+figure iframe + custom-theme custom-button {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
 }
 
 @media (hover: hover) {
-    figure iframe + custom-button {
+    figure iframe + custom-theme custom-button {
         display: none;
     }
 
-    figure:hover > iframe + custom-button {
+    figure:hover > iframe + custom-theme custom-button {
         display: block;
     }
 }

@@ -5,7 +5,7 @@ import './random-seed-button.js';
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: block; }
+        :host { display: block; font-size: var(--font-size); }
         random-seed-button, numeric-input { flex: 1; }
     </style>
     <control-row>
@@ -31,10 +31,7 @@ export class UICompoundSeed extends HTMLElement {
 
         // Rolling a seed is this control's own business: the button moves the
         // number, and the outside only ever hears one `change`, as from any input.
-        this.button.addEventListener('seed', (event) => {
-            event.stopPropagation();
-            this.setValue(event.value);
-        });
+        this.button.addEventListener('click', () => this.setValue(Date.now()));
         this.numberInput.addEventListener('change', (event) => {
             event.stopPropagation();
             this.setValue(event.value, { fromNumber: true });

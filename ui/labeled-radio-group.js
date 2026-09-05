@@ -2,17 +2,18 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: block;
         }
         .options {
             display: flex;
             flex-direction: var(--direction, column);
-            gap: 1rem;
+            gap: 1em;
         }
         label {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.5em;
             font-size: var(--font-size);
             color: var(--color);
             cursor: pointer;
@@ -25,23 +26,23 @@ template.innerHTML = `
             appearance: none;
             box-sizing: border-box;
             margin: 0;
-            width: 1.125rem;
-            height: 1.125rem;
+            width: 1.125em;
+            height: 1.125em;
             border-radius: 50%;
-            border: 0.125rem solid var(--primary);
+            border: 2px solid var(--primary);
             background: var(--background);
             cursor: pointer;
         }
         input[type="radio"]:checked {
             background: var(--primary);
-            box-shadow: inset 0 0 0 0.2rem var(--background);
+            box-shadow: inset 0 0 0 3px var(--background);
         }
         input[type="radio"]:disabled {
             cursor: not-allowed;
         }
         input[type="radio"]:focus-visible {
-            outline: 0.125rem solid var(--highlight);
-            outline-offset: 0.125rem;
+            outline: 2px solid var(--highlight);
+            outline-offset: 2px;
         }
     </style>
     <div class="options" part="options"></div>

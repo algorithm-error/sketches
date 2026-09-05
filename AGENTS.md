@@ -22,6 +22,13 @@ git commit --author="Claude <noreply@anthropic.com>"
 Anna's edits and yours attributes all of it to one of you. If the working tree has both,
 stage and commit them separately.
 
+This is about authorship of identifiable work, not about every changed line. A number
+Anna nudged in a css file, a renamed variable, a typo she fixed while reading — none of
+that is hers in any way worth recording, so sweep it into your commit and move on. Split
+the commit when her change is something a person could point at later and say she wrote
+it: a rule she added, a function, a paragraph of prose, a decision the code now encodes.
+When it is genuinely unclear, ask rather than stall.
+
 ## Comments
 
 **Sketches don't carry a lot of comments.** `attractors/*.html` and the other sketch pages are

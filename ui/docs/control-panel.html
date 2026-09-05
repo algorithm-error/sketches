@@ -223,8 +223,8 @@
         <script type="module">
             const seedBtn = document.getElementById('demo-seed-button');
             const seedInput = document.getElementById('demo-seed-input');
-            seedBtn.addEventListener('seed', (event) => {
-                seedInput.value = event.detail.value;
+            seedBtn.addEventListener('click', () => {
+                seedInput.value = Date.now();
             });
         </script>
     </body>

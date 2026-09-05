@@ -1,26 +1,26 @@
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: inline-block; }
+        :host { display: inline-block; font-size: var(--font-size); height: 2em; }
+        :host([size="small"]) { height: 1.5em; }
         :host([stretch]) { display: block; width: 100%; }
         input {
             width: 100%;
             box-sizing: border-box;
-            height: 2rem;
+            height: 100%;
             font-family: var(--monospace);
             font-size: var(--small-font-size);
             color: var(--color);
             background: var(--background);
             border: 1px solid color-mix(in srgb, var(--foreground) 50%, transparent);
-            border-radius: 0.25rem;
-            padding: 0.375rem 0.5rem;
+            border-radius: 0.2857em;
+            padding: 0.4286em 0.5714em;
         }
         :host([size="small"]) input {
-            height: 1.5rem;
             font-size: var(--xsmall-font-size);
         }
         input:focus-visible {
-            outline: 0.125rem solid var(--highlight);
+            outline: 2px solid var(--highlight);
             outline-offset: 1px;
         }
         input:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -151,7 +151,7 @@ export class UINumberInput extends HTMLElement {
         // Reserve room for padding, border, and the native spinner button, on top
         // of the digit area itself, so `cols` digits actually fit unclipped.
         this.input.style.width = this.hasAttribute('cols')
-            ? `calc(${Number(this.getAttribute('cols'))}ch + 2.5rem)`
+            ? `calc(${Number(this.getAttribute('cols'))}ch + 2.5em)`
             : '';
     }
 

@@ -1,17 +1,17 @@
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: block; }
+        :host { display: block; font-size: var(--font-size); }
         :host([direction="vertical"]) {
             display: inline-block;
-            width: 0.5rem;
-            height: var(--slider-length, 8rem);
+            width: 0.5em;
+            height: var(--slider-length, 8em);
         }
         input[type="range"] {
             appearance: none;
             width: 100%;
-            height: 0.5rem;
-            border-radius: 0.125rem;
+            height: 0.5em;
+            border-radius: 0.125em;
             background: linear-gradient(
                 to right,
                 var(--fill, var(--primary)) 0%,
@@ -26,7 +26,7 @@ template.innerHTML = `
         :host([direction="vertical"]) input[type="range"] {
             writing-mode: vertical-lr;
             direction: rtl;
-            width: 0.5rem;
+            width: 0.5em;
             height: 100%;
             background: linear-gradient(
                 to top,
@@ -38,8 +38,8 @@ template.innerHTML = `
         }
         input[type="range"]::-webkit-slider-thumb {
             appearance: none;
-            width: 1.125rem;
-            height: 1.125rem;
+            width: 1.125em;
+            height: 1.125em;
             border-radius: 50%;
             background: var(--fill, var(--primary));
             cursor: pointer;
@@ -49,8 +49,8 @@ template.innerHTML = `
             cursor: not-allowed;
         }
         input[type="range"]:focus-visible {
-            outline: 0.125rem solid var(--highlight);
-            outline-offset: 0.1875rem;
+            outline: 2px solid var(--highlight);
+            outline-offset: 3px;
         }
     </style>
     <input type="range" />

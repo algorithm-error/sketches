@@ -7,34 +7,34 @@ const DEFAULT_DEBOUNCE = 100;
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: block; }
+        :host { display: block; font-size: var(--font-size); }
         .label {
             color: var(--color);
             display: block;
-            margin-bottom: 0.625rem;
+            margin-bottom: 0.625em;
         }
         .body {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.75em;
             align-items: flex-start;
         }
         .side {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.5em;
             align-items: flex-end;
             flex: 1;
         }
         .fields {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.5em;
             align-items: flex-end;
         }
         .pair {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.5em;
         }
         .field-label {
             color: var(--color);
@@ -42,7 +42,7 @@ template.innerHTML = `
             flex-shrink: 0;
         }
         numeric-input {
-            width: 5rem;
+            width: 5em;
             flex-shrink: 0;
         }
         help-text {

@@ -9,11 +9,11 @@ const DEFAULT_DEBOUNCE = 100;
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: inline-block; }
+        :host { display: inline-block; font-size: var(--font-size); }
         .head {
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 0.625rem;
+            gap: 0.75em;
+            margin-bottom: 0.625em;
         }
         .label {
             color: var(--color);

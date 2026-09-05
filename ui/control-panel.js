@@ -4,6 +4,7 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             position: absolute;
             display: flex;
             flex-direction: column;
@@ -14,8 +15,10 @@ template.innerHTML = `
             --dot-background: color-mix(in srgb, var(--black) 10%, transparent);
             --dot-top-left: color-mix(in srgb, var(--black) 10%, transparent);
             --dot-bottom-right: color-mix(in srgb, var(--black) 50%, transparent);
+            /* This size fits seed button + seed input with timestamp size regular (fully visible) in one row */
+            --width: 21em;
             background: var(--panel-bg-white);
-            width: 19rem;
+            width: var(--width);
         }
         /* Raised the way a button is: a hairline and an offset shadow, not a bevel. */
         :host(.emboss) {
@@ -28,14 +31,14 @@ template.innerHTML = `
             flex: 1 1 auto;
             min-height: 0;
             overflow-y: auto;
-            padding: 1rem;
+            padding: 1em;
             box-sizing: border-box;
         }
         :host([variant="gray"]) {
             background: var(--panel-bg-gray);
         }
         :host([narrow]) {
-            width: 16rem;
+            width: 16em;
         }
         /* A row of controls needs width a phone does not have, so the layout below is
            the wide one. The attribute stays either way; only the rendering answers to
@@ -49,22 +52,17 @@ template.innerHTML = `
                 flex-direction: row;
                 flex-wrap: wrap;
                 align-items: flex-start;
-                gap: 1.5rem;
+                gap: 1.5em;
             }
         }
-        /* A vertical panel gives its controls exactly 17rem (19rem, less the 1rem
-           of content padding on each side), so a horizontal column defaults to the
-           same width — a control is laid out identically in either orientation.
-           Override per child with an inline flex value where a group needs more or less. */
         :host([horizontal]) ::slotted(*) {
-            flex: 0 0 17rem;
+            flex: 0 0 calc(var(--width) - 2rem)
         }
-        /* custom-fieldset bleeds 0.75rem into the panel's padding on each side,
+        /* custom-fieldset bleeds 0.75em into the panel's padding on each side,
            which only reads as intentional against a panel edge; in a row it just
            eats the gap. Pull the bleed back and widen the box by the same amount,
-           so what sits inside the fieldset still measures 17rem. */
+           so what sits inside the fieldset still measures 17em. */
         :host([horizontal]) ::slotted(custom-fieldset) {
-            flex: 0 0 18.5rem;
             margin-left: 0;
             margin-right: 0;
         }
@@ -78,9 +76,9 @@ template.innerHTML = `
             /* The emboss border sits outside the width, so the fallback would
                overhang the right offset by it without this. */
             box-sizing: border-box;
-            left: var(--offset, 1rem);
-            right: var(--offset, 1rem);
-            max-width: calc(100% - var(--offset, 1rem) * 2);
+            left: var(--offset, 1em);
+            right: var(--offset, 1em);
+            max-width: calc(100% - var(--offset, 1em) * 2);
             margin-inline: auto;
         }
         :host([horizontal][center]) {
@@ -91,19 +89,19 @@ template.innerHTML = `
         :host([placement]) {
             box-sizing: border-box;
             position: fixed;
-            top: var(--offset, 1rem);
-            max-height: calc(100dvh - var(--offset, 1rem) * 2);
+            top: var(--offset, 1em);
+            max-height: calc(100dvh - var(--offset, 1em) * 2);
         }
         :host([placement="left"]) {
-            left: var(--offset, 1rem);
+            left: var(--offset, 1em);
         }
         :host([placement="right"]) {
-            right: var(--offset, 1rem);
+            right: var(--offset, 1em);
         }
         /* After the [placement] rule above, so it wins the top it sets. */
         :host([placement="bottom"]) {
             top: auto;
-            bottom: var(--offset, 1rem);
+            bottom: var(--offset, 1em);
         }
         /* On a phone the panel starts halfway down the sketch and runs as long as it
            needs. Absolute, not fixed, so the page scrolls to the rest of it instead of
@@ -113,10 +111,10 @@ template.innerHTML = `
                 position: absolute;
                 top: 50vh;
                 bottom: auto;
-                left: var(--offset, 1rem);
-                right: var(--offset, 1rem);
+                left: var(--offset, 1em);
+                right: var(--offset, 1em);
                 margin-inline: auto;
-                max-width: calc(100% - var(--offset, 1rem) * 2);
+                max-width: calc(100% - var(--offset, 1em) * 2);
                 max-height: none;
             }
         }
@@ -125,11 +123,11 @@ template.innerHTML = `
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.5em;
             overflow: hidden;
-            padding: 0 2rem;
+            padding: 0 2em;
             flex: 0 0 auto;
-            height: 2rem;
+            height: 2em;
             cursor: grab;
             user-select: none;
             touch-action: none;
@@ -186,8 +184,8 @@ template.innerHTML = `
         custom-button.toggle {
             display: none;
             position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+            top: 0.5em;
+            right: 0.5em;
         }
         /* No header: nothing to grab, so the panel cannot be dragged or collapsed.
            Only where there is a pointer to grab with — on touch the header stays, or
@@ -208,26 +206,26 @@ template.innerHTML = `
         }
         /* Collapsed, the panel is only this button, so the margins put it where the
            collapse button it replaces was: the same inset from the panel's anchored
-           edge, and centred on the 2rem header it stands in for. */
+           edge, and centred on the 2em header it stands in for. */
         :host([collapsed]) custom-button.toggle {
             display: inline-block;
             position: static;
-            margin: 0.25rem calc(0.2rem + 2px);
+            margin: 0.25em calc(0.2em + 2px);
         }
         .collapse {
             position: absolute;
             top: -2px;
             bottom: 0;
-            right: calc(0.2rem + 2px);
+            right: calc(0.2em + 2px);
             margin: auto;
         }
         /* Outer side, as the window controls sit on a mac. */
         :host([placement="left"]) .collapse {
             right: auto;
-            left: calc(0.2rem + 2px);
+            left: calc(0.2em + 2px);
         }
         custom-fieldset {
-            margin: 0.75rem -0.75rem 0 -0.75rem;
+            margin: 0.75em -0.75em 0 -0.75em;
         }
     </style>
     <div class="header">

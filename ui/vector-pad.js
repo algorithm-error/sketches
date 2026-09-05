@@ -7,8 +7,9 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: inline-block;
-            width: 8rem;
+            width: 8em;
             /* Width over height, so a pad standing in for a 16:9 canvas reads
                --ratio: 1.778. Values stay min..max on both axes either way. */
             aspect-ratio: var(--ratio, 1);
@@ -54,8 +55,8 @@ template.innerHTML = `
             outline: none;
         }
         .knob:focus-visible {
-            outline: 0.125rem solid var(--highlight);
-            outline-offset: 0.0625rem;
+            outline: 2px solid var(--highlight);
+            outline-offset: 1px;
         }
     </style>
     <svg viewBox="0 0 ${SPAN} ${SPAN}">

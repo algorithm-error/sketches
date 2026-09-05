@@ -3,7 +3,7 @@ import './custom-button.js';
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: inline-block; }
+        :host { display: inline-block; font-size: var(--font-size); }
         :host([stretch]) { display: block; width: 100%; }
         :host([stretch]) custom-button { width: 100%; }
         :host([in-progress]) .label { display: none; }

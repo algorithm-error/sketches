@@ -2,9 +2,10 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1.5em;
         }
     </style>
     <slot></slot>

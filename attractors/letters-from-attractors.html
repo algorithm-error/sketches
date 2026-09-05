@@ -257,7 +257,9 @@
                         button.setAttribute('size', 'small');
                         button.textContent = small ? 'Open in new tab to edit' : 'Open in new tab';
                         button.addEventListener('click', () => window.open(src, '_blank', 'noopener'));
-                        iframe.after(button);
+                        const theme = document.createElement('custom-theme');
+                        theme.append(button);
+                        iframe.after(theme);
                     }
                 </script>
             </article>

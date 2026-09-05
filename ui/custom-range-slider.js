@@ -3,17 +3,17 @@ const THUMB = 1.125;
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: block; }
+        :host { display: block; font-size: var(--font-size); }
         .track {
             position: relative;
-            height: ${THUMB}rem;
+            height: ${THUMB}em;
             display: flex;
             align-items: center;
         }
         .rail, .fill {
             position: absolute;
-            height: 0.5rem;
-            border-radius: 0.125rem;
+            height: 0.5em;
+            border-radius: 0.125em;
         }
         .rail {
             left: 0;
@@ -24,8 +24,8 @@ template.innerHTML = `
            is placed in those coordinates instead of a plain 0–100% ratio. */
         .fill {
             background: var(--fill, var(--primary));
-            left: calc(${THUMB / 2}rem + (100% - ${THUMB}rem) * var(--from-ratio, 0));
-            right: calc(100% - ${THUMB / 2}rem - (100% - ${THUMB}rem) * var(--to-ratio, 1));
+            left: calc(${THUMB / 2}em + (100% - ${THUMB}em) * var(--from-ratio, 0));
+            right: calc(100% - ${THUMB / 2}em - (100% - ${THUMB}em) * var(--to-ratio, 1));
             /* The inputs above pass their pointer events through, so the fill can
                take them and drag the whole range without disturbing the thumbs. */
             cursor: grab;
@@ -44,7 +44,7 @@ template.innerHTML = `
             position: absolute;
             left: 0;
             width: 100%;
-            height: ${THUMB}rem;
+            height: ${THUMB}em;
             margin: 0;
             appearance: none;
             background: none;
@@ -53,8 +53,8 @@ template.innerHTML = `
         }
         input[type="range"]::-webkit-slider-thumb {
             appearance: none;
-            width: ${THUMB}rem;
-            height: ${THUMB}rem;
+            width: ${THUMB}em;
+            height: ${THUMB}em;
             border-radius: 50%;
             background: var(--fill, var(--primary));
             pointer-events: auto;
@@ -68,8 +68,8 @@ template.innerHTML = `
             cursor: not-allowed;
         }
         input[type="range"]:focus-visible {
-            outline: 0.125rem solid var(--highlight);
-            outline-offset: 0.1875rem;
+            outline: 2px solid var(--highlight);
+            outline-offset: 3px;
         }
     </style>
     <div class="track">

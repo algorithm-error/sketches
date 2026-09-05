@@ -6,8 +6,9 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: inline-block;
-            width: 4rem;
+            width: 4em;
             aspect-ratio: 1;
         }
         :host([disabled]) svg { opacity: 0.4; pointer-events: none; }
@@ -34,8 +35,8 @@ template.innerHTML = `
             cursor: grab;
         }
         .knob:focus-visible {
-            outline: 0.125rem solid var(--highlight);
-            outline-offset: 0.0625rem;
+            outline: 2px solid var(--highlight);
+            outline-offset: 1px;
         }
     </style>
     <svg viewBox="0 0 100 100">

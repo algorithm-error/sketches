@@ -16,10 +16,10 @@ template.innerHTML = `
             /*--font-family: 'SFMono-Regular', Consolas, Menlo, monospace;*/
             --monospace: monospace;
             --font-family: serif;
-            --regular-font-size: 1rem;
-            --small-font-size: 0.875rem;
-            --xsmall-font-size: 0.75rem;
-            --font-size: 1rem;
+            --regular-font-size: 1em;
+            --small-font-size: 0.875em;
+            --xsmall-font-size: 0.75em;
+            --font-size: 16px;
             --line-height: 1.25;
             --small-line-height: 1.25;
             color-scheme: light;

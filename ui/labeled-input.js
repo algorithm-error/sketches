@@ -4,17 +4,18 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 0.25rem;
+            gap: 0.25em;
         }
         :host([stretch]) { width: 100%; }
         label {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.75em;
             width: 100%;
             font-size: var(--font-size);
             color: var(--color);

@@ -3,15 +3,15 @@ import './custom-button.js';
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: inline-block; }
+        :host { display: inline-block; font-size: var(--font-size); }
         :host([stretch]) { display: block; width: 100%; }
         svg {
             display: inline-block;
             flex-shrink: 0;
-            width: 1rem;
-            height: 1rem;
+            width: 1.1429em;
+            height: 1.1429em;
             position: relative;
-            top: -0.05rem;
+            top: -0.0571em;
             vertical-align: middle;
             transform: rotate(70deg);
         }
@@ -35,18 +35,6 @@ export class UIRandomSeedButton extends HTMLElement {
         const shadow = this.attachShadow({ mode: 'open' });
         shadow.appendChild(template.content.cloneNode(true));
         this.button = shadow.querySelector('custom-button');
-        this.button.addEventListener('click', () => {
-            if (this.hasAttribute('disabled')) return;
-            const value = Date.now();
-            const valueEvent = new CustomEvent('seed', {
-                detail: { value },
-                bubbles: true,
-                composed: true,
-            });
-            // `value` sits on the event itself too, so handlers can read `event.value`.
-            valueEvent.value = value;
-            this.dispatchEvent(valueEvent);
-        });
     }
 
     connectedCallback() {

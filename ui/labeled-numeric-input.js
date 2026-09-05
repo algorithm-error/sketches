@@ -4,6 +4,7 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: flex;
             align-items: center;
         }
@@ -11,7 +12,7 @@ template.innerHTML = `
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.75em;
             width: 100%;
             font-size: var(--font-size);
             color: var(--color);
@@ -24,7 +25,7 @@ template.innerHTML = `
             white-space: nowrap;
         }
         numeric-input {
-            width: 5rem;
+            width: 5em;
             flex-shrink: 0;
         }
     </style>

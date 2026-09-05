@@ -4,8 +4,9 @@ const template = document.createElement('template');
 template.innerHTML = `
     <style>
         :host {
+            font-size: var(--font-size);
             display: inline-block;
-            --button-width: 8rem;
+            --button-width: 8em;
         }
         :host([stretch]) { display: block; width: 100%; }
         :host([stretch]) custom-button { width: 100%; }
@@ -16,7 +17,7 @@ template.innerHTML = `
             width: 100%;
         }
         :host([size="small"]) {
-            --button-width: 7rem;
+            --button-width: 7em;
         }
 
         .ellipsis {

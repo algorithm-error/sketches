@@ -21,8 +21,8 @@
                 <section aria-label="Basic">
                     <h2>Basic</h2>
                     <p>
-                        Click to dispatch a <code>seed</code> event carrying a fresh <code>Date.now()</code> timestamp —
-                        wire it up to update a paired number input.
+                        A plain button with a dice on it. It emits <code>click</code> like any button; rolling the value
+                        is the caller's job.
                     </p>
                     <div>
                         <random-seed-button id="demo-seed-button"></random-seed-button>
@@ -48,8 +48,8 @@
         <script type="module">
             const button = document.getElementById('demo-seed-button');
             const output = document.getElementById('demo-seed-output');
-            button.addEventListener('seed', (event) => {
-                output.textContent = `seed: ${event.detail.value}`;
+            button.addEventListener('click', () => {
+                output.textContent = `seed: ${Date.now()}`;
             });
         </script>
     </body>
