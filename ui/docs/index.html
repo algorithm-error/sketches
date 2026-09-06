@@ -2,21 +2,620 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>UI Kit</title>
         <link rel="stylesheet" href="docs.css" />
-        <script type="module" src="../custom-theme.js"></script>
-        <script type="module" src="./code-snippet.js"></script>
+        <style>
+            .lede {
+                max-width: 34rem;
+            }
+
+            figure {
+                position: relative;
+                margin: 2rem 0 0;
+                overflow: hidden;
+            }
+
+            figure canvas {
+                width: 100%;
+                height: 32rem;
+                background: var(--background);
+            }
+
+            figure control-panel {
+                top: 1rem;
+                right: 1rem;
+                --width: 17em;
+            }
+
+            figcaption {
+                margin-top: 0.5rem;
+                font-size: var(--small-font-size);
+                color: #767676;
+            }
+
+            main {
+                max-width: 56rem;
+            }
+
+            .gallery {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+                gap: 1.5rem;
+            }
+
+            article h3 {
+                margin: 0 0 0.5rem;
+                font-size: var(--small-font-size);
+                font-weight: 400;
+            }
+
+            article h3 a {
+                color: inherit;
+            }
+
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                align-items: center;
+            }
+
+            .wide {
+                grid-column: 1 / -1;
+            }
+
+            .backdrop {
+                position: relative;
+                height: 15rem;
+                padding: 1rem;
+                box-sizing: border-box;
+                background: repeating-linear-gradient(45deg, #ddd, #ddd 10px, #eee 10px, #eee 20px);
+            }
+
+            .backdrop control-panel {
+                top: 1rem;
+                left: 1rem;
+                --width: 15em;
+            }
+
+            @media (max-width: 48rem) {
+                body {
+                    flex-direction: column;
+                }
+
+                aside {
+                    width: auto;
+                    min-height: 0;
+                    border-right: none;
+                    border-bottom: 1px solid #ddd;
+                }
+
+                figure control-panel {
+                    position: static;
+                    width: auto;
+                    margin-top: 1rem;
+                }
+            }
+        </style>
+        <script type="module" src="../index.js"></script>
         <script type="module" src="./docs-sidebar.js"></script>
     </head>
     <body>
-        <custom-theme>
+        <custom-theme id="theme">
             <aside>
                 <docs-sidebar></docs-sidebar>
             </aside>
             <main>
-                <h1>UI kit</h1>
-                <p>Web components for controlling sketches. Pick a component from the sidebar.</p>
+                <header class="row" style="justify-content: space-between">
+                    <h1>UI kit</h1>
+                    <binary-toggle id="theme-toggle" value="light">
+                        <span slot="light">Light</span>
+                        <span slot="dark">Dark</span>
+                    </binary-toggle>
+                </header>
+
+                <p class="lede">
+                    Web components for driving generative sketches: buttons, sliders, pads and the panel they sit in.
+                    Plain custom elements, no framework and no build step — import
+                    <code>ui/index.js</code> once and use the tags. Everything below is live; each name links to its own
+                    page.
+                </p>
+
+                <figure>
+                    <canvas id="hero-canvas"></canvas>
+                    <control-panel id="hero-panel" title="De Jong">
+                        <control-column>
+                            <compound-slider
+                                id="hero-points"
+                                label="Points"
+                                help="How many iterations are plotted"
+                                min="2000"
+                                max="60000"
+                                step="1000"
+                                value="24000"
+                            ></compound-slider>
+
+                            <compound-slider
+                                id="hero-spread"
+                                label="Spread"
+                                help="Scale of the plot inside the frame"
+                                min="0.3"
+                                max="1.2"
+                                step="0.01"
+                                value="0.82"
+                                decimals="2"
+                            ></compound-slider>
+
+                            <compound-angle-slider
+                                id="hero-rotation"
+                                label="Rotation"
+                                help="Turns the whole attractor, in degrees"
+                                min="0"
+                                max="360"
+                                step="1"
+                                value="0"
+                            ></compound-angle-slider>
+
+                            <labeled-input label="Ink">
+                                <color-swatches
+                                    id="hero-ink"
+                                    value="#0000ff"
+                                    colors="#0000ff,#ff0000,#00a0a0,#767676"
+                                    labels="Blue,Red,Cyan,Gray"
+                                ></color-swatches>
+                            </labeled-input>
+
+                            <compound-seed id="hero-seed" value="1874"></compound-seed>
+
+                            <play-stop-button id="hero-play" stretch></play-stop-button>
+                        </control-column>
+                    </control-panel>
+                    <figcaption>
+                        The same panel a sketch page uses, over a plain canvas. Roll the seed, drag a slider, press
+                        play.
+                    </figcaption>
+                </figure>
+
+                <section aria-label="Buttons">
+                    <h2>Buttons</h2>
+                    <div class="gallery">
+                        <article>
+                            <h3><a href="custom-button.html">Button</a></h3>
+                            <div class="row">
+                                <custom-button>Draw</custom-button>
+                                <custom-button variant="accent">Save</custom-button>
+                                <custom-button variant="outline">Reset</custom-button>
+                            </div>
+                        </article>
+
+                        <article>
+                            <h3><a href="play-stop-button.html">Play/stop button</a></h3>
+                            <play-stop-button></play-stop-button>
+                        </article>
+
+                        <article>
+                            <h3><a href="apply-button.html">Apply button</a></h3>
+                            <apply-button variant="accent">Apply</apply-button>
+                        </article>
+
+                        <article>
+                            <h3><a href="acknowledge-button.html">Acknowledge button</a></h3>
+                            <acknowledge-button variant="accent">Copy SVG</acknowledge-button>
+                        </article>
+
+                        <article>
+                            <h3><a href="random-seed-button.html">Random seed button</a></h3>
+                            <random-seed-button variant="noise"></random-seed-button>
+                        </article>
+
+                        <article>
+                            <h3><a href="binary-toggle.html">Binary toggle</a></h3>
+                            <binary-toggle value="a">
+                                <span slot="a">Grid</span>
+                                <span slot="b">Mesh</span>
+                            </binary-toggle>
+                        </article>
+
+                        <article>
+                            <h3><a href="custom-toggle.html">Toggle</a></h3>
+                            <custom-toggle checked></custom-toggle>
+                        </article>
+                    </div>
+                </section>
+
+                <section aria-label="Inputs">
+                    <h2>Inputs</h2>
+                    <div class="gallery">
+                        <article>
+                            <h3><a href="numeric-input.html">Number input</a></h3>
+                            <numeric-input value="1874" cols="4"></numeric-input>
+                        </article>
+
+                        <article>
+                            <h3><a href="size-input.html">Size input</a></h3>
+                            <size-input width="394" height="272" min="10" max="2000" step="1"></size-input>
+                        </article>
+
+                        <article>
+                            <h3><a href="coordinate-input.html">Coordinate input</a></h3>
+                            <coordinate-input x="0.6" y="0.6" mode="polar"></coordinate-input>
+                        </article>
+
+                        <article>
+                            <h3><a href="custom-select.html">Select</a></h3>
+                            <custom-select value="b">
+                                <option value="a">Grid</option>
+                                <option value="b">Mesh</option>
+                                <option value="c">Spiral</option>
+                            </custom-select>
+                        </article>
+
+                        <article>
+                            <h3><a href="color-swatches.html">Color swatch group</a></h3>
+                            <color-swatches
+                                value="#0000ff"
+                                colors="#191919,#0000ff,#ff0000,#00ffff"
+                                labels="Black,Blue,Red,Cyan"
+                            ></color-swatches>
+                        </article>
+
+                        <article>
+                            <h3><a href="labeled-input.html">Labeled input</a></h3>
+                            <labeled-input label="Optimized" help="Drop curves that duplicate a longer one">
+                                <custom-toggle checked></custom-toggle>
+                            </labeled-input>
+                        </article>
+
+                        <article>
+                            <h3><a href="labeled-select.html">Labeled select</a></h3>
+                            <labeled-select label="Type" value="b">
+                                <option value="a">Attractor</option>
+                                <option value="b">Trace</option>
+                            </labeled-select>
+                        </article>
+
+                        <article>
+                            <h3><a href="labeled-numeric-input.html">Labeled number input</a></h3>
+                            <labeled-numeric-input label="Frame" value="17"></labeled-numeric-input>
+                        </article>
+
+                        <article>
+                            <h3><a href="labeled-radio-group.html">Labeled radio group</a></h3>
+                            <labeled-radio-group value="b" style="--direction: row">
+                                <option value="a">Grid</option>
+                                <option value="b">Mesh</option>
+                            </labeled-radio-group>
+                        </article>
+
+                        <article>
+                            <h3><a href="labeled-radio.html">Labeled radio</a></h3>
+                            <control-row style="--columns: none">
+                                <labeled-radio name="gallery-radio" value="a" checked>Emitter</labeled-radio>
+                                <labeled-radio name="gallery-radio" value="b">Repeller</labeled-radio>
+                            </control-row>
+                        </article>
+                    </div>
+                </section>
+
+                <section aria-label="Sliders">
+                    <h2>Sliders</h2>
+                    <div class="gallery">
+                        <article>
+                            <h3><a href="custom-slider.html">Slider</a></h3>
+                            <custom-slider min="0" max="100" step="1" value="50"></custom-slider>
+                        </article>
+
+                        <article>
+                            <h3><a href="custom-range-slider.html">Range slider</a></h3>
+                            <custom-range-slider min="0" max="100" from="30" to="60"></custom-range-slider>
+                        </article>
+
+                        <article>
+                            <h3><a href="angle-slider.html">Angle slider</a></h3>
+                            <angle-slider value="120"></angle-slider>
+                        </article>
+
+                        <article>
+                            <h3><a href="compound-slider.html">Compound slider</a></h3>
+                            <compound-slider
+                                label="Growth"
+                                help="Rate of curve expansion"
+                                min="0"
+                                max="2"
+                                step="0.01"
+                                value="1"
+                                decimals="2"
+                            ></compound-slider>
+                        </article>
+
+                        <article>
+                            <h3><a href="compound-range-slider.html">Compound range slider</a></h3>
+                            <compound-range-slider
+                                label="Steps"
+                                help="Stroke length relative to radius"
+                                min="0"
+                                max="100"
+                                from="20"
+                                to="80"
+                            ></compound-range-slider>
+                        </article>
+
+                        <article>
+                            <h3><a href="compound-angle-slider.html">Compound angle slider</a></h3>
+                            <compound-angle-slider
+                                label="Mesh angle"
+                                help="Direction the mesh grows in"
+                                min="0"
+                                max="360"
+                                step="1"
+                                value="180"
+                            ></compound-angle-slider>
+                        </article>
+                    </div>
+                </section>
+
+                <section aria-label="Pads">
+                    <h2>Pads</h2>
+                    <div class="gallery">
+                        <article>
+                            <h3><a href="angle-pad.html">Angle pad</a></h3>
+                            <angle-pad angle1="40" angle2="330"></angle-pad>
+                        </article>
+
+                        <article>
+                            <h3><a href="vector-pad.html">Vector pad</a></h3>
+                            <vector-pad x="0.3" y="-0.5"></vector-pad>
+                        </article>
+
+                        <article>
+                            <h3><a href="compound-angle-pad.html">Compound angle pad</a></h3>
+                            <compound-angle-pad
+                                label="Branch deflection"
+                                help="Angles the branches split by"
+                                angle1="46"
+                                angle2="315"
+                            ></compound-angle-pad>
+                        </article>
+
+                        <article>
+                            <h3><a href="vector-slider.html">Vector slider</a></h3>
+                            <vector-slider
+                                label="Force"
+                                help="Direction and strength per particle"
+                                min="-1"
+                                max="1"
+                                step="0.01"
+                                x="0.4"
+                                y="-0.2"
+                                decimals="2"
+                            ></vector-slider>
+                        </article>
+                    </div>
+                </section>
+
+                <section aria-label="Layout">
+                    <h2>Layout</h2>
+                    <div class="gallery">
+                        <article>
+                            <h3><a href="control-row.html">Control row</a></h3>
+                            <control-row>
+                                <custom-button>Draw</custom-button>
+                                <custom-button>Clear</custom-button>
+                            </control-row>
+                        </article>
+
+                        <article>
+                            <h3><a href="control-column.html">Control column</a></h3>
+                            <control-column>
+                                <custom-button>Draw</custom-button>
+                                <custom-button>Clear</custom-button>
+                            </control-column>
+                        </article>
+
+                        <article>
+                            <h3><a href="control-grid.html">Control grid</a></h3>
+                            <control-grid>
+                                <custom-button>One</custom-button>
+                                <custom-button>Two</custom-button>
+                                <custom-button>Three</custom-button>
+                            </control-grid>
+                        </article>
+
+                        <article>
+                            <h3><a href="custom-grid.html">Grid</a></h3>
+                            <custom-grid columns="3">
+                                <custom-button>One</custom-button>
+                                <custom-button>Two</custom-button>
+                                <custom-button>Three</custom-button>
+                            </custom-grid>
+                        </article>
+
+                        <article>
+                            <h3><a href="custom-fieldset.html">Fieldset</a></h3>
+                            <custom-fieldset label="Particle type">
+                                <control-row style="--columns: none">
+                                    <labeled-radio name="gallery-particle" value="a" checked>Emitter</labeled-radio>
+                                    <labeled-radio name="gallery-particle" value="b">Repeller</labeled-radio>
+                                </control-row>
+                            </custom-fieldset>
+                        </article>
+
+                        <article>
+                            <h3><a href="custom-theme.html">Theme</a></h3>
+                            <custom-theme variant="dark">
+                                <control-row style="--columns: none; background: var(--background); padding: 0.75rem">
+                                    <custom-button>Draw</custom-button>
+                                    <custom-button variant="outline">Reset</custom-button>
+                                </control-row>
+                            </custom-theme>
+                        </article>
+
+                        <article class="wide">
+                            <h3><a href="control-panel.html">Panel</a></h3>
+                            <div class="backdrop">
+                                <control-panel title="Toolbar">
+                                    <control-column>
+                                        <compound-slider
+                                            label="Bias"
+                                            help="Directional bias for curve flow"
+                                            min="0"
+                                            max="1"
+                                            step="0.01"
+                                            value="0.44"
+                                            decimals="2"
+                                        ></compound-slider>
+                                        <compound-seed value="1874"></compound-seed>
+                                    </control-column>
+                                </control-panel>
+                            </div>
+                        </article>
+
+                        <article class="wide">
+                            <h3><a href="vertical-split.html">Vertical split</a></h3>
+                            <vertical-split resizable min="0.2" max="0.8" style="--divider: 1px solid #767676">
+                                <p>Drag the divider. The left pane holds the sketch, the right one its controls.</p>
+                                <control-column>
+                                    <custom-button stretch>Draw</custom-button>
+                                    <custom-button stretch variant="outline">Reset</custom-button>
+                                </control-column>
+                            </vertical-split>
+                        </article>
+                    </div>
+                </section>
             </main>
         </custom-theme>
+
+        <script type="module">
+            const theme = document.getElementById('theme');
+            document.getElementById('theme-toggle').addEventListener('change', (event) => {
+                if (event.detail.value === 'dark') theme.setAttribute('variant', 'dark');
+                else theme.removeAttribute('variant');
+                // The page outside <main> is not inside the theme, so it gets the ground by hand.
+                document.documentElement.style.background = getComputedStyle(theme).getPropertyValue('--background');
+            });
+
+            const canvas = document.getElementById('hero-canvas');
+            const context = canvas.getContext('2d');
+
+            const values = { points: 24000, spread: 0.82, rotation: 0, ink: '#0000ff', seed: 1874 };
+            let phase = 0;
+            let frame = null;
+
+            const FAMILIES = [
+                [1.4, -2.3, 2.4, -2.1],
+                [2.01, -2.53, 1.61, -0.33],
+                [-2.7, -0.09, -0.86, -2.2],
+                [-2.24, 0.43, -0.65, -2.43],
+                [1.641, 1.902, 0.316, 1.525],
+                [0.97, -1.899, 1.381, -1.506],
+                [-2.0, -2.0, -1.2, 2.0],
+            ];
+
+            // Mulberry32: a seeded generator so the same seed gives the same attractor.
+            function random(seed) {
+                let state = seed >>> 0;
+                return () => {
+                    state = (state + 0x6d2b79f5) >>> 0;
+                    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+                    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+                    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+                };
+            }
+
+            function draw() {
+                const ratio = window.devicePixelRatio || 1;
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                canvas.width = width * ratio;
+                canvas.height = height * ratio;
+
+                const style = getComputedStyle(theme);
+                context.setTransform(ratio, 0, 0, ratio, 0, 0);
+                context.fillStyle = style.getPropertyValue('--background').trim() || '#ffffff';
+                context.fillRect(0, 0, width, height);
+
+                // Most of the parameter space is a dot or a smudge, so the seed picks
+                // one of the sets that reads well and nudges it.
+                const next = random(values.seed);
+                const base = FAMILIES[Math.floor(next() * FAMILIES.length)];
+                const [a, b, c, d] = base.map((value) => value + (next() - 0.5) * 0.12);
+
+                // Trace first, then fit: the families do not share a centre, and a
+                // radius measured before the turn keeps rotation from swinging out of frame.
+                const points = new Float64Array(values.points * 2);
+                let x = 0.1;
+                let y = 0.1;
+                let minX = Infinity;
+                let maxX = -Infinity;
+                let minY = Infinity;
+                let maxY = -Infinity;
+                for (let i = 0; i < values.points; i += 1) {
+                    const nx = Math.sin(a * y) - Math.cos(b * x);
+                    const ny = Math.sin(c * x) - Math.cos(d * y);
+                    x = nx;
+                    y = ny;
+                    points[i * 2] = x;
+                    points[i * 2 + 1] = y;
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                }
+
+                const centerX = (minX + maxX) / 2;
+                const centerY = (minY + maxY) / 2;
+                const radius = Math.max(maxX - minX, maxY - minY) / 2 || 1;
+                const scale = ((Math.min(width, height) / 2) * values.spread) / radius;
+
+                const angle = (values.rotation * Math.PI) / 180 + phase;
+                const cos = Math.cos(angle);
+                const sin = Math.sin(angle);
+
+                context.fillStyle = values.ink;
+                // The same ink reads thinner on the dark ground, so it gets more weight there.
+                context.globalAlpha = theme.hasAttribute('variant') ? 0.28 : 0.14;
+
+                // The first steps land outside the attractor, before the orbit settles onto it.
+                for (let i = 20; i < values.points; i += 1) {
+                    const px = points[i * 2] - centerX;
+                    const py = points[i * 2 + 1] - centerY;
+                    context.fillRect(
+                        width / 2 + (px * cos - py * sin) * scale,
+                        height / 2 + (px * sin + py * cos) * scale,
+                        1,
+                        1,
+                    );
+                }
+                context.globalAlpha = 1;
+            }
+
+            function animate() {
+                phase += 0.004;
+                draw();
+                frame = requestAnimationFrame(animate);
+            }
+
+            const bind = (id, key, read = (event) => event.detail.value) =>
+                document.getElementById(id).addEventListener('change', (event) => {
+                    values[key] = read(event);
+                    draw();
+                });
+
+            bind('hero-points', 'points');
+            bind('hero-spread', 'spread');
+            bind('hero-rotation', 'rotation');
+            bind('hero-ink', 'ink');
+            bind('hero-seed', 'seed');
+
+            document.getElementById('hero-play').addEventListener('change', (event) => {
+                if (event.detail.playing) animate();
+                else cancelAnimationFrame(frame);
+            });
+
+            window.addEventListener('resize', draw);
+            document.getElementById('theme-toggle').addEventListener('change', draw);
+            customElements.whenDefined('control-panel').then(draw);
+        </script>
     </body>
 </html>

@@ -13,6 +13,7 @@ main {
 
 aside {
     width: 14rem;
+    background: var(--background);
     flex: none;
     box-sizing: border-box;
     padding: 1.5rem;
@@ -22,6 +23,8 @@ aside {
 
 main {
     flex: 1;
+    background: var(--background);
+    min-height: 100vh;
     box-sizing: border-box;
     padding: 1.5rem 2rem;
     max-width: 40rem;
