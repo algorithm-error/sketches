@@ -2,6 +2,6 @@
     "framework": null,
     "buildCommand": "bash scripts/build.sh",
     "outputDirectory": "dist",
-    "installCommand": "npm install",
-    "devCommand": "npm run serve"
+    "installCommand": "yarn install",
+    "devCommand": "yarn serve"
 }

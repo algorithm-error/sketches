@@ -2,7 +2,10 @@
 
 ## Dev server
 
-Sketches are static files, served with `npx live-server --no-browser --port=8123`.
+Sketches are static files, served with `yarn serve` (live-server on 8123).
+
+**This repo uses yarn, and dependency versions are pinned exact** — no `^` or `~` ranges
+in package.json. Do not reintroduce them.
 
 **Never stop a dev server you did not start.** If one is already running on the port
 you need, use it. Only kill a server that you started yourself in this session, and

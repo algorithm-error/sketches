@@ -8,7 +8,7 @@
     "main": "index.js",
     "scripts": {
         "build": "bash scripts/build.sh",
-        "serve": "live-server --no-browser",
+        "serve": "live-server --no-browser --port=8123",
         "format": "prettier --write .",
         "deploy:preview": "npx vercel deploy",
         "deploy:production": "npx vercel deploy --prod",
@@ -20,10 +20,10 @@
         "p5.js-svg": "1.6.0"
     },
     "devDependencies": {
-        "husky": "^9.1.7",
-        "lint-staged": "^17.3.0",
-        "live-server": "^1.2.2",
-        "prettier": "^3.9.6"
+        "husky": "9.1.7",
+        "lint-staged": "17.3.0",
+        "live-server": "1.2.2",
+        "prettier": "3.9.6"
     },
     "lint-staged": {
         "*.{js,html,css,json,md}": "prettier --write"
