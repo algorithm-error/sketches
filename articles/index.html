@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Articles</title>
+        <link rel="stylesheet" href="../text.css" />
+        <style>
+            ul {
+                list-style: none;
+                padding: 0;
+            }
+
+            li + li {
+                margin-top: 1rem;
+            }
+
+            time {
+                text-align: start;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Copy of the nav in the website project's Header.astro; keep in sync. -->
+        <header class="site-nav">
+            <nav>
+                <a href="/">Plots</a>
+                <a href="/art">Art</a>
+                <span aria-current="page">Articles</span>
+                <a href="/ui">UI kit</a>
+            </nav>
+        </header>
+
+        <main>
+            <ul>
+                <li>
+                    <a href="/articles/letters-from-attractors">Letters from attractors</a>
+                    <time datetime="2026-08-31">August 31, 2026</time>
+                </li>
+            </ul>
+        </main>
+
+        <!-- Copy of the website project's Footer.astro; keep in sync. -->
+        <footer class="site-footer">
+            <p>
+                &copy;
+                <script>
+                    document.currentScript.replaceWith(new Date().getFullYear());
+                </script>
+                Algorithm Error
+            </p>
+        </footer>
+    </body>
+</html>

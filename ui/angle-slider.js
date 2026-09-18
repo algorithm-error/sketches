@@ -12,10 +12,13 @@ template.innerHTML = `
             aspect-ratio: 1;
         }
         :host([disabled]) svg { opacity: 0.4; pointer-events: none; }
+        /* The box is the track's own box, so the dial lines up with what sits next
+           to it; the knob rides on the track and spills out of it. */
         svg {
             display: block;
             width: 100%;
             height: 100%;
+            overflow: visible;
             touch-action: none;
         }
         .track {
@@ -39,7 +42,7 @@ template.innerHTML = `
             outline-offset: 1px;
         }
     </style>
-    <svg viewBox="0 0 100 100">
+    <svg viewBox="${CENTER - RADIUS - 3} ${CENTER - RADIUS - 3} ${(RADIUS + 3) * 2} ${(RADIUS + 3) * 2}">
         <circle class="track" cx="${CENTER}" cy="${CENTER}" r="${RADIUS}"/>
         <line class="hand" x1="${CENTER}" y1="${CENTER}" x2="${CENTER}" y2="${CENTER - RADIUS}"/>
         <circle class="hub" cx="${CENTER}" cy="${CENTER}" r="2.5"/>

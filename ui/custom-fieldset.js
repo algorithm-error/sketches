@@ -5,10 +5,12 @@ template.innerHTML = `
             font-size: var(--font-size);
             position: relative;
             box-sizing: border-box;
-            display: block;
             border: 1px solid color-mix(in srgb, var(--foreground) 50%, transparent);
             border-radius: 0.25em;
             padding: 1.25em 0.75em 1em 0.75em;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5em;
         }
         .label {
             position: absolute;

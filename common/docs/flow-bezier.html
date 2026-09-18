@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Flow bezier – Common</title>
+        <link rel="stylesheet" href="docs.css" />
+        <script src="../../libraries/p5.js"></script>
+        <script type="module" src="../../ui/custom-theme.js"></script>
+        <script type="module" src="../../ui/random-seed-button.js"></script>
+        <script type="module" src="../../ui/binary-toggle.js"></script>
+        <script type="module" src="../../ui/control-panel.js"></script>
+        <script type="module" src="../../ui/control-column.js"></script>
+        <script type="module" src="../../ui/control-row.js"></script>
+        <script type="module" src="../../ui/custom-fieldset.js"></script>
+        <script type="module" src="../../ui/compound-slider.js"></script>
+        <script type="module" src="../../ui/labeled-select.js"></script>
+        <script type="module" src="../../ui/custom-toggle.js"></script>
+        <script type="module" src="./editable-snippet.js"></script>
+    </head>
+    <body>
+        <custom-theme>
+            <main>
+                <h1>Flow bezier</h1>
+                <p>
+                    <code>FlowBezier</code> (see <code>common/flow-bezier.js</code>) walks a point through a
+                    <code>FlowField</code> and turns the walk into a chain of cubic bezier segments. Each step becomes
+                    an anchor, and the two control points of that anchor sit on the field direction at that anchor,
+                    pointing backwards and forwards at distance <code>handle</code>. Control points are stored relative
+                    to their anchor.
+                </p>
+                <p>
+                    Every demo below is driven by the JSON under it. Edit it and the canvas redraws. Coordinates are in
+                    canvas pixels. Where a demo has a dice button it lays out a fresh field under the same curve
+                    settings.
+                </p>
+
+                <section aria-label="Beziers on a flow field">
+                    <h2>Beziers on a flow field</h2>
+                    <p>
+                        One curve per starting point. The red vectors are the field itself, sampled per cell;
+                        <code>getWeightedAverageAt</code> interpolates between the four surrounding cells, so a curve
+                        does not snap to the grid. A curve stops early when it walks off the field.
+                    </p>
+                    <p>
+                        Three of the settings shape the field rather than the curves. <code>cellSize</code> is the grid
+                        step in pixels, so a smaller one samples the noise more finely. <code>increment</code> is how
+                        far the noise moves per cell, which sets how fast the field turns. <code>spread</code> is how
+                        far off east the field is allowed to point, in radians, which is what keeps these curves
+                        crossing the canvas instead of leaving it.
+                    </p>
+                    <div class="stage">
+                        <div id="field-demo"></div>
+                        <control-panel id="field-panel" horizontal title="Beziers on a flow field">
+                            <custom-fieldset label="Flow field">
+                                <control-column>
+                                    <compound-slider
+                                        data-param="cellSize"
+                                        label="Cell size"
+                                        help="Grid step in pixels; smaller samples the noise more finely"
+                                        min="5"
+                                        max="60"
+                                        step="1"
+                                        decimals="0"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="increment"
+                                        label="Noise increment"
+                                        help="Step size between sampled noise points; higher turns the field faster"
+                                        min="0.005"
+                                        max="0.4"
+                                        step="0.005"
+                                        decimals="3"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="lod"
+                                        label="LOD"
+                                        help="Number of octaves of noise detail"
+                                        min="1"
+                                        max="10"
+                                        step="1"
+                                        decimals="0"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="noiseFalloff"
+                                        label="Falloff"
+                                        help="Amplitude falloff per noise octave"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        decimals="2"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="spread"
+                                        label="Spread"
+                                        help="How far off east the field may turn, in radians"
+                                        min="0"
+                                        max="3.14"
+                                        step="0.01"
+                                        decimals="2"
+                                    ></compound-slider>
+                                </control-column>
+                            </custom-fieldset>
+                            <custom-fieldset label="Flow bezier">
+                                <control-column>
+                                    <compound-slider
+                                        data-param="steps"
+                                        label="Steps"
+                                        help="How many steps each walk takes before it stops"
+                                        min="2"
+                                        max="300"
+                                        step="1"
+                                        decimals="0"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="step"
+                                        label="Step"
+                                        help="Length of one step, in pixels"
+                                        min="2"
+                                        max="120"
+                                        step="1"
+                                        decimals="0"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="handleRatio"
+                                        label="Handle"
+                                        help="Control point distance as a fraction of the gap between anchors"
+                                        min="0"
+                                        max="0.6"
+                                        step="0.01"
+                                        decimals="2"
+                                    ></compound-slider>
+                                    <control-row>
+                                        <span>Smooth</span>
+                                        <custom-toggle data-param="smooth"></custom-toggle>
+                                    </control-row>
+                                    <control-row>
+                                        <span>Debug</span>
+                                        <custom-toggle data-param="debug"></custom-toggle>
+                                    </control-row>
+                                </control-column>
+                            </custom-fieldset>
+                        </control-panel>
+                    </div>
+                    <div class="controls">
+                        <random-seed-button id="field-seed">New field</random-seed-button>
+                        <binary-toggle id="field-view" value="a">
+                            <span slot="a">Vectors</span>
+                            <span slot="b">Grid</span>
+                        </binary-toggle>
+                    </div>
+                    <editable-snippet id="field-snippet" rows="22"></editable-snippet>
+                </section>
+
+                <section aria-label="From a start to an end">
+                    <h2>From a start to an end</h2>
+                    <p>
+                        Pass <code>end</code> as well as <code>start</code> and the curve stops being a free walk. It
+                        still steps through the field, but each step mixes the field direction into the direction of the
+                        end point, and the stride is whatever lands on the end point in the steps that are left. Both
+                        endpoints are exact whatever the field does, and <code>step</code> is ignored because the
+                        spacing follows from the distance and <code>steps</code>.
+                    </p>
+                    <p>
+                        <code>pull</code> is how much of the field gets mixed in at most: 0 is a straight line, 1 is the
+                        field alone. The mix peaks in the middle of the curve and fades to nothing at both ends, so the
+                        curve leaves and arrives heading straight at its endpoints rather than swerving into them.
+                    </p>
+                    <div class="stage">
+                        <div id="between-demo"></div>
+                        <control-panel id="between-panel" horizontal title="From a start to an end">
+                            <custom-fieldset label="Flow field">
+                                <control-column>
+                                    <compound-slider
+                                        data-param="cellSize"
+                                        label="Cell size"
+                                        help="Grid step in pixels; smaller samples the noise more finely"
+                                        min="5"
+                                        max="60"
+                                        step="1"
+                                        decimals="0"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="increment"
+                                        label="Noise increment"
+                                        help="Step size between sampled noise points; higher turns the field faster"
+                                        min="0.005"
+                                        max="0.4"
+                                        step="0.005"
+                                        decimals="3"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="lod"
+                                        label="LOD"
+                                        help="Number of octaves of noise detail"
+                                        min="1"
+                                        max="10"
+                                        step="1"
+                                        decimals="0"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="noiseFalloff"
+                                        label="Falloff"
+                                        help="Amplitude falloff per noise octave"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        decimals="2"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="spread"
+                                        label="Spread"
+                                        help="How far off east the field may turn, in radians"
+                                        min="0"
+                                        max="3.14"
+                                        step="0.01"
+                                        decimals="2"
+                                    ></compound-slider>
+                                </control-column>
+                            </custom-fieldset>
+                            <custom-fieldset label="Flow bezier">
+                                <control-column>
+                                    <compound-slider
+                                        data-param="steps"
+                                        label="Steps"
+                                        help="How many segments the curve is cut into"
+                                        min="2"
+                                        max="200"
+                                        step="1"
+                                        decimals="0"
+                                    ></compound-slider>
+                                    <compound-slider
+                                        data-param="pull"
+                                        label="Pull"
+                                        help="How much field is mixed in at most: 0 is a straight line, 1 is the field alone"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        decimals="2"
+                                    ></compound-slider>
+                                    <labeled-select data-param="falloff" label="Falloff">
+                                        <option value="bulge">Middle bulge</option>
+                                        <option value="wide">Wide bulge</option>
+                                        <option value="in">Fades in</option>
+                                        <option value="out">Fades out</option>
+                                        <option value="constant">Constant</option>
+                                    </labeled-select>
+                                    <compound-slider
+                                        data-param="handleRatio"
+                                        label="Handle"
+                                        help="Control point distance as a fraction of the gap between anchors"
+                                        min="0"
+                                        max="0.6"
+                                        step="0.01"
+                                        decimals="2"
+                                    ></compound-slider>
+                                    <control-row>
+                                        <span>Smooth</span>
+                                        <custom-toggle data-param="smooth"></custom-toggle>
+                                    </control-row>
+                                    <control-row>
+                                        <span>Debug</span>
+                                        <custom-toggle data-param="debug"></custom-toggle>
+                                    </control-row>
+                                </control-column>
+                            </custom-fieldset>
+                        </control-panel>
+                    </div>
+                    <div class="controls">
+                        <random-seed-button id="between-seed">New field</random-seed-button>
+                        <binary-toggle id="between-view" value="a">
+                            <span slot="a">Vectors</span>
+                            <span slot="b">Grid</span>
+                        </binary-toggle>
+                    </div>
+                    <p class="legend">
+                        <span><i style="border-color: #e08080"></i>the field</span>
+                        <span><i style="border-color: #cccccc"></i>straight line between the two points</span>
+                        <span><i style="border-color: #000000"></i>the curve</span>
+                    </p>
+                    <editable-snippet id="between-snippet" rows="10"></editable-snippet>
+                </section>
+
+                <section aria-label="smooth">
+                    <h2><code>smooth()</code></h2>
+                    <p>
+                        Raw control points follow the field direction at their own anchor only, so a segment can kink
+                        where two neighbouring directions disagree. <code>smooth()</code> rotates each interior anchor's
+                        handles by a quarter of the angle difference between its neighbours, which pulls the joins into
+                        line. It mutates the curve in place, so the two versions below are two separate instances built
+                        from the same parameters.
+                    </p>
+                    <div id="smooth-demo"></div>
+                    <p class="legend">
+                        <span><i style="border-color: #bbbbbb"></i>before</span>
+                        <span><i style="border-color: #000000"></i>after <code>smooth()</code></span>
+                    </p>
+                    <editable-snippet id="smooth-snippet" rows="10"></editable-snippet>
+                </section>
+
+                <section aria-label="debug">
+                    <h2><code>debug()</code></h2>
+                    <p>
+                        Draws each segment's skeleton over the curve: filled dots are anchors, hollow dots are control
+                        points, lines connect a control point to its anchor. Anchors are shared between neighbouring
+                        segments, so every interior anchor gets two hollow dots.
+                    </p>
+                    <p>
+                        Drag any dot to edit the curve in place. An anchor takes its two control points with it; a
+                        control point moves on its own, so the two sides of an anchor stop being mirrored and the join
+                        turns into a corner. Editing the JSON rebuilds the curve from the field and discards the drags.
+                    </p>
+                    <div id="debug-demo"></div>
+                    <editable-snippet id="debug-snippet" rows="10"></editable-snippet>
+                </section>
+
+                <section aria-label="fromVertices">
+                    <h2><code>FlowBezier.fromVertices()</code></h2>
+                    <p>
+                        Builds the same structure from a list of points instead of a field, so there is no walk and no
+                        field to sample. The tangent at a vertex points from its previous vertex to its next one; the
+                        first and last vertex use their single neighbour. <code>handle</code> sets how far the control
+                        points sit along that tangent, so raising it rounds the curve and lowering it tightens it
+                        towards the straight polyline.
+                    </p>
+                    <div id="vertices-demo"></div>
+                    <p class="legend">
+                        <span><i style="border-color: #cccccc"></i>polyline through the vertices</span>
+                        <span><i style="border-color: #000000"></i>the curve</span>
+                    </p>
+                    <editable-snippet id="vertices-snippet" rows="22"></editable-snippet>
+                </section>
+
+                <section aria-label="Segments">
+                    <h2>Segments</h2>
+                    <p>
+                        <code>curve.segments</code> is the list of drawable pieces, one shorter than
+                        <code>curve.points</code>. Each holds <code>{anchor1, control1, anchor2, control2}</code>, where
+                        <code>control1</code> is the forward handle of the first anchor and <code>control2</code> is the
+                        backward handle of the second. Here each segment is drawn on its own, in its own colour, instead
+                        of calling <code>render()</code>.
+                    </p>
+                    <div id="segments-demo"></div>
+                    <editable-snippet id="segments-snippet" rows="10"></editable-snippet>
+                </section>
+
+                <section aria-label="toSpline">
+                    <h2><code>toSpline()</code></h2>
+                    <p>
+                        Returns just the anchor points, in order, dropping the control points. It reads them off
+                        <code>curve.segments</code> through <code>Bezier.toSpline</code> (see
+                        <code>common/bezier.js</code>): the first segment's start anchor, then the end anchor of every
+                        segment. That is the polyline the walk actually took, which is what you want for hit testing,
+                        measuring, or handing the curve to anything that takes plain vertices &mdash;
+                        <code>splineToBezier</code> included.
+                    </p>
+                    <div id="anchors-demo"></div>
+                    <p class="legend">
+                        <span><i style="border-color: #cccccc"></i>the curve</span>
+                        <span><i style="border-color: #000000"></i>the vertices <code>toSpline()</code> returns</span>
+                    </p>
+                    <editable-snippet id="anchors-snippet" rows="10"></editable-snippet>
+                    <p>The returned points, rounded for display:</p>
+                    <pre class="output" id="anchors-output"></pre>
+                </section>
+            </main>
+        </custom-theme>
+
+        <script type="module">
+            import { FlowField } from '../flow-field.js';
+            import { FlowBezier } from '../flow-bezier.js';
+            import { serialize } from './editable-snippet.js';
+
+            window.P5 = p5;
+
+            const cellSize = 30;
+            const snap = (value) => Math.max(cellSize * 6, Math.round(value / cellSize) * cellSize);
+
+            // The two flow field demos fill the column and most of the viewport; the rest are half
+            // the screen wide. The canvas border sits outside the width attribute, hence the 2px.
+            const fullWidth = document.querySelector('#field-demo').clientWidth - 2;
+            const fullHeight = Math.round(window.innerHeight * 0.95);
+            const width = snap(window.innerWidth * 0.5);
+            const height = snap(width * 0.55);
+
+            // A field biased towards the east, so a curve started at the left edge crosses the canvas
+            // instead of walking straight off it. `spread` is how far off east the field can turn.
+            const makeFlowField = (
+                p5,
+                { width, height, cellSize = 30, seed = 7, increment = 0.07, spread = 1.1, lod = 4, noiseFalloff = 0.5 },
+            ) => {
+                p5.noiseSeed(seed);
+                p5.noiseDetail(lod, noiseFalloff);
+                return new FlowField(p5, {
+                    width: width / cellSize + 1,
+                    height: height / cellSize + 1,
+                    cellSize,
+                    initialize: (p5, column, row) =>
+                        p5.map(p5.noise(column * increment, row * increment), 0.2, 0.8, -spread, spread),
+                });
+            };
+
+            const renderSegment = (p5, { anchor1, anchor2, control1, control2 }) => {
+                // Control points are relative to anchor point
+                p5.bezier(
+                    anchor1.x,
+                    anchor1.y,
+                    anchor1.x + control1.x,
+                    anchor1.y + control1.y,
+                    anchor2.x + control2.x,
+                    anchor2.y + control2.y,
+                    anchor2.x,
+                    anchor2.y,
+                );
+            };
+
+            /** Wires a snippet to a sketch: the snippet holds the parameters, a change redraws */
+            const sketch = (selector, snippetSelector, parameters, setup, draw, attach) => {
+                const snippet = document.querySelector(snippetSelector);
+                let current = parameters;
+                let instance;
+                new p5((p5) => {
+                    p5.setup = () => {
+                        setup(p5);
+                        p5.noLoop();
+                        instance = p5;
+                        snippet.value = current;
+                        snippet.addEventListener('change', (event) => {
+                            current = event.detail;
+                            instance.redraw();
+                        });
+
+                        if (attach) {
+                            attach(p5);
+                        }
+                    };
+                    p5.draw = () => {
+                        p5.background(255);
+                        draw(p5, current);
+                    };
+                }, document.querySelector(selector));
+            };
+
+            /** Wires a dice button to reroll a field seed the snippet does not carry */
+            const reseed = (selector, p5, reroll) => {
+                document.querySelector(selector).addEventListener('click', () => {
+                    reroll(Date.now());
+                    p5.redraw();
+                });
+            };
+
+            /**
+             * Wires every control in a panel to the parameter its data-param names. Controls take
+             * their starting position from the parameters, and a change writes straight back.
+             */
+            const wirePanel = (selector, p5, parameters) => {
+                const panel = document.querySelector(selector);
+                panel.querySelectorAll('[data-param]').forEach((control) => {
+                    const value = parameters[control.dataset.param];
+                    if (typeof value === 'boolean') {
+                        control.toggleAttribute('checked', value);
+                    } else {
+                        control.setAttribute('value', value);
+                    }
+                });
+                panel.addEventListener('change', (event) => {
+                    const control = event.target.closest?.('[data-param]');
+                    if (!control) {
+                        return;
+                    }
+                    const { checked, value } = event.detail;
+                    parameters[control.dataset.param] = checked !== undefined ? checked : value;
+                    p5.redraw();
+                });
+            };
+
+            // Named shapes for the FlowBezier falloff, which is a function rather than a number
+            const falloffShapes = {
+                bulge: (position) => Math.sin(Math.PI * position),
+                wide: (position) => Math.sin(Math.PI * position) ** 0.35,
+                in: (position) => position,
+                out: (position) => 1 - position,
+                constant: () => 1,
+            };
+
+            /** Wires a toggle between the two ways a field can draw itself */
+            const onView = (selector, p5, set) => {
+                document.querySelector(selector).addEventListener('change', (event) => {
+                    set(event.detail.value === 'b' ? 'grid' : 'vectors');
+                    p5.redraw();
+                });
+            };
+
+            /** Black reads on the vectors, red reads on both ends of the grey grid */
+            const ink = (view) => (view === 'grid' ? '#ff2d00' : '#000000');
+
+            const renderField = (flowField, view) => {
+                if (view === 'grid') {
+                    flowField.renderGrid();
+                } else {
+                    flowField.renderVectors();
+                }
+            };
+
+            // Beziers on a flow field
+            {
+                let flowField;
+                let seed = 7;
+                let view = 'vectors';
+                const count = Math.round(fullHeight / 50);
+                const starts = Array.from({ length: count }, (value, index) => ({
+                    x: 30,
+                    y: Math.round((fullHeight * (index + 0.5)) / count),
+                }));
+                // The panel holds the numbers, the snippet holds the points
+                const params = {
+                    cellSize: 30,
+                    increment: 0.07,
+                    lod: 4,
+                    noiseFalloff: 0.5,
+                    spread: 1.1,
+                    steps: 120,
+                    step: 20,
+                    handleRatio: 0.35,
+                    smooth: true,
+                    debug: false,
+                };
+                sketch(
+                    '#field-demo',
+                    '#field-snippet',
+                    { starts },
+                    (p5) => {
+                        p5.createCanvas(fullWidth, fullHeight);
+                    },
+                    (p5, { starts }) => {
+                        const {
+                            cellSize,
+                            increment,
+                            lod,
+                            noiseFalloff,
+                            spread,
+                            steps,
+                            step,
+                            handleRatio,
+                            smooth,
+                            debug,
+                        } = params;
+                        // The handle follows the gap between anchors, so changing the step keeps the shape
+                        const handle = step * handleRatio;
+                        flowField = makeFlowField(p5, {
+                            width: fullWidth,
+                            height: fullHeight,
+                            cellSize,
+                            seed,
+                            increment,
+                            lod,
+                            noiseFalloff,
+                            spread,
+                        });
+                        renderField(flowField, view);
+                        p5.noFill();
+                        p5.stroke(ink(view));
+                        p5.strokeWeight(1);
+                        starts.forEach((start) => {
+                            const curve = new FlowBezier(p5, { flowField, start, steps, step, handle });
+                            if (curve.points.length < 2) {
+                                return;
+                            }
+                            if (smooth) {
+                                curve.smooth();
+                            }
+                            curve.render();
+                            if (debug) {
+                                curve.debug();
+                                p5.noFill();
+                                p5.stroke(ink(view));
+                                p5.strokeWeight(1);
+                            }
+                        });
+                    },
+                    (p5) => {
+                        wirePanel('#field-panel', p5, params);
+                        reseed('#field-seed', p5, (value) => (seed = value));
+                        onView('#field-view', p5, (value) => (view = value));
+                    },
+                );
+            }
+
+            // start and end
+            {
+                let flowField;
+                let seed = 5;
+                let view = 'vectors';
+                // The panel holds the numbers, the snippet holds the two points
+                const params = {
+                    cellSize: 30,
+                    increment: 0.12,
+                    lod: 4,
+                    noiseFalloff: 0.5,
+                    spread: 2,
+                    steps: 40,
+                    pull: 0.8,
+                    falloff: 'bulge',
+                    handleRatio: 0.33,
+                    smooth: true,
+                    debug: false,
+                };
+                sketch(
+                    '#between-demo',
+                    '#between-snippet',
+                    {
+                        start: { x: 30, y: Math.round(fullHeight * 0.85) },
+                        end: { x: fullWidth - 30, y: Math.round(fullHeight * 0.15) },
+                    },
+                    (p5) => {
+                        p5.createCanvas(fullWidth, fullHeight);
+                    },
+                    (p5, { start, end }) => {
+                        const {
+                            cellSize,
+                            increment,
+                            lod,
+                            noiseFalloff,
+                            spread,
+                            steps,
+                            pull,
+                            falloff,
+                            handleRatio,
+                            smooth,
+                            debug,
+                        } = params;
+                        // The handle follows the gap between anchors, so changing the steps keeps the shape
+                        const handle = (p5.dist(start.x, start.y, end.x, end.y) / steps) * handleRatio;
+                        flowField = makeFlowField(p5, {
+                            width: fullWidth,
+                            height: fullHeight,
+                            cellSize,
+                            seed,
+                            increment,
+                            lod,
+                            noiseFalloff,
+                            spread,
+                        });
+                        renderField(flowField, view);
+
+                        p5.stroke(view === 'grid' ? '#ff2d0080' : '#cccccc');
+                        p5.strokeWeight(1);
+                        p5.line(start.x, start.y, end.x, end.y);
+
+                        const curve = new FlowBezier(p5, {
+                            flowField,
+                            start,
+                            end,
+                            steps,
+                            pull,
+                            handle,
+                            falloff: falloffShapes[falloff],
+                        });
+                        if (smooth) {
+                            curve.smooth();
+                        }
+                        p5.noFill();
+                        p5.stroke(ink(view));
+                        p5.strokeWeight(2);
+                        curve.render();
+
+                        if (debug) {
+                            curve.debug();
+                        }
+
+                        p5.noStroke();
+                        p5.fill(ink(view));
+                        p5.circle(start.x, start.y, 9);
+                        p5.circle(end.x, end.y, 9);
+                    },
+                    (p5) => {
+                        wirePanel('#between-panel', p5, params);
+                        reseed('#between-seed', p5, (value) => (seed = value));
+                        onView('#between-view', p5, (value) => (view = value));
+                    },
+                );
+            }
+
+            // smooth()
+            {
+                let flowField;
+                const parameters = {
+                    start: { x: cellSize, y: Math.round(height / 2) },
+                    steps: 10,
+                    step: 80,
+                    handle: 48,
+                };
+                const build = (p5, { start, steps, step, handle }) =>
+                    new FlowBezier(p5, { flowField, start, steps, step, handle });
+                sketch(
+                    '#smooth-demo',
+                    '#smooth-snippet',
+                    parameters,
+                    (p5) => {
+                        p5.createCanvas(width, height);
+                        flowField = makeFlowField(p5, { width, height, seed: 3, increment: 0.45, spread: 1.3 });
+                    },
+                    (p5, parameters) => {
+                        p5.noFill();
+                        p5.strokeWeight(2);
+
+                        const before = build(p5, parameters);
+                        p5.strokeWeight(5);
+                        p5.stroke('#bbbbbb');
+                        before.render();
+                        p5.strokeWeight(2);
+
+                        const after = build(p5, parameters);
+                        after.smooth();
+                        p5.stroke('#000000');
+                        after.render();
+                    },
+                );
+            }
+
+            // debug(), with draggable anchors and control points
+            {
+                const grabRadius = 8;
+                let flowField;
+                let curve;
+                let source;
+                let grabbed;
+
+                // p5 listens on the window, so each demo has to ignore what happens outside its canvas
+                const isInside = (p5) =>
+                    p5.mouseX >= 0 && p5.mouseX <= p5.width && p5.mouseY >= 0 && p5.mouseY <= p5.height;
+
+                // Anchors and their two control points, as absolute positions. Dragging mutates the
+                // point objects, which the segments hold by reference, so the curve follows along.
+                const draggables = () =>
+                    curve.points.flatMap((point) => [
+                        { point, x: point.anchor.x, y: point.anchor.y },
+                        {
+                            point,
+                            control: point.control1,
+                            x: point.anchor.x + point.control1.x,
+                            y: point.anchor.y + point.control1.y,
+                        },
+                        {
+                            point,
+                            control: point.control2,
+                            x: point.anchor.x + point.control2.x,
+                            y: point.anchor.y + point.control2.y,
+                        },
+                    ]);
+
+                const under = (p5) =>
+                    draggables()
+                        .map((handle) => ({ handle, distance: p5.dist(p5.mouseX, p5.mouseY, handle.x, handle.y) }))
+                        .filter(({ distance }) => distance <= grabRadius)
+                        .sort((first, second) => first.distance - second.distance)
+                        .map(({ handle }) => handle)[0];
+
+                sketch(
+                    '#debug-demo',
+                    '#debug-snippet',
+                    { start: { x: cellSize, y: Math.round(height / 2) }, steps: 7, step: 100, handle: 38 },
+                    (p5) => {
+                        p5.createCanvas(width, height);
+                        flowField = makeFlowField(p5, { width, height, seed: 21, increment: 0.18, spread: 0.9 });
+                    },
+                    (p5, parameters) => {
+                        // A snippet change arrives as a new object; a redraw from a drag does not
+                        if (source !== parameters) {
+                            source = parameters;
+                            const { start, steps, step, handle } = parameters;
+                            curve = new FlowBezier(p5, {
+                                flowField,
+                                start: { x: start.x, y: start.y },
+                                steps,
+                                step,
+                                handle,
+                            });
+                            curve.smooth();
+                        }
+                        p5.noFill();
+                        p5.stroke(0);
+                        p5.strokeWeight(2);
+                        curve.render();
+                        curve.debug();
+                    },
+                    (p5) => {
+                        p5.mouseMoved = () => {
+                            if (!curve || grabbed || !isInside(p5)) {
+                                return;
+                            }
+                            p5.cursor(under(p5) ? 'grab' : p5.ARROW);
+                        };
+                        p5.mousePressed = () => {
+                            if (!curve || !isInside(p5)) {
+                                return;
+                            }
+                            grabbed = under(p5);
+                            if (grabbed) {
+                                p5.cursor('grabbing');
+                                return false;
+                            }
+                        };
+                        p5.mouseDragged = () => {
+                            if (!grabbed) {
+                                return;
+                            }
+                            const { point, control } = grabbed;
+                            if (control) {
+                                // Control points are relative to anchor point
+                                control.x = p5.mouseX - point.anchor.x;
+                                control.y = p5.mouseY - point.anchor.y;
+                            } else {
+                                point.anchor.x = p5.mouseX;
+                                point.anchor.y = p5.mouseY;
+                            }
+                            p5.redraw();
+                            return false;
+                        };
+                        p5.mouseReleased = () => {
+                            if (!grabbed) {
+                                return;
+                            }
+                            grabbed = undefined;
+                            p5.cursor('grab');
+                        };
+                    },
+                );
+            }
+
+            // FlowBezier.fromVertices()
+            {
+                const vertices = [
+                    [0.06, 0.78],
+                    [0.22, 0.24],
+                    [0.42, 0.72],
+                    [0.6, 0.18],
+                    [0.8, 0.66],
+                    [0.96, 0.3],
+                ].map(([x, y]) => ({ x: Math.round(width * x), y: Math.round(height * y) }));
+                sketch(
+                    '#vertices-demo',
+                    '#vertices-snippet',
+                    { handle: 60, vertices },
+                    (p5) => {
+                        p5.createCanvas(width, height);
+                    },
+                    (p5, { handle, vertices }) => {
+                        if (vertices.length === 0) {
+                            return;
+                        }
+                        p5.noFill();
+                        p5.stroke('#cccccc');
+                        p5.strokeWeight(1);
+                        p5.beginShape();
+                        vertices.forEach(({ x, y }) => p5.vertex(x, y));
+                        p5.endShape();
+
+                        const curve = FlowBezier.fromVertices(p5, { vertices, handle });
+                        p5.stroke(0);
+                        p5.strokeWeight(2);
+                        curve.render();
+
+                        p5.noStroke();
+                        p5.fill(0);
+                        vertices.forEach(({ x, y }) => p5.circle(x, y, 7));
+                    },
+                );
+            }
+
+            // Segments
+            {
+                let flowField;
+                sketch(
+                    '#segments-demo',
+                    '#segments-snippet',
+                    { start: { x: cellSize, y: Math.round(height / 2) }, steps: 12, step: 70, handle: 30 },
+                    (p5) => {
+                        p5.createCanvas(width, height);
+                        flowField = makeFlowField(p5, { width, height, seed: 42, increment: 0.12, spread: 0.5 });
+                    },
+                    (p5, { start, steps, step, handle }) => {
+                        const curve = new FlowBezier(p5, { flowField, start, steps, step, handle });
+                        curve.smooth();
+                        p5.push();
+                        p5.colorMode(p5.HSB, 360, 100, 100);
+                        p5.noFill();
+                        p5.strokeWeight(6);
+                        curve.segments.forEach((segment, index, segments) => {
+                            p5.stroke((index / Math.max(1, segments.length)) * 320, 75, 90);
+                            renderSegment(p5, segment);
+                        });
+                        p5.pop();
+                    },
+                );
+            }
+
+            // toSpline()
+            {
+                let flowField;
+                const output = document.querySelector('#anchors-output');
+                sketch(
+                    '#anchors-demo',
+                    '#anchors-snippet',
+                    { start: { x: cellSize, y: Math.round(height / 2) }, steps: 12, step: 70, handle: 28 },
+                    (p5) => {
+                        p5.createCanvas(width, height);
+                        flowField = makeFlowField(p5, { width, height, seed: 11, increment: 0.18, spread: 0.9 });
+                    },
+                    (p5, { start, steps, step, handle }) => {
+                        const curve = new FlowBezier(p5, { flowField, start, steps, step, handle });
+                        curve.smooth();
+                        p5.noFill();
+                        p5.stroke('#cccccc');
+                        p5.strokeWeight(2);
+                        curve.render();
+
+                        const vertices = curve.toSpline();
+                        p5.stroke(0);
+                        p5.strokeWeight(1);
+                        p5.beginShape();
+                        vertices.forEach(({ x, y }) => p5.vertex(x, y));
+                        p5.endShape();
+                        p5.noStroke();
+                        p5.fill(0);
+                        vertices.forEach(({ x, y }) => p5.circle(x, y, 8));
+
+                        output.textContent = serialize(
+                            vertices.map(({ x, y }) => ({ x: Math.round(x), y: Math.round(y) })),
+                        );
+                    },
+                );
+            }
+        </script>
+    </body>
+</html>

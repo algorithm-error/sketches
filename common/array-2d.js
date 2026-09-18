@@ -61,6 +61,38 @@ export function Array2D(width, height, initialize = () => {}) {
         }
     };
 
+    this.values.getLeftOf = function (column, row) {
+        return this.get(column - 1, row);
+    };
+
+    this.values.getRightOf = function (column, row) {
+        return this.get(column + 1, row);
+    };
+
+    this.values.getTopOf = function (column, row) {
+        return this.get(column, row - 1);
+    };
+
+    this.values.getBottomOf = function (column, row) {
+        return this.get(column, row + 1);
+    };
+
+    this.values.getTopLeftOf = function (column, row) {
+        return this.get(column - 1, row - 1);
+    };
+
+    this.values.getTopRightOf = function (column, row) {
+        return this.get(column + 1, row - 1);
+    };
+
+    this.values.getBottomLeftOf = function (column, row) {
+        return this.get(column - 1, row + 1);
+    };
+
+    this.values.getBottomRightOf = function (column, row) {
+        return this.get(column + 1, row + 1);
+    };
+
     this.values.set = function (column, row, value) {
         this[row][column] = value;
     };

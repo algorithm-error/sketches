@@ -21,16 +21,21 @@ export function FlowLine(p5, { column, row, cellSize, radius, angle, color = [25
         p5.stroke(color);
         p5.line(x1, y1, x2, y2);
 
-        // Dot at the end
-        p5.strokeWeight(3);
-        p5.stroke(color);
-        p5.point(x2, y2);
+        // Arrowhead at the end, so the line reads as a direction rather than a segment
+        const headLength = Math.min(this.radius / 3, 5);
+        const headSpread = p5.PI / 6;
+        const barb1 = P5.Vector.fromAngle(this.angle + p5.PI - headSpread, headLength);
+        const barb2 = P5.Vector.fromAngle(this.angle + p5.PI + headSpread, headLength);
+        p5.line(x2, y2, x2 + barb1.x, y2 + barb1.y);
+        p5.line(x2, y2, x2 + barb2.x, y2 + barb2.y);
         p5.pop();
     };
 }
 
 // FIXME Rename width and height to columns and rows
 export function FlowField(p5, { width, height, cellSize = 20, initialize = getNoiseValue }) {
+    width = Math.round(width);
+    height = Math.round(height);
     this.width = width;
     this.height = height;
     this.cellSize = cellSize;

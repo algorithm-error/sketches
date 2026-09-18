@@ -3,14 +3,16 @@ template.innerHTML = `
     <style>
         :host {
             display: block;
-            font-size: var(--size, var(--small-font-size));
-            line-height: var(--small-line-height);
+            font-size: var(--font-size);
+            line-height: var(--line-height);
             color: #767676;
         }
         .help {
             display: -webkit-box;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: var(--line-clamp, none);
+            font-size: var(--small-font-size);
+            line-height: var(--small-line-height);
             overflow: hidden;
             text-overflow: ellipsis;
         }

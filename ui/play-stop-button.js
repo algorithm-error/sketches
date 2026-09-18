@@ -20,12 +20,24 @@ template.innerHTML = `
             --button-width: 7em;
         }
 
-        .ellipsis {
-            display: inline-block;
-            vertical-align: -0.02em;
+        /* Three periods in the button's own font, so they sit on the caption's baseline. */
+        .dots,
+        .dots > span {
+            display: inline;
         }
-        .ellipsis circle {
-            fill: currentColor;
+        .dots > span {
+            animation: dot-blink 1.2s infinite;
+        }
+        .dots > span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .dots > span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes dot-blink {
+            0% { opacity: 0.25; }
+            33% { opacity: 1; }
+            100% { opacity: 0.25; }
         }
 
         span { display: none; }
@@ -41,14 +53,14 @@ template.innerHTML = `
         :host(:not([playing]):hover:not([suppress-hover]):not([disabled])) .label-stopped { display: none; }
         :host(:not([playing]):hover:not([suppress-hover]):not([disabled])) .label-play { display: inline; }
         :host(:not([playing]):hover:not([suppress-hover]):not([disabled])) custom-button {
-            --fill: var(--green);
+            --fill: var(--cyan);
             --fill-color: var(--color);
         }
 
         /* playing, not hovered: green "Playing" confirmation */
         :host([playing]) .label-playing { display: inline; }
         :host([playing]) custom-button {
-            --fill: var(--green);
+            --fill: var(--cyan);
             --fill-color: var(--color);
         }
 
@@ -56,7 +68,7 @@ template.innerHTML = `
         :host([playing]:hover:not([suppress-hover]):not([disabled])) .label-playing { display: none; }
         :host([playing]:hover:not([suppress-hover]):not([disabled])) .label-stop { display: inline; }
         :host([playing]:hover:not([suppress-hover]):not([disabled])) custom-button {
-            --fill: var(--red);
+            --fill: var(--magenta);
             --fill-color: var(--background);
         }
     </style>
@@ -65,21 +77,7 @@ template.innerHTML = `
         <span class="label-stopped">Stopped</span>
         <span class="label-play">Play</span>
         <span class="label-playing">
-            Playing
-            <svg class="ellipsis" viewBox="0 0 16 5" width="16" height="5" aria-hidden="true">
-                <circle cx="2.5" cy="2.5" r="1.25">
-                    <animate attributeName="opacity" values="0.25;1;0.25" keyTimes="0;0.33;1"
-                             dur="1.2s" begin="0s" repeatCount="indefinite"></animate>
-                </circle>
-                <circle cx="8" cy="2.5" r="1.25">
-                    <animate attributeName="opacity" values="0.25;1;0.25" keyTimes="0;0.33;1"
-                             dur="1.2s" begin="0.2s" repeatCount="indefinite"></animate>
-                </circle>
-                <circle cx="13.5" cy="2.5" r="1.25">
-                    <animate attributeName="opacity" values="0.25;1;0.25" keyTimes="0;0.33;1"
-                             dur="1.2s" begin="0.4s" repeatCount="indefinite"></animate>
-                </circle>
-            </svg>
+            Playing<span class="dots" aria-hidden="true">&nbsp;<span>.</span><span>.</span><span>.</span></span>
         </span>
         <span class="label-stop">Stop</span>
     </custom-button>

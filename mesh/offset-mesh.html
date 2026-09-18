@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>offset grid</title>
+        <style>
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            main {
+                line-height: 0;
+            }
+        </style>
+        <script src="../node_modules/p5/lib/p5.js"></script>
+        <script src="../node_modules/p5.js-svg/dist/p5.svg.js"></script>
+        <script type="module">
+            import { Grid } from '../common/grid.js';
+            import { randomSample2d } from '../common/noise.js';
+            import { SketchDriver } from '../common/sketch-driver.js';
+
+            window.P5 = p5;
+
+            // 1. Create a grid
+            // 2. Measure distance between grid intersections and spread points
+            // 2. Split points into those within the radial distance and those outside
+            // 3. Move points inside to their closest point outside
+            // 4. Remove overlapping points that exist in the same x,y,z coordinates
+            // 5. Connect points to make new spread grid
+
+            const defaults = { seed: 1772133851191, cellSize: 8, points: 15, spread: 200, offset: 2.5 };
+
+            const driver = new SketchDriver(defaults, {}, (values) => sketch.rerender(values));
+
+            const sketch = (function initialize(P5, root, defaults = {}) {
+                const api = { remove: () => {}, rerender: () => {}, save: () => {} };
+                let settings = defaults;
+
+                new P5((p5) => {
+                    api.rerender = (next) => p5.draw(next);
+                    api.remove = () => p5.remove();
+                    api.save = (name) => p5.save(name);
+
+                    p5.setup = () => {
+                        p5.createCanvas(window.innerWidth, window.innerHeight);
+                        p5.noFill();
+                        p5.noLoop();
+                    };
+
+                    // The canvas is the window, so a resize is a new size and a fresh grid.
+                    p5.windowResized = () => {
+                        p5.resizeCanvas(window.innerWidth, window.innerHeight);
+                        p5.redraw();
+                    };
+
+                    p5.draw = (next = settings) => {
+                        settings = next;
+                        const { seed, cellSize, points, spread, offset } = settings;
+                        p5.randomSeed(seed);
+                        p5.noiseSeed(seed);
+                        p5.translate(2.5, 2.5);
+
+                        const grid = new Grid(
+                            p5,
+                            Math.floor(p5.width / cellSize),
+                            Math.floor(p5.height / cellSize),
+                            (p5, column, row) => {
+                                return { x: column * cellSize, y: row * cellSize };
+                            },
+                        );
+                        const spreadPoints = randomSample2d(p5, points, p5.width - 200, p5.height - 200).map(
+                            ({ x, y }) => {
+                                return { x: x + 100, y: y + 100 };
+                            },
+                        );
+                        const radii = spreadPoints.map((point, index) => Math.abs(p5.noise(index)) * spread).sort();
+
+                        grid.traverse((column, row, from) => {
+                            const distances = spreadPoints.map((to) => p5.dist(to.x, to.y, from.x, from.y));
+                            const isOutside = distances.every((distance, index) => distance > radii[index]);
+                            if (isOutside) {
+                                return;
+                            }
+                            const point = grid.get(column, row);
+                            point.x = point.x + cellSize * offset;
+                            point.y = point.y + cellSize * offset;
+                        });
+
+                        p5.background(255);
+                        p5.strokeWeight(5);
+                        p5.stroke('#ff00ff');
+                        grid.traverse((column, row, { x, y }) => {
+                            p5.point(x, y);
+                        });
+                    };
+                }, root);
+
+                return api;
+            })(p5, document.querySelector('main'), driver.values);
+        </script>
+    </head>
+
+    <body>
+        <main></main>
+    </body>
+</html>

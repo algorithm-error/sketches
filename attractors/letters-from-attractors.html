@@ -8,9 +8,12 @@
         <script type="module" src="../ui/index.js"></script>
     </head>
     <body>
-        <header>
+        <header class="site-nav">
             <nav>
-                <a href="../">Home</a>
+                <a href="/">Plots</a>
+                <a href="/art">Art</a>
+                <span aria-current="page">Articles</span>
+                <a href="/ui">UI kit</a>
             </nav>
         </header>
 
@@ -124,7 +127,7 @@
                         <iframe
                             loading="lazy"
                             title="Interactive attractor sandbox"
-                            src="sandbox.html?panel=fixed&preset=script&position1.x=-16.906652351960336&position1.y=4.879469062790303&position2.x=-8.81640622159549&position2.y=1.4345614621189353"
+                            src="./sandbox.html?panel=fixed&preset=script&position1.x=-16.906652351960336&position1.y=4.879469062790303&position2.x=-8.81640622159549&position2.y=1.4345614621189353"
                         ></iframe>
                         <figcaption>In&nbsp;the&nbsp;cockpit of&nbsp;the&nbsp;attractor sandbox</figcaption>
                     </figure>
@@ -266,12 +269,15 @@
         </main>
         <hr />
 
-        <footer>
-            <script>
-                document.currentScript.parentElement.append(
-                    `© ${new Date().getFullYear()} ${window.location.host.split('.').slice(-2).join('.')}`,
-                );
-            </script>
+        <!-- Copy of the website project's Footer.astro; keep in sync. -->
+        <footer class="site-footer">
+            <p>
+                &copy;
+                <script>
+                    document.currentScript.replaceWith(new Date().getFullYear());
+                </script>
+                Algorithm Error
+            </p>
         </footer>
     </body>
 </html>

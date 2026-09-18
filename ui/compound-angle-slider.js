@@ -5,36 +5,77 @@ import './help-text.js';
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: block; font-size: var(--font-size); }
+        /* Label and help line run full width, then the dial with its field beside
+           it, centred on the dial. */
+        :host {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            column-gap: 0.75em;
+            row-gap: 0.25em;
+            align-items: start;
+            font-size: var(--font-size);
+        }
+        .body,
+        .side {
+            display: contents;
+        }
         .label {
             color: var(--color);
-            display: block;
-            margin-bottom: 0.625em;
+            grid-area: 1 / 1 / auto / span 2;
         }
-        .body {
+        help-text {
+            grid-area: 2 / 1 / auto / span 2;
+            /* Lets the help line wrap instead of widening the slider in a narrow column. */
+            min-width: 0;
+            width: 100%;
+            --line-clamp: 3;
+        }
+        angle-slider {
+            grid-area: 3 / 1;
+            flex-shrink: 0;
+        }
+        /* Full width up to 5em, so two of these fit in one control-row. */
+        numeric-input {
+            grid-area: 3 / 2;
+            align-self: center;
+            justify-self: start;
+            width: 100%;
+            max-width: 5em;
+            min-width: 0;
+            flex-shrink: 0;
+        }
+        :host([size="medium"]) numeric-input {
+            width: 5em;
+        }
+        /* The medium dial is tall enough to carry the label above it. */
+        :host([size="medium"]) {
+            display: block;
+        }
+        :host([size="medium"]) .body {
             display: flex;
             gap: 0.75em;
             align-items: flex-start;
         }
-        .side {
+        :host([size="medium"]) .side {
             display: flex;
             flex-direction: column;
             gap: 0.5em;
             align-items: flex-end;
             flex: 1;
         }
-        help-text {
-            width: 100%;
-            --line-clamp: 3;
+        :host([size="medium"]) .label {
+            display: block;
+            margin-bottom: 0.625em;
         }
-        numeric-input {
-            width: 5em;
-            flex-shrink: 0;
+        :host([size="medium"]) .label,
+        :host([size="medium"]) numeric-input,
+        :host([size="medium"]) angle-slider,
+        :host([size="medium"]) help-text {
+            grid-area: auto;
         }
-        angle-slider {
-            flex-shrink: 0;
+        :host([size="medium"]) angle-slider {
+            width: 8em;
         }
-        :host([size="medium"]) angle-slider { width: 8em; }
     </style>
     <label class="label" part="label"></label>
     <div class="body">

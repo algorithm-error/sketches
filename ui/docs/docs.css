@@ -1,4 +1,10 @@
 /* Stylesheet used by individual component pages */
+
+/* Same root size as base.css, which these pages do not load. */
+html {
+    font-size: 20px;
+}
+
 body {
     margin: 0;
     display: flex;

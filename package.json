@@ -9,6 +9,7 @@
     "scripts": {
         "build": "bash scripts/build.sh",
         "serve": "live-server --no-browser --port=8123",
+        "serve:dist": "yarn build && live-server dist --no-browser --port=8124",
         "format": "prettier --write .",
         "deploy:preview": "npx vercel deploy",
         "deploy:production": "npx vercel deploy --prod",

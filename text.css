@@ -1,17 +1,17 @@
+@import url('./base.css');
+
 html {
     height: 100%;
     margin: 0;
-    font-size: 20px;
 }
 
 body {
     --body-horizontal-padding: 4.75rem;
     --max-body-width: 54rem;
-    --small-font-size: 0.85rem;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    padding: 1.5rem var(--body-horizontal-padding);
+    padding: var(--page-top-padding) var(--body-horizontal-padding) 1.5rem;
     margin: 0 auto;
     max-width: var(--max-body-width);
     background: var(--background);

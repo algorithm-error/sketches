@@ -32,3 +32,16 @@ export function convolveCell(matrix, x, y, kernel, product = (value, ratio) => v
     }
     return sum;
 }
+
+/** Integers from start (inclusive) to end (exclusive) */
+export function getRange(start, end) {
+    return new Array(end - start).fill().map((element, index) => start + index);
+}
+
+/** `count` points evenly spaced from start to end, both included */
+export function getPointRange(start, end, count) {
+    return new Array(count).fill().map((element, index) => {
+        const t = count === 1 ? 0 : index / (count - 1);
+        return { x: start.x + (end.x - start.x) * t, y: start.y + (end.y - start.y) * t };
+    });
+}

@@ -270,8 +270,18 @@ Bezier.joinSegments = function (arc1, arc2) {
     return [arc1, arc2];
 };
 
+/**
+ * Vertices of the spline running through a list of segments: the first anchor, then the end
+ * anchor of every segment. Accepts both segment shapes: [anchor1, control1, control2, anchor2]
+ * tuples and {anchor1, control1, control2, anchor2} objects.
+ */
 Bezier.toSpline = function (segments) {
-    return [segments[0]].concat(segments.map((segment) => segment[3])).flat();
+    if (segments.length === 0) {
+        return [];
+    }
+    const start = (segment) => (Array.isArray(segment) ? segment[0] : segment.anchor1);
+    const end = (segment) => (Array.isArray(segment) ? segment[3] : segment.anchor2);
+    return [start(segments[0]), ...segments.map(end)];
 };
 
 export function splineToBezier(vertices) {

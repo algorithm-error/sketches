@@ -12,6 +12,8 @@ template.innerHTML = `
             --primary: #0000ff;
             --highlight: #ffd800;
             --green: #00ff00;
+            --cyan: #00ffff;
+            --magenta: #ff00ff;
             --red: #ff0000;
             /*--font-family: 'SFMono-Regular', Consolas, Menlo, monospace;*/
             --monospace: monospace;

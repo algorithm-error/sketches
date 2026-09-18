@@ -28,6 +28,9 @@ template.innerHTML = `
             box-shadow: 2px 2px 0 color-mix(in srgb, var(--foreground) 25%, transparent);
         }
         .content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5em;
             flex: 1 1 auto;
             min-height: 0;
             overflow-y: auto;
@@ -195,34 +198,43 @@ template.innerHTML = `
                 display: none;
             }
         }
+        /* Collapsed, the panel keeps the width it had (set inline by the collapsed
+           setter) so the button can land on the collapse button's spot; the empty
+           rest of the box lets pointer events through to the sketch. */
         :host([collapsed]) {
-            width: auto;
+            align-items: flex-start;
             padding: 0;
             background: transparent;
+            pointer-events: none;
+        }
+        :host([collapsed][placement="right"]) {
+            align-items: flex-end;
         }
         :host([collapsed]) .header,
         :host([collapsed]) .content {
             display: none;
         }
-        /* Collapsed, the panel is only this button, so the margins put it where the
-           collapse button it replaces was: the same inset from the panel's anchored
-           edge, and centred on the 2em header it stands in for. */
+        /* The margins put it where the collapse button it replaces was: the same
+           inset from the panel's anchored edge, and 1px above centre on the 2em
+           header, as .collapse sits. */
         :host([collapsed]) custom-button.toggle {
             display: inline-block;
             position: static;
-            margin: 0.25em calc(0.2em + 2px);
+            margin: calc(0.25em - 1px) calc(0.2em + 2px) calc(0.25em + 1px);
+            pointer-events: auto;
         }
+        /* On the left, where the window controls sit on a mac. */
         .collapse {
             position: absolute;
             top: -2px;
             bottom: 0;
-            right: calc(0.2em + 2px);
+            left: calc(0.2em + 2px);
             margin: auto;
         }
-        /* Outer side, as the window controls sit on a mac. */
-        :host([placement="left"]) .collapse {
-            right: auto;
-            left: calc(0.2em + 2px);
+        /* Pinned to the right edge, the outer side is the right one. */
+        :host([placement="right"]) .collapse {
+            left: auto;
+            right: calc(0.2em + 2px);
         }
         custom-fieldset {
             margin: 0.75em -0.75em 0 -0.75em;
@@ -310,16 +322,29 @@ class ControlPanel extends HTMLElement {
     set collapsed(value) {
         if (value) {
             const style = getComputedStyle(this);
-            // Keep the collapsed button on the side the panel was pinned to.
-            if (this.getAttribute('placement') === 'left') {
-                this.style.left = `${parseFloat(style.left) || 0}px`;
-                this.style.right = 'auto';
-            } else {
+            const placement = this.getAttribute('placement');
+            /*
+             * Keep the collapsed button on the side the panel was pinned to. A
+             * centred panel keeps both offsets: with its width held below, the
+             * auto margins keep it where it was.
+             */
+            if (placement === 'right') {
                 this.style.right = `${parseFloat(style.right) || 0}px`;
                 this.style.left = 'auto';
+            } else if (!this.hasAttribute('center')) {
+                this.style.left = `${parseFloat(style.left) || 0}px`;
+                this.style.right = 'auto';
             }
+            // The button sits at the top, so a bottom panel keeps its top instead.
+            if (placement === 'bottom') {
+                this.style.top = `${parseFloat(style.top) || 0}px`;
+                this.style.bottom = 'auto';
+            }
+            if (!this.collapsed) this.widthBeforeCollapse = this.style.width;
+            this.style.width = `${this.getBoundingClientRect().width}px`;
             this.setAttribute('collapsed', '');
         } else {
+            if (this.collapsed) this.style.width = this.widthBeforeCollapse;
             this.removeAttribute('collapsed');
         }
     }

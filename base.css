@@ -1,0 +1,77 @@
+/*
+ * Base styles shared by the website and this project (articles, UI kit docs).
+ * The website loads it through its src/sketches submodule; text.css imports it.
+ */
+html {
+    font-size: 20px;
+}
+
+body {
+    /* Space above the site nav; every page layout uses it so headers line up. */
+    --page-top-padding: 1.5rem;
+    --line-height-ratio: 1.25;
+    --small-font-size: 0.85rem;
+    --large-font-size: 1.25rem;
+    margin: 0;
+    font-size: 1rem;
+    line-height: var(--line-height-ratio);
+}
+
+a {
+    transition: color 0.2s;
+}
+
+a:visited:hover {
+    color: LinkText;
+}
+
+/* Site navigation. The markup is copied into each page that uses it. */
+.site-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.site-nav nav {
+    font-size: 1.5rem;
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+}
+
+/* The page you are on is a span, not a link, so it is not clickable. */
+.site-nav a,
+.site-nav [aria-current='page'] {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: CanvasText;
+}
+
+.site-nav a:hover {
+    color: LinkText;
+}
+
+.site-nav [aria-current='page'] {
+    text-decoration: underline;
+}
+
+/* Site footer. The markup is copied into each page that uses it. */
+.site-footer {
+    padding: 2rem 0;
+    margin-top: 2rem;
+    font-size: var(--small-font-size);
+}
+
+.site-footer p {
+    text-align: center;
+    margin: 0;
+}
+
+@media (max-width: 48rem) {
+    .site-nav {
+        padding: 1rem 0;
+    }
+}

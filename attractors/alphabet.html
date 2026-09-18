@@ -40,6 +40,7 @@
         </style>
         <script type="module">
             import { Curve } from '../common/curve.js';
+            import { SketchDriver } from '../common/sketch-driver.js';
             import {
                 alphabet as blue,
                 transliterate as transliterateBlue,
@@ -80,65 +81,73 @@
                     { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity },
                 );
 
-            function letterSketch(
-                container,
-                {
-                    letter = '',
-                    alphabet = 'blue',
-                    size = 120,
-                    padding = 0.12,
-                    weight = 1,
-                    background = '#ffffff',
-                    stroke,
-                } = {},
-            ) {
-                const vertices = getLetter(alphabet, letter);
-                const color = stroke ?? (alphabets[alphabet] ?? alphabets.blue).stroke;
+            const defaults = { alphabet: 'blue', size: 100, weight: 1, columns: 11 };
 
-                return new p5((p5) => {
-                    p5.setup = () => {
-                        p5.createCanvas(size, size);
-                        p5.noLoop();
-                    };
+            const driver = new SketchDriver(defaults, {}, (values) => sketch.rerender(values));
 
-                    p5.draw = () => {
-                        p5.background(background);
-                        if (vertices.length < 2) return;
+            const sketch = (function initialize(P5, root, defaults = {}) {
+                const api = { remove: () => {}, rerender: () => {} };
+                let instances = [];
 
-                        const bounds = getBounds(vertices);
-                        const width = bounds.right - bounds.left;
-                        const height = bounds.bottom - bounds.top;
-                        const box = size * (1 - padding * 2);
-                        const scale = Math.min(box / (width || 1), box / (height || 1));
+                const letterSketch = (container, values) =>
+                    new P5((p5) => {
+                        p5.setup = () => {
+                            p5.createCanvas(values.size, values.size);
+                            p5.noLoop();
+                        };
 
-                        p5.translate(size / 2, size / 2);
-                        p5.scale(scale);
-                        p5.translate(-(bounds.left + width / 2), -(bounds.top + height / 2));
+                        p5.draw = (next = values) => {
+                            const { letter, alphabet, size, weight, padding, background } = next;
+                            const vertices = getLetter(alphabet, letter);
+                            p5.background(background);
+                            if (vertices.length < 2) return;
 
-                        p5.noFill();
-                        p5.stroke(color);
-                        p5.strokeWeight(weight / scale);
-                        new Curve(p5, vertices).render();
-                    };
-                }, container);
-            }
+                            const bounds = getBounds(vertices);
+                            const width = bounds.right - bounds.left;
+                            const height = bounds.bottom - bounds.top;
+                            const box = size * (1 - padding * 2);
+                            const scale = Math.min(box / (width || 1), box / (height || 1));
 
-            const params = new URLSearchParams(window.location.search);
-            const alphabet = params.get('alphabet') ?? 'blue';
-            const size = Number(params.get('size') ?? 100);
-            const weight = Number(params.get('weight') ?? 1);
+                            p5.translate(size / 2, size / 2);
+                            p5.scale(scale);
+                            p5.translate(-(bounds.left + width / 2), -(bounds.top + height / 2));
 
-            const grid = document.querySelector('custom-grid');
-            grid.setAttribute('columns', params.get('columns') ?? 11);
+                            p5.noFill();
+                            p5.stroke((alphabets[alphabet] ?? alphabets.blue).stroke);
+                            p5.strokeWeight(weight / scale);
+                            new Curve(p5, vertices).render();
+                        };
+                    }, container);
 
-            for (const letter of Object.keys(alphabets[alphabet].letters)) {
-                const cell = document.createElement('div');
-                const plate = document.createElement('div');
-                const name = document.createElement('span');
-                cell.append(plate, name);
-                grid.appendChild(cell);
-                letterSketch(plate, { letter, alphabet, size, weight });
-            }
+                // A letter is a canvas of its own, so a new size or alphabet is a new set
+                // of them rather than a redraw.
+                api.rerender = (values) => {
+                    instances.forEach((instance) => instance.remove());
+                    instances = [];
+                    root.replaceChildren();
+                    root.setAttribute('columns', values.columns);
+                    const { letters } = alphabets[values.alphabet] ?? alphabets.blue;
+                    Object.keys(letters).forEach((letter) => {
+                        const cell = document.createElement('div');
+                        const plate = document.createElement('div');
+                        const name = document.createElement('span');
+                        cell.append(plate, name);
+                        root.appendChild(cell);
+                        instances.push(
+                            letterSketch(plate, { ...values, letter, padding: 0.12, background: '#ffffff' }),
+                        );
+                    });
+                };
+
+                api.remove = () => {
+                    instances.forEach((instance) => instance.remove());
+                    instances = [];
+                    root.replaceChildren();
+                };
+
+                api.rerender(defaults);
+                return api;
+            })(p5, document.querySelector('custom-grid'), driver.values);
         </script>
     </head>
     <body>
