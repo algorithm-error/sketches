@@ -28,9 +28,11 @@ class ControlRow extends HTMLElement {
 
     sync() {
         const raw = getComputedStyle(this).getPropertyValue('--columns').trim();
-        const columns = raw === '' ? 2 : Number(raw) || 0;
-        this.classList.toggle('columns', columns > 0);
-        this.style.gridTemplateColumns = columns > 0 ? `repeat(${columns}, 1fr)` : '';
+        const ratio = raw === '' ? '1 1' : raw;
+        const weights = ratio.split(/\s+/).map(Number);
+        const isGrid = weights.every((weight) => weight > 0);
+        this.classList.toggle('columns', isGrid);
+        this.style.gridTemplateColumns = isGrid ? weights.map((weight) => `${weight}fr`).join(' ') : '';
     }
 }
 

@@ -18,14 +18,15 @@
             <main>
                 <h1>Control row</h1>
                 <p>
-                    A layout wrapper. Defaults to 2 equal-width columns. Set the <code>--columns</code> CSS variable to
-                    change the column count, or to <code>none</code> for a plain row with an even gap and no enforced
-                    width.
+                    A layout wrapper. Defaults to <code>1 1</code>, two equal-width columns. Set the
+                    <code>--columns</code> CSS variable to a space-separated ratio &mdash; <code>1 1 1</code> for three
+                    equal columns, <code>3 2</code> for a 60% / 40% split &mdash; or to <code>none</code> for a plain
+                    row with an even gap and no enforced width.
                 </p>
 
                 <section aria-label="Basic">
                     <h2>Basic</h2>
-                    <p>Children are laid out in 2 equal-width columns by default.</p>
+                    <p>Children are laid out as <code>1 1</code>, two equal-width columns, by default.</p>
                     <div>
                         <control-row>
                             <custom-button>One</custom-button>
@@ -35,17 +36,32 @@
                     <code-snippet></code-snippet>
                 </section>
 
-                <section aria-label="Columns">
-                    <h2>Columns</h2>
+                <section aria-label="Equal columns">
+                    <h2>Equal columns</h2>
                     <p>
-                        Set <code>--columns</code> to lay children out in that many equal-width columns spanning the
-                        full width.
+                        Each number in the ratio is one column. Use <code>1 1 1</code> for three equal columns spanning
+                        the full width.
                     </p>
                     <div>
-                        <control-row style="--columns: 3">
+                        <control-row style="--columns: 1 1 1">
                             <custom-button>One</custom-button>
                             <custom-button>Two</custom-button>
                             <custom-button>Three</custom-button>
+                        </control-row>
+                    </div>
+                    <code-snippet></code-snippet>
+                </section>
+
+                <section aria-label="Uneven columns">
+                    <h2>Uneven columns</h2>
+                    <p>
+                        The numbers are shares of the full width, so <code>3 2</code> gives a wide column at 60% and a
+                        narrow one at 40%.
+                    </p>
+                    <div>
+                        <control-row style="--columns: 3 2">
+                            <custom-button>Wide</custom-button>
+                            <custom-button>Narrow</custom-button>
                         </control-row>
                     </div>
                     <code-snippet></code-snippet>

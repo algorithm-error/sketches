@@ -8,4 +8,4 @@ Guidance for components in this directory (see also the "UI Kit" section in the 
 - CSS custom properties (`--foo`) are for look/layout: sizing, columns, colors, spacing — anything that only changes appearance.
 - Read CSS vars via `getComputedStyle(this).getPropertyValue('--foo')`, with a sensible default when unset.
 
-Example: `control-row`'s `--columns` var controls layout (grid column count, or `none` for a plain flex row), not an HTML attribute.
+Example: `control-row`'s `--columns` var controls layout (a space-separated column ratio like `1 1`, `1 1 1` or `3 2`, or `none` for a plain flex row), not an HTML attribute.
