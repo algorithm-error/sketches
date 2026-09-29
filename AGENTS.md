@@ -13,17 +13,15 @@ prefer leaving it running — the user usually has it open in a browser.
 
 ## Commits
 
-**Commit as yourself, not as Anna.** Blame is the provenance record here, and it shows
-the commit author, so an agent commit is authored by Claude and committed by whoever
-ran it:
+**Commit as Anna, credit yourself as co-author.** Keep the default git identity as the
+author and end the message with a `Co-Authored-By: Claude …` line; that line is the
+provenance record for agent work. Vercel refuses to deploy a commit whose author email
+is not a GitHub account with access to the project, so `--author="Claude <noreply@anthropic.com>"`
+blocks every deploy until the next commit.
 
-```sh
-git commit --author="Claude <noreply@anthropic.com>"
-```
-
-**Never mix hands in one commit.** A commit has one author, so a commit holding both
-Anna's edits and yours attributes all of it to one of you. If the working tree has both,
-stage and commit them separately.
+**Never mix hands in one commit.** The co-author line covers the whole commit, so a
+commit holding both Anna's edits and yours credits you with her work too. If the
+working tree has both, stage and commit them separately.
 
 This is about authorship of identifiable work, not about every changed line. A number
 Anna nudged in a css file, a renamed variable, a typo she fixed while reading — none of
