@@ -44,6 +44,12 @@ template.innerHTML = `
             background: var(--fill, var(--primary));
             cursor: pointer;
         }
+        @media (hover: none) {
+            input[type="range"]::-webkit-slider-thumb {
+                width: 1.5em;
+                height: 1.5em;
+            }
+        }
         input[type="range"]:disabled {
             opacity: 0.4;
             cursor: not-allowed;
