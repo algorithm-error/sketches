@@ -6,6 +6,7 @@ template.innerHTML = `
             display: inline-flex;
         }
         input[type="radio"] {
+            font-size: inherit;
             appearance: none;
             box-sizing: border-box;
             margin: 0;

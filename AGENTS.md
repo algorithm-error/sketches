@@ -131,6 +131,13 @@ const sketch = (function initialize(p5, root, defaults = {}) {
 That api is the whole surface between the driver and the sketch: the render callback
 is `(values) => sketch.rerender(values)`, and a save button calls `sketch.save()`.
 
+## UI kit
+
+**Every component sizes in em off `--font-size`.** Set `font-size: var(--font-size)`
+on `:host`, and `font-size: inherit` on any native `input`, `select` or `button`
+inside it — browsers give those their own small font size, so em inside them
+(a slider thumb, a radio) comes out smaller, and smaller still on iOS.
+
 ## CSS
 
 **Style the minimum.** A few declarations that do the job, not a full treatment of

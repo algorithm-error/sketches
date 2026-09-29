@@ -8,6 +8,7 @@ template.innerHTML = `
             height: var(--slider-length, 8em);
         }
         input[type="range"] {
+            font-size: inherit;
             appearance: none;
             width: 100%;
             height: 0.5em;

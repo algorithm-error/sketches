@@ -46,6 +46,7 @@ template.innerHTML = `
         /* Both inputs span the full width and stack on top of each other; only
            the thumbs take pointer events, so each handle stays grabbable. */
         input[type="range"] {
+            font-size: inherit;
             position: absolute;
             left: 0;
             width: 100%;

@@ -19,6 +19,7 @@ template.innerHTML = `
             opacity: 0.4;
         }
         input[type="radio"] {
+            font-size: inherit;
             appearance: none;
             box-sizing: border-box;
             margin: 0;
