@@ -15,6 +15,7 @@
             import '../ui/control-theme.js';
             import '../articles/frame-split.js';
             import '../ui/control-button.js';
+            import '../ui/random-seed-button.js';
             import '../articles/sketch-frame.js';
         </script>
     </head>
@@ -60,11 +61,6 @@
                                 src="./traces.html?originSource=mesh&overshoot.from=0.05&overshoot.to=0.55&background=fff&trace1=00000000&trace2=000000&seed=1787659770693&panel=false&width="
                             ></sketch-frame>
                         </frame-split>
-                        <control-theme>
-                            <control-button variant="white" size="small" id="open-white"
-                                >Open in new tab to edit</control-button
-                            >
-                        </control-theme>
                         <script>
                             {
                                 const seed = new Date().getTime();
@@ -76,11 +72,23 @@
                                         .replace(/width=\d*/, `width=${width}`);
                                     frame.setAttribute('src', src);
                                 }
-                                document.getElementById('open-white').addEventListener('click', () => {
-                                    const white = document.getElementById('black-and-white-letters').children[1];
-                                    window.open(white.url('true'), '_blank', 'noopener');
-                                });
                             }
+                        </script>
+                        <script type="module">
+                            import { frameButtons } from '../articles/sketch-frame.js';
+                            const split = document.getElementById('black-and-white-letters');
+                            const [black, white] = split.children;
+                            const random = () => {
+                                const seed = Date.now();
+                                for (const frame of [black, white]) {
+                                    frame.seed = seed;
+                                    frame.setAttribute('random-seed', '');
+                                    frame.load();
+                                }
+                            };
+                            split.after(
+                                frameButtons(() => window.open(white.url('true'), '_blank', 'noopener'), random),
+                            );
                         </script>
                         <figcaption>
                             This naive "diptych" was one of&nbsp;the&nbsp;first things I printed. It's the&nbsp;same

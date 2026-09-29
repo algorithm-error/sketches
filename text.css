@@ -92,19 +92,17 @@ figcaption {
     margin: auto;
 }
 
-figure > control-theme > * {
+figure > control-theme {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
 }
 
 @media (hover: hover) {
-    figure > control-theme > * {
+    figure:not(:hover) > control-theme {
         display: none;
-    }
-
-    figure:hover > control-theme > * {
-        display: block;
     }
 }
 
