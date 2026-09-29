@@ -142,7 +142,9 @@
             );
 
             const named = new URLSearchParams(window.location.search).get('preset');
-            const defaults = { preset: 'barb', panel: 'true', ...(presets[named] ?? presets.barb) };
+            // Fractions of the canvas. On a phone the canvas is tall, so the baseline sits mid-height.
+            const origin = { x: 0.1, y: matchMedia('(max-width: 48rem)').matches ? 0.5 : 0.25 };
+            const defaults = { preset: 'barb', panel: 'true', origin, ...(presets[named] ?? presets.barb) };
 
             const controls = {
                 preset: document.querySelector('#param-preset'),
@@ -150,6 +152,7 @@
                 velocity2: document.querySelector('#param-velocity2'),
                 position1: document.querySelector('#param-position1'),
                 position2: document.querySelector('#param-position2'),
+                origin: document.querySelector('#param-origin'),
                 steps: document.querySelector('#param-steps'),
                 g: document.querySelector('#param-g'),
                 mass1: document.querySelector('#param-mass1'),
@@ -185,9 +188,15 @@
                     let settings = defaults;
                     let dragging = null;
 
-                    const origin = { x: width * 0.1, y: height * 0.25 };
-                    const toScreen = (position) => ({ x: origin.x + position.x, y: origin.y + position.y });
-                    const toRelative = (screen) => ({ x: screen.x - origin.x, y: screen.y - origin.y });
+                    const originOf = (settings) => ({ x: width * settings.origin.x, y: height * settings.origin.y });
+                    const toScreen = (position) => {
+                        const origin = originOf(settings);
+                        return { x: origin.x + position.x, y: origin.y + position.y };
+                    };
+                    const toRelative = (screen) => {
+                        const origin = originOf(settings);
+                        return { x: screen.x - origin.x, y: screen.y - origin.y };
+                    };
                     const pointRadius = 6;
                     const positionOf = (settings, key) => (dragging?.key === key ? dragging : settings[key]);
 
@@ -229,6 +238,7 @@
                     const renderScene = (target, settings, { curves, velocity1, velocity2 }) => {
                         target.background(255);
                         target.push();
+                        const origin = originOf(settings);
                         target.translate(origin.x, origin.y);
 
                         const position1 = positionOf(settings, 'position1');
@@ -406,6 +416,18 @@
                         step="1"
                         decimals="0"
                     ></compound-slider>
+
+                    <labeled-input label="Origin">
+                        <coordinate-input
+                            id="param-origin"
+                            size="small"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            decimals="2"
+                            stretch
+                        ></coordinate-input>
+                    </labeled-input>
 
                     <control-button id="copy-svg-button" stretch variant="accent">Copy SVG</control-button>
 
