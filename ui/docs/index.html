@@ -11,7 +11,7 @@
              * sketches.
              */
             body {
-                padding-top: var(--page-top-padding);
+                padding: 1.5rem 0;
             }
 
             /* Same width as the website's pages: full width, 2rem clear of the edges. */
@@ -29,6 +29,11 @@
                 gap: 1rem;
             }
 
+            .lede {
+                max-width: 44.5rem;
+                margin-inline: auto;
+            }
+
             /* Columns as wide as a panel, the rest of the room split between them, so
                the outer panels sit at the padding and the middle ones land evenly. */
             .masonry {
@@ -39,7 +44,8 @@
                 padding: 1rem;
                 column-count: var(--masonry-columns);
                 column-gap: calc((100% - var(--masonry-columns) * var(--panel-width)) / (var(--masonry-columns) - 1));
-                margin-top: 2rem;
+                max-width: var(--max-content-width);
+                margin: 2rem auto 0;
             }
 
             /* One column has no gap to spread, so the panel is centred instead. */
@@ -86,8 +92,9 @@
                 position: absolute;
                 top: 0;
                 bottom: 0;
-                left: calc(50% - 50vw);
-                width: 100vw;
+                left: 50%;
+                width: min(100vw, var(--max-content-width));
+                translate: -50%;
                 height: 100%;
                 border: 0;
                 z-index: -1;

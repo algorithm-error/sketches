@@ -23,10 +23,6 @@ class SketchFrame extends HTMLElement {
 
     connectedCallback() {
         if (this.iframe.isConnected) return;
-        // Pins to stable (but possibly inaccurate) height. This avoids runtime resize especially on phones.
-        // svh and friends are unreliable: for example, Telegram in-app browser changes them in runtime.
-        // TODO Add a test for height freezing
-        if (this.offsetHeight) this.style.height = `${this.offsetHeight}px`;
         // Moved to the iframe so the host does not show it as a tooltip.
         this.iframe.title = this.title;
         this.iframe.scrolling = 'no';

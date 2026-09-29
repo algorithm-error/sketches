@@ -11,17 +11,27 @@ body {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    padding: var(--page-top-padding) var(--body-horizontal-padding) 1.5rem;
+    padding: 1.5rem var(--body-horizontal-padding);
     margin: 0 auto;
     max-width: var(--max-body-width);
     background: var(--background);
     min-height: 100%;
 }
 
-iframe,
 sketch-frame,
 frame-split {
-    height: 95svh;
+    aspect-ratio: 210 / 297;
+}
+
+@media (width > 48rem) and (orientation: landscape) {
+    sketch-frame,
+    frame-split {
+        aspect-ratio: 297 / 210;
+    }
+}
+
+frame-split > sketch-frame {
+    aspect-ratio: auto;
 }
 
 sketch-frame {
@@ -29,8 +39,10 @@ sketch-frame {
 }
 
 iframe {
+    display: block;
     border: none;
     width: 100%;
+    height: 100%;
 }
 
 main {
@@ -58,10 +70,9 @@ section + section {
 
 figure {
     position: relative;
-    width: 100vw;
-    max-width: 75rem;
-    margin: 1.5rem 0;
-    margin-inline: calc(50% - 50vw);
+    width: min(100vw, var(--max-content-width));
+    margin: 1.5rem 0 1.5rem 50%;
+    translate: -50%;
     background: var(--background);
     text-align: center;
 }
