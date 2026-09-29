@@ -7,7 +7,7 @@
     "type": "commonjs",
     "main": "index.js",
     "scripts": {
-        "build": "bash scripts/build.sh",
+        "build": "node scripts/build.mjs",
         "serve": "http-server -p 8123 -c-1",
         "serve:dist": "yarn build && http-server dist -p 8124 -c-1",
         "format": "prettier --write .",
