@@ -2,8 +2,7 @@
 
 /* Same root size as base.css, which these pages do not load. */
 html {
-    /* 16px at a 375px wide screen, 20px at 1512px, straight line between. */
-    font-size: clamp(16px, calc(16px + 4 * (100vw - 375px) / 1137), 20px);
+    font-size: clamp(18px, calc(18px + 4 * (100vw - 375px) / 1137), 20px);
 }
 
 body {
