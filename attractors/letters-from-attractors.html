@@ -8,7 +8,6 @@
         <script type="module">
             import '../ui/control-theme.js';
             import '../articles/frame-split.js';
-            import '../ui/random-seed-button.js';
             import '../ui/control-button.js';
             import '../articles/sketch-frame.js';
         </script>
@@ -18,7 +17,7 @@
             <nav>
                 <a href="/">Plots</a>
                 <a href="/art">Art</a>
-                <span aria-current="page">Articles</span>
+                <a href="/articles" aria-current="true">Articles</a>
                 <a href="/ui">UI kit</a>
             </nav>
         </header>
@@ -56,26 +55,21 @@
                             ></sketch-frame>
                         </frame-split>
                         <control-theme>
-                            <random-seed-button variant="white" id="randomize-letters">Randomize</random-seed-button>
                             <control-button variant="white" size="small" id="open-white"
                                 >Open in new tab to edit</control-button
                             >
                         </control-theme>
                         <script>
                             {
-                                const randomize = () => {
-                                    const seed = new Date().getTime();
-                                    const width = window.innerWidth;
-                                    for (const frame of document.getElementById('black-and-white-letters').children) {
-                                        const src = frame
-                                            .getAttribute('src')
-                                            .replace(/seed=\d*/, `seed=${seed}`)
-                                            .replace(/width=\d*/, `width=${width}`);
-                                        frame.setAttribute('src', src);
-                                    }
-                                };
-                                randomize();
-                                document.getElementById('randomize-letters').addEventListener('click', randomize);
+                                const seed = new Date().getTime();
+                                const width = window.innerWidth;
+                                for (const frame of document.getElementById('black-and-white-letters').children) {
+                                    const src = frame
+                                        .getAttribute('src')
+                                        .replace(/seed=\d*/, `seed=${seed}`)
+                                        .replace(/width=\d*/, `width=${width}`);
+                                    frame.setAttribute('src', src);
+                                }
                                 document.getElementById('open-white').addEventListener('click', () => {
                                     const white = document.getElementById('black-and-white-letters').children[1];
                                     window.open(white.url('true'), '_blank', 'noopener');

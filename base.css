@@ -17,6 +17,11 @@ body {
     line-height: var(--line-height-ratio);
 }
 
+/* The UI kit's --highlight yellow, from ui/control-theme.js. */
+:focus-visible {
+    outline: 2px solid #ffd800;
+}
+
 a {
     transition: color 0.2s;
 }
@@ -40,9 +45,11 @@ a:visited:hover {
     justify-content: center;
 }
 
-/* The page you are on is a span, not a link, so it is not clickable. */
+/* The page you are on is a span, not a link, so it is not clickable. A page inside a
+   section links back to the section, marked aria-current="true". */
 .site-nav a,
-.site-nav [aria-current='page'] {
+.site-nav [aria-current] {
+    padding: 0 0.25rem;
     white-space: nowrap;
     font-weight: 500;
     letter-spacing: 0.5px;
@@ -51,12 +58,18 @@ a:visited:hover {
     color: CanvasText;
 }
 
-.site-nav a:hover {
+.site-nav a:not([aria-current]):hover {
     color: LinkText;
 }
 
-.site-nav [aria-current='page'] {
-    text-decoration: underline;
+.site-nav [aria-current] {
+    background: CanvasText;
+    color: Canvas;
+}
+
+.site-nav a[aria-current]:hover {
+    background: LinkText;
+    color: Canvas;
 }
 
 /* Site footer. The markup is copied into each page that uses it. */

@@ -87,11 +87,6 @@ figure > control-theme > * {
     right: 0.75rem;
 }
 
-figure > control-theme > random-seed-button {
-    right: auto;
-    left: 0.75rem;
-}
-
 @media (hover: hover) {
     figure > control-theme > * {
         display: none;
