@@ -1,14 +1,9 @@
 const THUMB = 1.125;
-const TOUCH_THUMB = 1.5;
-const TOUCH = '(hover: none)';
 
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
-        :host { display: block; font-size: var(--font-size); --thumb: ${THUMB}em; }
-        @media ${TOUCH} {
-            :host { --thumb: ${TOUCH_THUMB}em; }
-        }
+        :host { display: block; font-size: var(--font-size); }
         .track {
             position: relative;
             height: ${THUMB}em;
@@ -25,12 +20,12 @@ template.innerHTML = `
             right: 0;
             background: #dcdcdc;
         }
-        /* Thumb centres travel between thumb/2 and width - thumb/2, so the fill
+        /* Thumb centres travel between THUMB/2 and width - THUMB/2, so the fill
            is placed in those coordinates instead of a plain 0–100% ratio. */
         .fill {
             background: var(--fill, var(--primary));
-            left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--from-ratio, 0));
-            right: calc(100% - var(--thumb) / 2 - (100% - var(--thumb)) * var(--to-ratio, 1));
+            left: calc(${THUMB / 2}em + (100% - ${THUMB}em) * var(--from-ratio, 0));
+            right: calc(100% - ${THUMB / 2}em - (100% - ${THUMB}em) * var(--to-ratio, 1));
             /* The inputs above pass their pointer events through, so the fill can
                take them and drag the whole range without disturbing the thumbs. */
             cursor: grab;
@@ -59,8 +54,8 @@ template.innerHTML = `
         }
         input[type="range"]::-webkit-slider-thumb {
             appearance: none;
-            width: var(--thumb);
-            height: var(--thumb);
+            width: ${THUMB}em;
+            height: ${THUMB}em;
             border-radius: 50%;
             background: var(--fill, var(--primary));
             pointer-events: auto;
@@ -188,8 +183,7 @@ export class ControlRangeSlider extends HTMLElement {
         }
         event.preventDefault();
         const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-        const thumb = matchMedia(TOUCH).matches ? TOUCH_THUMB : THUMB;
-        const travel = this.track.getBoundingClientRect().width - thumb * rootSize;
+        const travel = this.track.getBoundingClientRect().width - THUMB * rootSize;
         if (travel <= 0) {
             return;
         }
