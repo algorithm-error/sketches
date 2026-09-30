@@ -1,4 +1,34 @@
-@import url('./base.css');
+/*
+ * Styles for this project's own pages, such as the index and the alphabet. The
+ * website has its own copy of these in src/styles, with the site nav and footer.
+ */
+html {
+    font-size: clamp(18px, calc(18px + 4 * (100vw - 375px) / 1137), 20px);
+}
+
+body {
+    --line-height-ratio: 1.25;
+    --small-font-size: 0.85rem;
+    --large-font-size: 1.25rem;
+    /* Widest a sketch, a grid or a canvas gets; about a 14" laptop screen. */
+    --max-content-width: 76rem;
+    margin: 0;
+    font-size: 1rem;
+    line-height: var(--line-height-ratio);
+}
+
+/* The UI kit's --highlight yellow, from ui/control-theme.js. */
+:focus-visible {
+    outline: 2px solid #ffd800;
+}
+
+a {
+    transition: color 0.2s;
+}
+
+a:visited:hover {
+    color: LinkText;
+}
 
 html {
     height: 100%;

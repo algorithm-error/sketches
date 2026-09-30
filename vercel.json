@@ -1,7 +1,0 @@
-{
-    "framework": null,
-    "buildCommand": "node scripts/build.mjs",
-    "outputDirectory": "dist",
-    "installCommand": "yarn install",
-    "devCommand": "yarn serve"
-}

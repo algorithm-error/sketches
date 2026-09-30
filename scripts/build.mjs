@@ -1,19 +1,27 @@
-// Builds the static site into dist/ for Vercel. site.mjs decides where each file goes
-// and how pages are rewritten.
+// Builds the files the website serves under /sketches into dist/, or into the
+// directory given as the first argument. site.mjs decides where each file goes and
+// how pages are rewritten. The website's build runs this; see its
+// scripts/copy-sketches.mjs.
 
 import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { rewrite, sourceFor, vendor } from './site.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const out = join(root, 'dist');
+const out = process.argv[2] ? resolve(process.argv[2]) : join(root, 'dist');
 
-const paths = ['LICENSE', 'base.css', 'text.css', ...Object.keys(vendor)];
-for (const dir of ['articles', 'attractors', 'common', 'libraries', 'mesh']) {
+// Working notes, kept in the repo but not published.
+const unpublished = ['attractors/texts/'];
+
+const paths = ['LICENSE', 'text.css', ...Object.keys(vendor)];
+for (const dir of ['attractors', 'common', 'libraries', 'mesh']) {
     for (const entry of readdirSync(join(root, dir), { recursive: true, withFileTypes: true })) {
-        if (entry.isFile()) paths.push(join(entry.parentPath, entry.name).slice(root.length));
+        const path = join(entry.parentPath, entry.name).slice(root.length);
+        if (entry.isFile() && entry.name !== '.DS_Store' && !unpublished.some((prefix) => path.startsWith(prefix))) {
+            paths.push(path);
+        }
     }
 }
 for (const name of readdirSync(join(root, 'ui'))) {

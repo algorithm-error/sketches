@@ -1,6 +1,6 @@
 /* Stylesheet used by individual component pages */
 
-/* Same root size as base.css, which these pages do not load. */
+/* Same root size as text.css, which these pages do not load. */
 html {
     font-size: clamp(18px, calc(18px + 4 * (100vw - 375px) / 1137), 20px);
 }

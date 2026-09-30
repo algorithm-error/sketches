@@ -11,10 +11,8 @@
         "serve": "http-server -p 8123 -c-1",
         "serve:dist": "yarn build && http-server dist -p 8124 -c-1",
         "format": "prettier --write .",
-        "deploy:preview": "bash scripts/deploy.sh preview",
-        "deploy:production": "bash scripts/deploy.sh production",
-        "deploy:preview:only": "bash scripts/deploy.sh preview only",
-        "deploy:production:only": "bash scripts/deploy.sh production only",
+        "deploy:preview": "yarn --cwd ../website deploy:preview",
+        "deploy:production": "yarn --cwd ../website deploy:production",
         "prepare": "husky"
     },
     "dependencies": {
@@ -26,8 +24,7 @@
         "http-server": "14.1.1",
         "husky": "9.1.7",
         "lint-staged": "17.3.0",
-        "prettier": "3.9.6",
-        "vercel": "50.0.1"
+        "prettier": "3.9.6"
     },
     "lint-staged": {
         "*.{js,html,css,json,md}": "prettier --write"

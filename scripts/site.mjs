@@ -25,28 +25,19 @@ export function sourceFor(path, root) {
     return path;
 }
 
-// Pages are served from paths that do not match their place in this repo, such as
-// /articles/letters-from-attractors, so their relative references become absolute.
+// Pages are served from paths that do not match their place in this repo, such as the
+// UI kit docs at /ui, and node_modules is not served at all, so their relative
+// references are rewritten.
 export function rewrite(source, html) {
     if (source.startsWith('ui/docs/')) {
-        html = html
-            .replaceAll('../../base.css', '/sketches/base.css')
-            .replaceAll('../../mesh/', '/sketches/mesh/')
-            .replaceAll('../', './');
-        // The kit's index is served at /ui, with no trailing slash, so its own relative
-        // references would resolve one directory too high.
-        if (source === 'ui/docs/index.html') html = html.replace('<head>', '<head>\n        <base href="/ui/" />');
-        return html;
+        return html.replaceAll('../../mesh/', '/sketches/mesh/').replaceAll('../', './');
     }
-    if (!/^(articles|attractors|mesh)\//.test(source)) return html;
-    html = html
+    if (!/^(attractors|mesh)\//.test(source)) return html;
+    return html
         .replaceAll('../node_modules/p5/lib/p5.js', '/sketches/vendor/p5.min.js')
         .replaceAll('../node_modules/p5.js-svg/dist/p5.svg.js', '/sketches/vendor/p5.svg.js')
         .replaceAll('../node_modules/p5.collide2d/p5.collide2d.js', '/sketches/vendor/p5.collide2d.js')
         .replaceAll('../', '/sketches/');
-    // After the ../ rule, so it cannot take the tail of a ../ that is not handled yet.
-    if (source.startsWith('attractors/')) html = html.replaceAll('./', '/sketches/attractors/');
-    return html;
 }
 
 function isFile(path) {
